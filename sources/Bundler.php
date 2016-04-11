@@ -183,8 +183,8 @@ class Bundler {
      */
     function pack() {
         // Default
-        $directoryPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Bundled' . DIRECTORY_SEPARATOR;
-        $outputPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Bundle.package';
+        $directoryPath = dirname(dirname(__DIR__)). DIRECTORY_SEPARATOR .'Distribution'.DIRECTORY_SEPARATOR.'Bundle-sources' . DIRECTORY_SEPARATOR;
+        $outputPath = dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR.'Distribution'.DIRECTORY_SEPARATOR. 'Bundle.package';
         // Arguments?
         if (array_key_exists('source', $this->_arguments)) {
             $directoryPath = $this->_arguments['source'];
@@ -438,8 +438,8 @@ class Bundler {
     }
 
     private function _encodeTags($string) {
-        $string = str_replace(Bundler::BUNDLER_METADATA_STARTS, _protectTag(Bundler::BUNDLER_METADATA_STARTS), $string);
-        $string = str_replace(Bundler::BUNDLER_METADATA_ENDS, _protectTag(Bundler::BUNDLER_METADATA_ENDS), $string);
+        $string = str_replace(Bundler::BUNDLER_METADATA_STARTS, $this->_protectTag(Bundler::BUNDLER_METADATA_STARTS), $string);
+        $string = str_replace(Bundler::BUNDLER_METADATA_ENDS, $this->_protectTag(Bundler::BUNDLER_METADATA_ENDS), $string);
         return $string;
     }
 
@@ -465,6 +465,7 @@ class Bundler {
         }
     }
 
+    //@todo
     private function _copyPath($folderPath,$destination,$relativePath=NULL,$exclusionList=NULL){
         
     }

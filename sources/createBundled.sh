@@ -6,13 +6,16 @@
 # This script extracts a bundle from the current version.
 # And prepare a bundle to be used by bartleby cli.
 
-BARTLEBYS_CORE="../Bartleby"
-BARTLEBYS_BUNDLER="../BartlebyBundler"
-BARTLEBYS_FLEXIONS="../BartlebyFlexions"
-BARTLEBYS_SYNC_MODULE="../BartlebySync"
-BARTLEBYS_APP_PROTOTYPE="../App.prototype"
+# BARTLEBY IS IN PROGRESS
+# THIS HARDCODED WORKING FOLDER PATH WILL BE REPLACED BY A BUNDLER MAP
+WORKING_FOLDER="/Users/bpds/Documents/Entrepot/Git/Clients/LyLo.TV/YouDubAPI"
+BARTLEBYS_CORE="$WORKING_FOLDER/Bartleby"
+BARTLEBYS_BUNDLER="$WORKING_FOLDER/BartlebyBundler"
+BARTLEBYS_FLEXIONS="$WORKING_FOLDER/BartlebyFlexions"
+BARTLEBYS_SYNC_MODULE="$WORKING_FOLDER/BartlebySync"
+BARTLEBYS_APP_PROTOTYPE="$WORKING_FOLDER/App.prototype"
 
-BUNDLE="../Bundled"
+BUNDLE="../../Distribution/Bundle-sources/"
 
 echo "# Bundle generation #";
 echo "";
