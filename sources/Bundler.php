@@ -153,8 +153,8 @@ class Bundler {
             $content = str_replace("\t",'\\t',$content);
             $spaces = '  ';
             for ($i=0;$i<8;$i++){
-            	  $content = str_replace(spaces,' ',$content);
-            	  $space .= ' '
+            	  $content = str_replace($spaces,' ',$content);
+            	  $spaces .= ' ';
             }
             $content = str_replace('"','\"',$content);
             echo "\n\n".$content."\n\n";
