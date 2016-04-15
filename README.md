@@ -1,5 +1,7 @@
 # Bartleby's Bundler
 
+[![Build Status](https://travis-ci.org/Bartlebys/Bundler.svg?branch=master)](https://travis-ci.org/Bartlebys/Bundler)
+
 Bartleby Bundler is a tool to distribute Bundles to be used by the bartleby Command Line Tool.It can be used as a commandline tool or via a web server.
 
 ## How to create the "Distribution folder"?
