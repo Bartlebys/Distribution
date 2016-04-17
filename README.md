@@ -2,7 +2,16 @@
 
 [![Build Status](https://travis-ci.org/Bartlebys/Bundler.svg?branch=master)](https://travis-ci.org/Bartlebys/Bundler)
 
+![Bartleby's](images/bartlebys.jpg)
+
+The official distributions of Bartleby's stack to be used by [Bartleby's CLI] (https://github.com/Bartlebys/CLI)
+
 Bartleby Bundler is a tool to distribute Bundles to be used by the bartleby Command Line Tool.It can be used as a commandline tool or via a web server.
+
+## The distribution includes 
+
+1. The official [Bundle](bundle.package)  *MD5 9A67DD914FEC002C5AE39C41079F3C3A* <-- dead link
+2. The "unbundled" [sources] (/sources/) <-- not including all sources
 
 ## How to create the "Distribution folder"?
 
