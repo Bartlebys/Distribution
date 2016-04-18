@@ -1,35 +1,21 @@
-# Bartleby's Bundler
-
-[![Build Status](https://travis-ci.org/Bartlebys/Bundler.svg?branch=master)](https://travis-ci.org/Bartlebys/Bundler)
+# Bartleby's Distribution
 
 ![Bartleby's](images/bartlebys.jpg)
 
 The official distributions of Bartleby's stack to be used by [Bartleby's CLI] (https://github.com/Bartlebys/CLI)
 
-Bartleby Bundler is a tool to distribute Bundles to be used by the bartleby Command Line Tool.It can be used as a commandline tool or via a web server.
 
 ## The distribution includes 
 
-1. The official [Bundle](bundle.package)  *MD5 9A67DD914FEC002C5AE39C41079F3C3A* <-- dead link
-2. The "unbundled" [sources] (/sources/) <-- not including all sources
+1. The [Zipped Bundle](Distribution/Bundle.package.zip)
+2. The [Unzipped Bundle](Distribution/Bundle.package)
+2. The [Expanded sources] (Distribution/Bundle-sources/) 
 
-## How to create the "Distribution folder"?
+# Bartleby's Bundler
 
-```
-. php -f build.php args --source map.json
-```
+[Bartleby Bundler] (Bundler/README.md) is the tool we use to prepare and distribute Bundles to be used by the bartleby's Command Line Tool. It can be used as standalone tool or via a web server.
 
-## How to create the Bundle.package(.zip) file 
-
-```
-. php -f pack.php args --source $BUNDLED_FOLDER_PATH  --destination $BUNDLE_FILE_DESTINATION_PATH
-```
-
-## How to unpack a bundle ?
-
-```
-. php -f unpack.php args --source $BUNDLE_FILE_SOURCE_PATH --destination $EXPANSION_PATH
-```
+[![Build Status](https://travis-ci.org/Bartlebys/Bundler.svg?branch=master)](https://travis-ci.org/Bartlebys/Bundler)
 
 
 
