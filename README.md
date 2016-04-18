@@ -1,6 +1,6 @@
 # Bartleby's Distribution
 
-![Bartleby's](images/bartlebys.jpg)
+![Bartleby's](Assets/bartlebys.jpg)
 
 The official distributions of Bartleby's stack to be used by [Bartleby's CLI] (https://github.com/Bartlebys/CLI)
 
