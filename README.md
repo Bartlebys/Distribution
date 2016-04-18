@@ -7,8 +7,8 @@ The official distributions of Bartleby's stack to be used by [Bartleby's CLI] (h
 
 ## The distribution includes 
 
-1. The [Zipped Bundle](Distribution/Bundle.package.zip)
-2. The [Unzipped Bundle](Distribution/Bundle.package)
+1. The [Zipped Bundle](https://github.com/Bartlebys/Distribution/raw/master/Distribution/Bundle.package.zip)
+2. The [Unzipped Bundle](https://github.com/Bartlebys/Distribution/blob/master/Distribution/Bundle.package)
 2. The [Expanded sources] (Distribution/Bundle-sources/) 
 
 # Bartleby's Bundler
