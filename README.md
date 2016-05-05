@@ -1,5 +1,7 @@
 # Bartleby's Distribution
 
+[![Build Status](https://travis-ci.org/Bartlebys/Distribution.svg?branch=master)](https://travis-ci.org/Bartlebys/Distribution)
+
 ![Bartleby's](Assets/bartlebys.jpg)
 
 The official distributions of Bartleby's stack to be used by [Bartleby's CLI] (https://github.com/Bartlebys/CLI)
@@ -7,15 +9,14 @@ The official distributions of Bartleby's stack to be used by [Bartleby's CLI] (h
 
 ## The distribution includes 
 
-1. The [Zipped Bundle](Distribution/Bundle.package.zip)
-2. The [Unzipped Bundle](Distribution/Bundle.package)
+1. The [Zipped Bundle](https://github.com/Bartlebys/Distribution/raw/master/Distribution/Bundle.package.zip)
+2. The [Unzipped Bundle](https://github.com/Bartlebys/Distribution/blob/master/Distribution/Bundle.package)
 2. The [Expanded sources] (Distribution/Bundle-sources/) 
 
 # Bartleby's Bundler
 
 [Bartleby Bundler] (Bundler/README.md) is the tool we use to prepare and distribute Bundles to be used by the bartleby's Command Line Tool. It can be used as standalone tool or via a web server.
 
-[![Build Status](https://travis-ci.org/Bartlebys/Bundler.svg?branch=master)](https://travis-ci.org/Bartlebys/Bundler)
 
 
 
