@@ -28,7 +28,6 @@ class CallDataRawWrapper implements IAuthentified {
     public function __construct($data) {
         $this->_isArray=is_array($data);
         $this->_storage = $data;
-
     }
 
     public function getValueForKey($key){
@@ -41,6 +40,17 @@ class CallDataRawWrapper implements IAuthentified {
         }
         return null;
     }
+
+
+    public function keyExists($key){
+        if($this->_isArray) {
+            return array_key_exists($key, $this->_storage);
+        }else{
+            return property_exists($this->_storage,$key);
+        }
+
+    }
+
 
     public function getDictionary(){
         return $this->_storage;

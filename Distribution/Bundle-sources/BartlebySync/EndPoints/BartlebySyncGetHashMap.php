@@ -44,7 +44,7 @@ final class BartlebySyncGetHashMap extends BartlebySyncAbstractEndPoint {
         }
 
         $this->ioManager = $this->getIoManager ();
-        $path = $this->ioManager->absolutePath ( $parameters->treeId, METADATA_FOLDER . '/'. HASHMAP_FILENAME );
+        $path = $this->ioManager->absoluteUrl ( $parameters->treeId, METADATA_FOLDER . '/'. HASHMAP_FILENAME );
         if (! $this->ioManager->exists ( $path )) {
             return new JsonResponse(VOID_RESPONSE, 404 );
         }

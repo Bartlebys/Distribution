@@ -80,8 +80,6 @@ class Gateway {
                     $unexistingPaths[] = $possiblePath;
                 }
             }
-        }else{
-            $bingo="";
         }
 
         if ($filePath == "") {
@@ -198,7 +196,6 @@ class Gateway {
                 return; //  stop the execution flow.
             }
         }
-
     }
 
     /**
@@ -207,6 +204,11 @@ class Gateway {
      */
     public function getResponse() {
         if (isset($this->_response)) {
+            if ($this->_response instanceof IHTTPResponse){
+                if ($this->_response->getStatusCode() <= 0) {
+                    throw new \Exception("Inconsistent HTTPStatus code");
+                }
+            }
             if (isset($this->_response->data)) {
                 // Run Filter OUT
                 if ($this->_configuration->hasFilterOUT($this->_filterKey)) {

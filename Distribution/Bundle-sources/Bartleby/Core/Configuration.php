@@ -4,6 +4,9 @@
 namespace Bartleby\Core;
 
 require_once __DIR__ . '/Stages.php';
+require_once BARTLEBY_ROOT_FOLDER.'/Commons/EndPoints/Auth.php';
+
+use  Bartleby\EndPoints\Auth;
 
 if (!defined('PERMISSION_IS_STATIC')) {
 
@@ -15,7 +18,7 @@ if (!defined('PERMISSION_IS_STATIC')) {
     define('PERMISSION_NO_RESTRICTION', 1);
     define('PERMISSION_BY_TOKEN', 2);
     define('PERMISSION_PRESENCE_OF_A_COOKIE', 3);
-    define('PERMISSION_IDENTIFIED_BY_COOKIE', 4);
+    define('PERMISSION_BY_IDENTIFICATION', 4); // Two approachs are possible byKeys (using a key value pair on each call) or by Cookies
     define('PERMISSION_RESTRICTED_TO_ENUMERATED_USERS', 5);
     define('PERMISSION_RESTRICTED_BY_QUERIES', 6);
     define('PERMISSION_RESTRICTED_TO_GROUP_MEMBERS', 7);
@@ -31,7 +34,7 @@ if (!defined('PERMISSION_IS_STATIC')) {
     define('UID_KEY', 'UID');
     define('MONGO_ID_KEY', '_id'); // For example : PERMISSION_RESTRICTED_TO_ENUMERATED_USERS the ids of the users
     define('SPACE_UID_KEY', 'spaceUID');
-    define('OBSERVABLE_UID_KEY', 'observableUID');
+    define('RUN_UID_KEY', 'runUID');
     define('LEVEL_KEY', 'level'); // The permission level.
     define('KEY_NAME', 'name'); // For example : when PERMISSION_PRESENCE_OF_A_TOKEN the name == the token key
     define('IDS_KEY', 'ids'); // For example : PERMISSION_RESTRICTED_TO_ENUMERATED_USERS the ids of the users
@@ -109,6 +112,28 @@ class Configuration {
      * @var array of overloaded paths.
      */
     private $_fixedPaths = array();
+    
+    /**
+     * Defines the HOST and the _STAGE
+     * If necessary the _HOST and _STAGE can be declared
+     */
+    protected function _autoDefineHostAndStage(array $hosts){
+        $serverName=$_SERVER['SERVER_NAME'];
+        foreach ($hosts as $stage => $host) {
+            if (strpos($host,$serverName)!==false){
+                $this->_STAGE=$stage;
+            }
+        }
+        if (!isset($this->_STAGE)){
+            $this->_STAGE = Stages::LOCAL;
+        }
+        $stage = $this->_STAGE;
+        if (array_key_exists($this->_STAGE,$hosts)){
+            $this->_HOST= $hosts[$this->_STAGE];
+        }else{
+            throw \Exception('Unexisting Host for stage'.$this->_STAGE);
+        }
+    }
 
     /**
      * An array of issues used for analysis
@@ -183,13 +208,13 @@ class Configuration {
     /**
      * You stop encrypting cookies to search key - and crypto error during development.
      */
-    const ENCRYPT_COOKIES = true;  // Should be set to true (!)
+    const USE_ENCRYPTION_FOR_IDENTIFICATION_VALUES = true;  // Should be set to true (!)
 
     /**
      * @return bool
      */
-    public function ENCRYPT_COOKIES() {
-        return $this::ENCRYPT_COOKIES;
+    public function USE_ENCRYPTION_FOR_IDENTIFICATION_VALUES() {
+        return $this::USE_ENCRYPTION_FOR_IDENTIFICATION_VALUES;
     }
 
     /**
@@ -399,8 +424,8 @@ class Configuration {
     ////////////////////////
 
 
-    function  getAuthCookieKEYForRUID($spaceUID) {
-        if ($this->ENCRYPT_COOKIES()){
+    function  getCryptedKEYForSpaceUID($spaceUID) {
+        if ($this->USE_ENCRYPTION_FOR_IDENTIFICATION_VALUES()){
             return $this->salt($spaceUID);
         }else{
             return $spaceUID;
@@ -408,21 +433,21 @@ class Configuration {
 
     }
 
-    function getCryptedAuthCookieValue($spaceUID, $userID) {
-        if ($this->ENCRYPT_COOKIES()){
+    function encryptIdentificationValue($spaceUID, $userID) {
+        if ($this->USE_ENCRYPTION_FOR_IDENTIFICATION_VALUES()){
         // We use $this->_SECRET_KEY truncated to 32Bytes as key
         // We use $spaceUID as Initialization vector
-         return mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->_32SALT(), $userID, MCRYPT_MODE_ECB, $spaceUID);
+         return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->_32SALT(), $userID, MCRYPT_MODE_ECB, $spaceUID));
         }else{
             return $userID;
         }
     }
 
-    function decryptAuthCookieValue($spaceUID, $cryptedUserID) {
-        if ($this->ENCRYPT_COOKIES()){
+    function decryptIdentificationValue($spaceUID, $cryptedUserID) {
+        if ($this->USE_ENCRYPTION_FOR_IDENTIFICATION_VALUES()){
         // We use $this->_SECRET_KEY truncated to 32Bytes as key
         // We use $spaceUID as Initialization vector
-        return mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->_32SALT(), $cryptedUserID, MCRYPT_MODE_ECB, $spaceUID);
+        return mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->_32SALT(), base64_decode($cryptedUserID), MCRYPT_MODE_ECB, $spaceUID);
         }else{
             return $cryptedUserID;
         }
@@ -436,22 +461,62 @@ class Configuration {
         return substr($this->_SECRET_KEY, 0, 32);
     }
 
+
+
+
+
+    /**
+     * Returns the userID if there is one in the "kvid" HTTP header field or a cookie.
+     * @param $spaceUID
+     * @return null|string
+     */
+    public function getUserID($spaceUID){
+        if (!isset($spaceUID)){
+            $this->issues[]='spaceUID is not set';
+            return NULL;
+        }
+        // We the "kvid" http header.
+        $userUID=$this->_getUserIDFromKVI($spaceUID);
+        if (isset($userUID)){
+            return $userUID;
+        }
+        // And fall back on the cookie.
+        return $this->_getUserIDFromCookie($spaceUID);
+    }
+
+
+    /**
+     * Returns the userID from the kvi
+     * @param $spaceUID
+     * @return null|string
+     */
+    private function _getUserIDFromKVI($spaceUID) {
+        if (!isset($_COOKIE)){
+            $this->issues[]='Php\'s _COOKIE global is not existing.';
+        }
+        $allHeader=getallheaders();
+        if (array_key_exists(Auth::kvidKey,$allHeader)) {
+            $cryptedUserID = $allHeader[Auth::kvidKey];
+            $userID = $this->decryptIdentificationValue($spaceUID, $cryptedUserID);
+            return $userID;
+        }
+        return NULL;
+    }
+
+
     /**
      * Returns the userID from the cookie
      * @param $spaceUID
      * @return null|string
      */
-    function getUserIDFromCookie($spaceUID) {
-        if (!isset($spaceUID)){
-            $this->issues[]='dID is not set';
-        }
+    private function _getUserIDFromCookie($spaceUID) {
         if (!isset($_COOKIE)){
             $this->issues[]='Php\'s _COOKIE global is not existing.';
         }
-        $cookieKey = $this->getAuthCookieKEYForRUID($spaceUID);
+        $cookieKey = $this->getCryptedKEYForSpaceUID($spaceUID);
         if (array_key_exists($cookieKey, $_COOKIE)) {
             $cookieValue = $_COOKIE[$cookieKey];
-            $userID = $this->decryptAuthCookieValue($spaceUID, $cookieValue);
+            $userID = $this->decryptIdentificationValue($spaceUID, $cookieValue);
             return $userID;
         }else{
             $this->issues[]='Cookie key '.$cookieKey.' is not existing. ';
@@ -460,13 +525,15 @@ class Configuration {
         return NULL;
     }
 
+
+
     /**
      * return true if there is a consistant cookie for the context
      * @param $spaceUID
      * @return bool
      */
     function hasUserAuthCookie($spaceUID) {
-        $cookieKey = $this->getAuthCookieKEYForRUID($spaceUID);
+        $cookieKey = $this->getCryptedKEYForSpaceUID($spaceUID);
         return (array_key_exists($cookieKey, $_COOKIE));
     }
 

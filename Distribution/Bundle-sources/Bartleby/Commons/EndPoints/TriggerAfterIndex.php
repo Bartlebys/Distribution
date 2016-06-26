@@ -11,57 +11,67 @@ use Bartleby\Core\JsonResponse;
 use \MongoCollection;
 
 class  TriggerAfterIndexsCallData extends MongoCallDataRawWrapper {
-
-    const ids='ids';
-
-    const result_fields='result_fields';
-    /* the sort (MONGO DB) */
-    const sort='sort';
+    const lastIndex = 'lastIndex';
 }
 
 class  TriggerAfterIndex extends MongoEndPoint {
 
     function call(TriggerAfterIndexCallData $parameters) {
-        $db=$this->getDB();
+        $db = $this->getDB();
         /* @var \MongoCollection */
+
+        $lastIndex = $parameters->getValueForKey(SSETriggersCallData::lastIndex);
+        if (!isset($lastIndex)) {
+            return new JsonResponse("lastIndex is undefined", 412);
+        }
+
         $collection = $db->triggers;
-        $ids=$parameters->getValueForKey(TriggerAfterIndexsCallData::ids);
-        $f=$parameters->getValueForKey(TriggerAfterIndex::result_fields);
-        if(isset ($ids) && is_array($ids) && count($ids)){
-            $q = array( '_id'=>array( '$in' => $ids ));
-        }else{
-            return new JsonResponse(VOID_RESPONSE,204);
+
+        $q ['index'] = [
+            '$gte' => ($lastIndex + 1)
+        ];
+
+        ////////////////////////////////////////////
+        // SpaceUID confinement and runUID eviction
+        ////////////////////////////////////////////
+        try {
+            // Restrict to this spaceUID
+            $q['spaceUID'] = $this->getSpaceUID();
+        } catch (\Exception $e) {
+            return new JsonResponse("spaceUID is undefined", 412);
         }
         try {
-            $r=array();
-            if(isset($f)){
-                $cursor = $collection->find( $q , $f );
-            }else{
-                $cursor = $collection->find($q);
-            }
+            // Filter owned Triggers
+            $q ['runUID'] = [
+                // Not equal
+                '$ne' => $this->getRunUID()
+            ];
+        } catch (\Exception $e) {
+            return new JsonResponse("runUID is undefined", 412);
+        }
+
+        try {
+            $r = array();
+            $cursor = $collection->find($q);
             // Sort ?
-            $s=$parameters->getCastedDictionaryForKey(TriggerAfterIndex::sort);
-            if (isset($s) && count($s)>0){
-                $cursor=$cursor->sort($s);
-            }
-            if ($cursor->count ( TRUE ) > 0) {
-                foreach ( $cursor as $obj ) {
+            if ($cursor->count(TRUE) > 0) {
+                foreach ($cursor as $obj) {
                     $r[] = $obj;
                 }
             }
 
-            if (count($r)>0 ) {
-                return new JsonResponse($r,200);
+            if (count($r) > 0) {
+                return new JsonResponse($r, 200);
             } else {
-                return new JsonResponse(VOID_RESPONSE,404);
+                return new JsonResponse(VOID_RESPONSE, 404);
             }
-        } catch ( \Exception $e ) {
-            return new JsonResponse( array ('code'=>$e->getCode(),
-                'message'=>$e->getMessage(),
-                'file'=>$e->getFile(),
-                'line'=>$e->getLine(),
-                'trace'=>$e->getTraceAsString()
-            ),
+        } catch (\Exception $e) {
+            return new JsonResponse(['code' => $e->getCode(),
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ],
                 417
             );
         }

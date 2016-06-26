@@ -34,10 +34,23 @@ final class AuthCallData extends MongoCallDataRawWrapper {
     const password = 'password';
 
 
+    /***
+     * The standard indentification mode is by "keys".
+     *
+     *  Auth::identificationByKey (the preferred method to permit massive multi-micro-auth on a same node.)
+     *  or
+     *  Auth::identificationByCookie (implicit this is the value if the method is undefined)
+     */
+    const identification = 'identification';
+
 }
 
 final class Auth extends MongoEndPoint{
 
+    const identificationByKey = 'Key';
+    const identificationByCookie = 'Cookie';
+    const kvidKey = 'kvid';
+    
     private $issues=array();
 
     function POST(AuthCallData $parameters){
@@ -45,7 +58,11 @@ final class Auth extends MongoEndPoint{
         $configuration=$this->getConfiguration();
         $currentUserUID = $parameters->getValueForKey(AuthCallData::userUID);
         $password = $parameters->getValueForKey(AuthCallData::password);
-        
+        $identification = $parameters->getValueForKey(AuthCallData::identification);
+        if (!isset($identification)){
+            $identification=Auth::identificationByCookie;
+        }
+
         if (!isset($password) || strlen($password)<3 ){
             return new JsonResponse("Password is not valid",400);
         }
@@ -99,8 +116,18 @@ final class Auth extends MongoEndPoint{
                         }
 
                         // Everything is OK
-                        $cookieUID=$this->_openSession($spaceUID,$user["_id"]);
-                        return new JsonResponse($this->issues,200);
+                        if ($identification==Auth::identificationByCookie){
+                            // by Cookies
+                            $cookieUID=$this->_openSessionWithCookies($spaceUID,$currentUserUID);
+                            return new JsonResponse(VOID_RESPONSE,200);
+                        }else{
+                            // by Keys
+                            // There is no need to open a session
+                            // The caller will resent this key value pair in a header on any identified call.
+                            $identification=array($configuration->getCryptedKEYForSpaceUID($spaceUID),$configuration->encryptIdentificationValue($spaceUID,$currentUserUID));
+                            return new JsonResponse($identification,200);
+                        }
+
                     }
 
                 return new JsonResponse(VOID_RESPONSE,401);
@@ -115,14 +142,12 @@ final class Auth extends MongoEndPoint{
         } catch ( MongoCursorException $e ) {
             return new JsonResponse('MongoCursorException' . $e->getCode() . ' ' . $e->getMessage(), 417);
         }
-
-
     }
 
 
     function DELETE(AuthCallData $parameters) {
         $spaceUID=$this->getSpaceUID();
-        if($this->_closeSessionFor($spaceUID)) {
+        if($this->_removeCookiesFor($spaceUID)) {
             return new JsonResponse(VOID_RESPONSE, 202);
         }else{
             return new JsonResponse(VOID_RESPONSE, 200);
@@ -136,23 +161,27 @@ final class Auth extends MongoEndPoint{
     // Session
     /////////////////////////
 
+    /////////////
+    // COOKIES
+    ////////////
+
     /**
      * Open the session
      * @param $spaceUID
      * @param $userID
      * @return string
      */
-    protected function _openSession($spaceUID,$userID){
+    protected function _openSessionWithCookies($spaceUID,$userID){
         return $this->_setCookie($spaceUID,$userID);
     }
 
-    private function _closeSessionFor($spaceUID){
+
+    private function _removeCookiesFor($spaceUID){
         $configuration=$this->getConfiguration();
-        $cookieKey=$configuration->getAuthCookieKEYForRUID($spaceUID);
+        $cookieKey=$configuration->getCryptedKEYForSpaceUID($spaceUID);
         if(array_key_exists($cookieKey,$_COOKIE)) {
             // Cookie expiration
             setcookie($cookieKey,'',time()-60,'/', null, false, false);
-            //unset($_COOKIE[$cookieKey]);
             return true;
         }else{
             return false;
@@ -162,8 +191,8 @@ final class Auth extends MongoEndPoint{
     private function _setCookie($spaceUID,$userID,$nbOfHours=240){
         $time=time();
         $configuration=$this->getConfiguration();
-        $cookieKey=$configuration->getAuthCookieKEYForRUID($spaceUID);
-        $cookieValue=$configuration->getCryptedAuthCookieValue($spaceUID,$userID);
+        $cookieKey=$configuration->getCryptedKEYForSpaceUID($spaceUID);
+        $cookieValue=$configuration->encryptIdentificationValue($spaceUID,$userID);
         $expires=$time+$nbOfHours*60*60;
         //setcookie ($name, $value = null, $expire = null, $path = null, $domain = null, $secure = null, $httponly = null) {}
         if (setcookie($cookieKey,$cookieValue,$expires, '/', null, false, false)===false){

@@ -12,59 +12,73 @@ use \MongoCollection;
 use Bartleby\Configuration;
 
 class  TriggersByIdsCallData extends MongoCallDataRawWrapper {
-	const ids='ids';
-	const result_fields='result_fields';
-	/* the sort (MONGO DB) */
-	const sort='sort';
+    const ids = 'ids';
 }
 
- class  TriggersByIds extends MongoEndPoint {
+class  TriggersByIds extends MongoEndPoint {
 
-     function call(TriggersByIdsCallData $parameters) {
-        $db=$this->getDB();
+    function call(TriggersByIdsCallData $parameters) {
+        $db = $this->getDB();
         /* @var \MongoCollection */
         $collection = $db->triggers;
-        $ids=$parameters->getValueForKey(TriggersByIdsCallData::ids);
-        $f=$parameters->getValueForKey(TriggersByIdsCallData::result_fields);
-        if(isset ($ids) && is_array($ids) && count($ids)){
-            $q = array( '_id'=>array( '$in' => $ids ));
-        }else{
-            return new JsonResponse(VOID_RESPONSE,204);
-        }
-        try {
-           $r=array();
-           if(isset($f)){
-                $cursor = $collection->find( $q , $f );
-           }else{
-                $cursor = $collection->find($q);
-           }
-           // Sort ?
-           $s=$parameters->getCastedDictionaryForKey(TriggersByIdsCallData::sort);
-           if (isset($s) && count($s)>0){
-              $cursor=$cursor->sort($s);
-           }
-           if ($cursor->count ( TRUE ) > 0) {
-			foreach ( $cursor as $obj ) {
-				$r[] = $obj;
-			}
-		   }
+        $ids = $parameters->getValueForKey(TriggersByIdsCallData::ids);
+        if (isset ($ids) && is_array($ids) && count($ids)) {
+            $q = array('_id' => array('$in' => $ids));
 
-            if (count($r)>0 ) {
-                return new JsonResponse($r,200);
-            } else {
-                return new JsonResponse(VOID_RESPONSE,404);
+            ////////////////////////////////////////////
+            // SpaceUID confinement and runUID eviction
+            ////////////////////////////////////////////
+
+            try {
+                // Restrict to this spaceUID
+                $q['spaceUID'] = $this->getSpaceUID();
+            } catch (\Exception $e) {
+                return new JsonResponse("spaceUID is undefined", 412);
             }
-       } catch ( \Exception $e ) {
-            return new JsonResponse( array ('code'=>$e->getCode(),
-                                            'message'=>$e->getMessage(),
-                                            'file'=>$e->getFile(),
-                                            'line'=>$e->getLine(),
-                                            'trace'=>$e->getTraceAsString()
-                                            ),
-                                            417
-                                    );
+            try {
+                // Filter owned Triggers
+                $q ['runUID'] = [
+                    // Not equal
+                    '$ne' => $this->getRunUID()
+                ];
+            } catch (\Exception $e) {
+                return new JsonResponse("runUID is undefined", 412);
+            }
+
+
+        } else {
+            return new JsonResponse(VOID_RESPONSE, 204);
         }
-     }
- }
+
+        ////////////////////////////////////////////
+        // Query
+        ////////////////////////////////////////////
+
+        try {
+            $r = array();
+            $cursor = $collection->find($q);
+            if ($cursor->count(TRUE) > 0) {
+                foreach ($cursor as $obj) {
+                    $r[] = $obj;
+                }
+            }
+
+            if (count($r) > 0) {
+                return new JsonResponse($r, 200);
+            } else {
+                return new JsonResponse(VOID_RESPONSE, 404);
+            }
+        } catch (\Exception $e) {
+            return new JsonResponse(['code' => $e->getCode(),
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ],
+                417
+            );
+        }
+    }
+}
 
 ?>

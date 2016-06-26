@@ -248,7 +248,7 @@ foreach ($d->responses as $rank=>$responsePropertyRepresentation ) {
         title: NSLocalizedString("Deserialization issue",
             comment: "Deserialization issue"),
         body:"(result.value)",
-        trigger:{ (selectedIndex) -> () in
+        transmit:{ (selectedIndex) -> () in
     })
    reactions.append(failureReaction)
    failure(context:context)
@@ -275,7 +275,7 @@ if let r=result.value as? ' . $successTypeString . '{
         title: NSLocalizedString("Deserialization issue",
             comment: "Deserialization issue"),
         body:"(result.value)",
-        trigger:{ (selectedIndex) -> () in
+        transmit:{ (selectedIndex) -> () in
     })
    reactions.append(failureReaction)
    failure(context:context)
@@ -296,7 +296,7 @@ if($d->httpMethod=='GET'){
     '.(($d->containsParametersOutOfPath()?'let dictionary:Dictionary<String, AnyObject>?=Mapper().toJSON(parameters)':'let dictionary:Dictionary<String, AnyObject>=[:]')).'
     let urlRequest=HTTPManager.mutableRequestWithToken(inDataSpace:spaceUID,withActionName:"'.$d->class.'" ,forMethod:"'.$d->httpMethod.'", and: pathURL)
     let r:Request=request(ParameterEncoding.'.$parameterEncodingString.'.encode(urlRequest, parameters: dictionary).0)
-    r.'.(($successTypeString=='')?'responseString':'responseJSON').'{ response in
+    r.'.(($successTypeString=='')?'responseJSON':'responseJSON').'{ response in
 
 	    let request=response.request
         let result=response.result
@@ -321,7 +321,7 @@ if($d->httpMethod=='GET'){
                 context: context,
                 title: NSLocalizedString("Unsuccessfull attempt",comment: "Unsuccessfull attempt"),
                 body:NSLocalizedString("Explicit Failure",comment: "Explicit Failure"),
-                trigger:{ (selectedIndex) -> () in
+                transmit:{ (selectedIndex) -> () in
             })
             reactions.append(failureReaction)
             failure(context:context)
@@ -338,7 +338,7 @@ if($d->httpMethod=='GET'){
                     context: context,
                     title: NSLocalizedString("Unsuccessfull attempt",comment: "Unsuccessfull attempt"),
                     body:NSLocalizedString("Implicit Failure",comment: "Implicit Failure"),
-                    trigger:{ (selectedIndex) -> () in
+                    transmit:{ (selectedIndex) -> () in
                 })
                reactions.append(failureReaction)
                failure(context:context)

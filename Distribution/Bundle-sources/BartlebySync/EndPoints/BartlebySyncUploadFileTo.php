@@ -36,14 +36,14 @@ final class BartlebySyncUploadFileTo extends BartlebySyncAbstractEndPoint {
         if (isset ($parameters->destination) && isset ($parameters->syncIdentifier)) {
 
             $this->ioManager = $this->getIoManager();
-            $treeFolder = $this->ioManager->absolutePath($parameters->treeId, '');
+            $treeFolder = $this->ioManager->absoluteUrl($parameters->treeId, '');
 
             if (isset ($treeFolder) && $this->ioManager->exists($treeFolder)) {
 
                 $destination = $parameters->destination;
                 $syncIdentifier = $parameters->syncIdentifier;
                 $isAFolder = (substr($destination, -1) == "/");
-                $d = $this->ioManager->absolutePath($parameters->treeId, $destination);
+                $d = $this->ioManager->absoluteUrl($parameters->treeId, $destination);
 
                 if ($isAFolder == true) {
 
@@ -58,7 +58,7 @@ final class BartlebySyncUploadFileTo extends BartlebySyncAbstractEndPoint {
 
                     // there is a source it should be a file.
                     $d = dirname($destination) . DIRECTORY_SEPARATOR . $syncIdentifier . basename($destination);
-                    $destinationPath = $this->ioManager->absolutePath($parameters->treeId, $d);
+                    $destinationPath = $this->ioManager->absoluteUrl($parameters->treeId, $d);
 
                     // We create the folder if necessary.
                     $this->ioManager->mkdir(dirname($destinationPath));

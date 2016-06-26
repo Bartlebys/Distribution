@@ -57,7 +57,7 @@ final class BartlebySyncGetFile extends BartlebySyncAbstractEndPoint {
         }
 
         $this->ioManager = $this->getIoManager();
-        $path = $this->ioManager->absolutePath($parameters->treeId, $parameters->path);
+        $path = $this->ioManager->absoluteUrl($parameters->treeId, $parameters->path);
         if (!$this->ioManager->exists($path)) {
             return new JsonResponse(VOID_RESPONSE, 404);
         }

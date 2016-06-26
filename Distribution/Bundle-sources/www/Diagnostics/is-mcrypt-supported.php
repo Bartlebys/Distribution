@@ -11,7 +11,7 @@ if(function_exists('mcrypt_encrypt')) {
 }else{
     print '"mcrypt" is not available! ';
 }
-if ($configuration->getCryptedAuthCookieValue('NO_BODY','NO_DOCUMENT')=='NO_DOCUMENT'){
+if ($configuration->encryptIdentificationValue('NO_BODY','NO_DOCUMENT')=='NO_DOCUMENT'){
     print "But the authentication engine is not able to use it. That's a minor security issue that exposes publicly the userID via a cookie.";
 }else{
     print '"userId" is crypted!';

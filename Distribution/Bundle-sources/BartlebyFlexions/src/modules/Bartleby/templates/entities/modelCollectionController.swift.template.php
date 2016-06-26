@@ -128,7 +128,7 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
 
     - parameter on: the closure
     */
-    public func superIterate(@noescape on:(element: protocol<Collectible,Supervisable>)->()){
+    public func superIterate(@noescape on:(element: Collectible)->()){
         for item in self.items {
             on(element:item)
         }
@@ -177,10 +177,14 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
 
 }else{
 echo('
+
     /**
-    Those item are not committable.
+     Commit is ignored because
+     Distant persistency is not allowed for '.$entityRepresentation->name.'
     */
-    public func commitChanges() ->[String] { return [String]() }
+    public func commitChanges() ->[String] { 
+        return [String]()
+    }
     
 ');
 }
@@ -193,6 +197,9 @@ echo('
 
     dynamic public var items:[<?php echo ucfirst($entityRepresentation->name)?>]=[<?php echo ucfirst($entityRepresentation->name)?>]()
 
+    public func getCollectibleItems()->[Collectible]{
+        return items
+    }
 
     // MARK: Identifiable
 
@@ -227,23 +234,52 @@ if( $modelsShouldConformToNSCoding ) {
     include  FLEXIONS_MODULES_DIR.'Bartleby/templates/blocks/NSSecureCoding.swift.block.php';
 }?>
 
+
+
+    // MARK: Upsert
+
+    public func upsert(item: Collectible, commit:Bool){
+
+        if let idx=items.indexOf({return $0.UID == item.UID}){
+            // it is an update
+            // we must patch it
+            let currentInstance=items[idx]
+            if commit==false{
+                // When upserting from a trigger
+                // We do not want to produce Larsen effect on data.
+                // So we lock the auto commit observer before applying the patch
+                // And we unlock the autoCommit Observer after the patch.
+                currentInstance.lockAutoCommitObserver()
+            }
+
+            let dictionary=item.dictionaryRepresentation()
+            currentInstance.patchFrom(dictionary)
+            if commit==false{
+                currentInstance.unlockAutoCommitObserver()
+            }
+        }else{
+            // It is a creation
+            self.add(item, commit:commit)
+        }
+    }
+
     // MARK: Add
 
-    public func add(item:Collectible){
+    public func add(item:Collectible, commit:Bool){
         #if os(OSX) && !USE_EMBEDDED_MODULES
         if let arrayController = self.arrayController{
-            self.insertObject(item, inItemsAtIndex: arrayController.arrangedObjects.count)
+            self.insertObject(item, inItemsAtIndex: arrayController.arrangedObjects.count, commit:commit)
         }else{
-            self.insertObject(item, inItemsAtIndex: items.count)
+            self.insertObject(item, inItemsAtIndex: items.count, commit:commit)
         }
         #else
-        self.insertObject(item, inItemsAtIndex: items.count)
+        self.insertObject(item, inItemsAtIndex: items.count, commit:commit)
         #endif
     }
 
     // MARK: Insert
 
-    public func insertObject(item: Collectible, inItemsAtIndex index: Int) {
+    public func insertObject(item: Collectible, inItemsAtIndex index: Int, commit:Bool) {
         if let item=item as? <?php echo ucfirst($entityRepresentation->name)?>{
 
 <?php if ($entityRepresentation->isUndoable()) {
@@ -260,7 +296,7 @@ if( $modelsShouldConformToNSCoding ) {
 
             // Add the inverse of this invocation to the undo stack
             if let undoManager: NSUndoManager = undoManager {
-                undoManager.prepareWithInvocationTarget(self).removeObjectFromItemsAtIndex(index)
+                undoManager.prepareWithInvocationTarget(self).removeObjectFromItemsAtIndex(index, commit:commit)
                 if !undoManager.undoing {
                     undoManager.setActionName(NSLocalizedString("Add' . ucfirst($entityRepresentation->name) . '", comment: "Add' . ucfirst($entityRepresentation->name) . ' undo action"))
                 }
@@ -297,9 +333,14 @@ if( $modelsShouldConformToNSCoding ) {
 
 <?php if ($entityRepresentation->isDistantPersistencyOfCollectionAllowed()){
     echo("
-            if item.committed==false{
+            if item.committed==false && commit==true{
                Create$entityRepresentation->name.commit(item, inDataSpace:self.spaceUID)
             }".cr());
+}else{
+        echo('
+            // Commit is ignored because
+            // Distant persistency is not allowed for '.$entityRepresentation->name.'
+            ');
 }
 ?>
 
@@ -313,7 +354,7 @@ if( $modelsShouldConformToNSCoding ) {
 
     // MARK: Remove
 
-    public func removeObjectFromItemsAtIndex(index: Int) {
+    public func removeObjectFromItemsAtIndex(index: Int, commit:Bool) {
         if let item : <?php echo ucfirst($entityRepresentation->name)?> = items[index] {
 <?php if ($entityRepresentation->isUndoable()) {
     echo(
@@ -324,7 +365,7 @@ if( $modelsShouldConformToNSCoding ) {
                 // But with the objc magic casting undoManager.prepareWithInvocationTarget(self) as? UsersCollectionController fails
                 // That\'s why we have added an registerUndo extension on NSUndoManager
                 undoManager.registerUndo({ () -> Void in
-                   self.insertObject(item, inItemsAtIndex: index)
+                   self.insertObject(item, inItemsAtIndex: index, commit:commit)
                 })
                 if !undoManager.undoing {
                     undoManager.setActionName(NSLocalizedString("Remove' . ucfirst($entityRepresentation->name) . '", comment: "Remove ' . ucfirst($entityRepresentation->name) . ' undo action"))
@@ -352,7 +393,14 @@ if( $modelsShouldConformToNSCoding ) {
 
         <?php if ($entityRepresentation->isDistantPersistencyOfCollectionAllowed()) {
             echo('
-            Delete'.$entityRepresentation->name.'.commit(item.UID,fromDataSpace:self.spaceUID)  '.cr());
+            if commit==true{
+                Delete'.$entityRepresentation->name.'.commit(item.UID,fromDataSpace:self.spaceUID) 
+            }'.cr());
+        }else{
+            echo('
+            // Commit is ignored because
+            // Distant persistency is not allowed for '.$entityRepresentation->name.'
+            ');
         }
         ?>
 
@@ -360,11 +408,11 @@ if( $modelsShouldConformToNSCoding ) {
         }
     }
 
-    public func removeObject(item: Collectible)->Bool{
+    public func removeObject(item: Collectible, commit:Bool)->Bool{
         var index=0
         for storedItem in items{
             if item.UID==storedItem.UID{
-                self.removeObjectFromItemsAtIndex(index)
+                self.removeObjectFromItemsAtIndex(index, commit:commit)
                 return true
             }
             index += 1
@@ -372,11 +420,11 @@ if( $modelsShouldConformToNSCoding ) {
         return false
     }
 
-    public func removeObjectWithID(id:String)->Bool{
+    public func removeObjectWithID(id:String, commit:Bool)->Bool{
         var index=0
         for storedItem in items{
             if id==storedItem.UID{
-                self.removeObjectFromItemsAtIndex(index)
+                self.removeObjectFromItemsAtIndex(index, commit:commit)
                 return true
             }
             index += 1

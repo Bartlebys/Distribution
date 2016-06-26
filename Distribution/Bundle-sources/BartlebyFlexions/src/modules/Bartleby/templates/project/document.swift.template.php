@@ -79,8 +79,8 @@ public class <?php echo($configurator->getClassName())?> : <?php
 
     // MARK - Universal Type Support
 
-    override public class func declareCollectibleTypes() {
-        super.declareCollectibleTypes()
+    override public class func declareTypes() {
+        super.declareTypes()
 <?php
 // ENTITIES
 
@@ -262,11 +262,11 @@ foreach ($project->entities as $entity) {
         }
     }
 
-// MARK: - OSX specific
+    // MARK: - OSX specific
 
  #if os(OSX) && !USE_EMBEDDED_MODULES
 
-// MARK: KVO
+    // MARK: KVO
 
     override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         guard context == &_KVOContext else {
@@ -312,7 +312,7 @@ foreach ($project->entities as $entity) {
     public func deleteSelected'.$entityName.'() {
         // you should override this method if you want to cascade the deletion(s)
         if let selected=self.selected'.$entityName.'{
-            self.'.$pluralizedEntity.'.removeObject(selected)
+            self.'.$pluralizedEntity.'.removeObject(selected, commit:true)
         }
     }
         ',0);
@@ -329,13 +329,13 @@ foreach ($project->entities as $entity) {
 
     required public init() {
         super.init()
-        <?php echo($configurator->getClassName().'.declareCollectibleTypes()'); ?>
+        <?php echo($configurator->getClassName().'.declareTypes()'); ?>
     }
     #else
 
     public required init(fileURL url: NSURL) {
         super.init(fileURL: url)
-        <?php echo($configurator->getClassName().'.declareCollectibleTypes()'); ?>
+        <?php echo($configurator->getClassName().'.declareTypes()'); ?>
     }
 
     #endif

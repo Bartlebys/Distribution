@@ -377,6 +377,24 @@
                                 "cryptable": false
                             }
                         },
+                        "identificationMethod": {
+                            "type": "enum",
+                            "instanceOf": "string",
+                            "emumPreciseType": "RegistryMetadata.IdentificationMethod",
+                            "description": "The identification method (By cookie or by Key - kvid)",
+                            "enum": [
+                                "Key",
+                                "Cookie"
+                            ],
+                            "default": ".Key",
+                            "observable": false
+                        },
+                        "identificationValue": {
+                            "type": "string",
+                            "description": "The current kvid identification value (injected in HTTP headers)",
+                            "dynamic": false,
+                            "observable": false
+                        },
                         "rootObjectUID": {
                             "type": "string",
                             "description": "The rootObject UID",
@@ -402,6 +420,13 @@
                                     "observable": false
                                 }
                             }
+                        },
+                        "online": {
+                            "type": "boolean",
+                            "description": "is the user performing Online",
+                            "dynamic": true,
+                            "default": "Bartleby.configuration.ONLINE_BY_DEFAULT",
+                            "observable": false
                         },
                         "stateDictionary": {
                             "type": "dictionary",
@@ -430,20 +455,56 @@
                             "dynamic": false,
                             "observable": false
                         },
-                        "lastTriggerIndex": {
-                            "type": "integer",
-                            "description": "Last trigger index received",
-                            "default": -1,
-                            "dynamic": false,
-                            "observable": false
-                        },
                         "triggersIndexes": {
                             "schema": {
                                 "type": "array",
                                 "items": {
-                                    "description": "A collection of the trigger Indexes (used to detect data holes)",
+                                    "description": "A collection of trigger Indexes (used to detect data holes) the first entry should be equal to lastIntegratedTriggerIndex",
                                     "instanceOf": "integer",
                                     "default": "[Int]()",
+                                    "dynamic": false,
+                                    "observable": false
+                                }
+                            }
+                        },
+                        "ownedTriggersIndexes": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "The persistentcollection of triggers indexes owned by the current user (allows local distinctive analytics even on cloned documents)",
+                                    "instanceOf": "integer",
+                                    "default": "[Int]()",
+                                    "dynamic": false,
+                                    "observable": false
+                                }
+                            }
+                        },
+                        "missingTriggersIndexes": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "A collection of trigger Indexes that are missings (data holes)",
+                                    "instanceOf": "integer",
+                                    "default": "[Int]()",
+                                    "dynamic": false,
+                                    "observable": false
+                                }
+                            }
+                        },
+                        "lastIntegratedTriggerIndex": {
+                            "type": "integer",
+                            "description": "The index of the last trigger that has been integrated",
+                            "default": -1,
+                            "dynamic": false,
+                            "observable": false
+                        },
+                        "receivedTriggers": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "A collection Triggers that are temporarly stored before integration",
+                                    "$ref": "#/definitions/Trigger",
+                                    "default": "[Trigger]()",
                                     "dynamic": false,
                                     "observable": false
                                 }
@@ -817,6 +878,30 @@
                         "spaceUID": {
                             "description": "The dataSpace UID",
                             "type": "string",
+                            "observable": false
+                        },
+                        "runUID": {
+                            "description": "The UID of the instance of Bartleby client that has created the trigger.",
+                            "type": "string",
+                            "observable": false
+                        },
+                        "origin": {
+                            "description": "The action that has initiated the trigger",
+                            "type": "string",
+                            "required": false,
+                            "observable": false
+                        },
+                        "collectionName": {
+                            "description": "The targetted collection name",
+                            "type": "string",
+                            "required": true,
+                            "default": "",
+                            "observable": false
+                        },
+                        "creationDate": {
+                            "description": "The server side creation date ( informative, use index for ranking)",
+                            "type": "date",
+                            "required": false,
                             "observable": false
                         },
                         "action": {
@@ -1197,7 +1282,7 @@
             }
         },
         "/collectionMetadataByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "collectionMetadata"
                 ],
@@ -1548,7 +1633,7 @@
             }
         },
         "/tasksByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "tasks"
                 ],
@@ -1899,7 +1984,7 @@
             }
         },
         "/tasksGroupsByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "tasksGroups"
                 ],
@@ -2250,7 +2335,7 @@
             }
         },
         "/progressionsByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "progressions"
                 ],
@@ -2601,7 +2686,7 @@
             }
         },
         "/completionsByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "completions"
                 ],
@@ -2952,7 +3037,7 @@
             }
         },
         "/registryMetadatasByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "registryMetadatas"
                 ],
@@ -3303,7 +3388,7 @@
             }
         },
         "/usersByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "users"
                 ],
@@ -3654,7 +3739,7 @@
             }
         },
         "/lockersByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "lockers"
                 ],
@@ -4005,7 +4090,7 @@
             }
         },
         "/groupsByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "groups"
                 ],
@@ -4356,7 +4441,7 @@
             }
         },
         "/operationsByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "operations"
                 ],
@@ -4707,7 +4792,7 @@
             }
         },
         "/permissionsByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "permissions"
                 ],
@@ -5058,7 +5143,7 @@
             }
         },
         "/triggersByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "triggers"
                 ],
@@ -5409,7 +5494,7 @@
             }
         },
         "/jStringsByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "jStrings"
                 ],
@@ -5760,7 +5845,7 @@
             }
         },
         "/jDatasByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "jDatas"
                 ],

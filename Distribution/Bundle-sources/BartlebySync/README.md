@@ -140,15 +140,15 @@ Add the persmission in _configure()
  
     // BartlebySync
     'BartlebySyncSupports->call'=>array('level' => PERMISSION_NO_RESTRICTION),
-    'BartlebySyncInstall->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-    'BartlebySyncCreateTree->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-    'BartlebySyncTouchTree->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-    'BartlebySyncGetHashMap->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-    'BartlebySyncGetFile->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-    'BartlebySyncUploadFileTo->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-    'BartlebySyncFinalizeTransactionIn->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
+    'BartlebySyncInstall->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+    'BartlebySyncCreateTree->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+    'BartlebySyncTouchTree->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+    'BartlebySyncGetHashMap->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+    'BartlebySyncGetFile->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+    'BartlebySyncUploadFileTo->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+    'BartlebySyncFinalizeTransactionIn->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
     'BartlebySyncFinalizeTransactionIn->cleanUp'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),// May be suspended ( it is used on finalizeTransactionIn)
-    'BartlebySyncRemoveGhosts->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE)
+    'BartlebySyncRemoveGhosts->call'=>array('level' => PERMISSION_BY_IDENTIFICATION)
 ```
 
 Add the routes aliases 

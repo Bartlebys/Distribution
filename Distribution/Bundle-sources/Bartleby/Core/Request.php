@@ -18,9 +18,6 @@ class Request {
     /* @var $_parameters array*/
     private $_parameters=array();
 
-
-    private $_flow;
-
     /**
      * Request constructor.
      */
@@ -35,6 +32,11 @@ class Request {
         $this->_path = '/';
         if(array_key_exists('request',$_REQUEST)){
             $this->_path .= $_REQUEST ['request'];
+            $posOfQuestionMark=strpos($this->_path,'?');
+            // We filter the query string from the path
+            if ($posOfQuestionMark !== false){
+                $this->_path = substr($this->_path,0,$posOfQuestionMark);
+            }
         }
 
         // METHOD

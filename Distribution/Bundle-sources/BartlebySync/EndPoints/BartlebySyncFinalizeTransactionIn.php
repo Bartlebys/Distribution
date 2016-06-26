@@ -102,7 +102,7 @@ final class BartlebySyncFinalizeTransactionIn extends BartlebySyncAbstractEndPoi
         }
 
         $this->ioManager = $this->getIoManager();
-        $rootPath = $this->ioManager->absolutePath($parameters->treeId, '');
+        $rootPath = $this->ioManager->absoluteUrl($parameters->treeId, '');
         $fileList = $this->ioManager->listRelativePathsIn($rootPath);
         $deletedPath = array();
         $unModifiedPath = array();
@@ -113,8 +113,8 @@ final class BartlebySyncFinalizeTransactionIn extends BartlebySyncAbstractEndPoi
                 $pathInfos = pathinfo($relativePath);
                 $fileName = $pathInfos ['basename'];
                 if ($this->_stringStartsWith($fileName,$parameters->syncIdentifier)) {
-                    $absolutePath = $this->ioManager->absolutePath($parameters->treeId, $relativePath);
-                    $this->ioManager->delete($absolutePath);
+                    $absoluteUrl = $this->ioManager->absoluteUrl($parameters->treeId, $relativePath);
+                    $this->ioManager->delete($absoluteUrl);
                     $deletedPath [] = $relativePath;
                 } else {
                     $unModifiedPath[] = $relativePath;

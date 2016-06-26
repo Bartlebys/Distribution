@@ -12,10 +12,8 @@ use \MongoCollection;
 use Bartleby\Configuration;
 
 class  TriggerForIndexesCallData extends MongoCallDataRawWrapper {
-    const ids='ids';
-    const result_fields='result_fields';
-    /* the sort (MONGO DB) */
-    const sort='sort';
+    const indexes='ids';
+    const ignoreHoles='ignoreHoles';
 }
 
 class  TriggerAfterIndex extends MongoEndPoint {
@@ -24,31 +22,47 @@ class  TriggerAfterIndex extends MongoEndPoint {
         $db=$this->getDB();
         /* @var \MongoCollection */
         $collection = $db->triggers;
-        $ids=$parameters->getValueForKey(TriggerForIndexesCallData::ids);
-        $f=$parameters->getValueForKey(TriggerForIndexesCallData::result_fields);
-        if(isset ($ids) && is_array($ids) && count($ids)){
-            $q = array( '_id'=>array( '$in' => $ids ));
+        $indexes=$parameters->getValueForKey(TriggerForIndexesCallData::indexes);
+        $ignoreHoles=$parameters->getValueForKey(TriggerForIndexesCallData::ignoreHoles);
+
+        // TODO support ignoreHoles
+
+        if(isset ($indexes) && is_array($indexes) && count($indexes)){
+
+            $q = array( 'indexes'=>array( '$in' => $indexes ));
+
+            ////////////////////////////////////////////
+            // SpaceUID confinement and runUID eviction
+            ////////////////////////////////////////////
+
+            try {
+                // Restrict to this spaceUID
+                $q['spaceUID'] = $this->getSpaceUID();
+            } catch (\Exception $e) {
+                return new JsonResponse("spaceUID is undefined", 412);
+            }
+            try {
+                // Filter owned Triggers
+                $q ['runUID'] = [
+                    // Not equal
+                    '$ne' => $this->getRunUID()
+                ];
+            } catch (\Exception $e) {
+                return new JsonResponse("runUID is undefined", 412);
+            }
+
         }else{
             return new JsonResponse(VOID_RESPONSE,204);
         }
         try {
+            
             $r=array();
-            if(isset($f)){
-                $cursor = $collection->find( $q , $f );
-            }else{
-                $cursor = $collection->find($q);
-            }
-            // Sort ?
-            $s=$parameters->getCastedDictionaryForKey(TriggerForIndexesCallData::sort);
-            if (isset($s) && count($s)>0){
-                $cursor=$cursor->sort($s);
-            }
+            $cursor = $collection->find($q);
             if ($cursor->count ( TRUE ) > 0) {
                 foreach ( $cursor as $obj ) {
                     $r[] = $obj;
                 }
             }
-
             if (count($r)>0 ) {
                 return new JsonResponse($r,200);
             } else {

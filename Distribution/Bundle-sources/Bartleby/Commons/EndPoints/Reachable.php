@@ -29,7 +29,7 @@ final class Reachable extends MongoEndPoint {
     // Auth is required
     /***
      * Return 200 if the api is reachable and the credentials of the user valid for the current context.
-     * Permission  is set to: 'Reachable->verify'=> array('level'=> PERMISSION_IDENTIFIED_BY_COOKIE),
+     * Permission  is set to: 'Reachable->verify'=> array('level'=> PERMISSION_BY_IDENTIFICATION),
      * @param ReachableCallData $parameters
      * @return JsonResponse
      */

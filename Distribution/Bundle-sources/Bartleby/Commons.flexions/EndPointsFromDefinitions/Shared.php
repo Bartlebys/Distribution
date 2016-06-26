@@ -10,35 +10,36 @@ require_once FLEXIONS_MODULES_DIR . 'Utils/Pluralization.php';
 include_once dirname(dirname(dirname(__DIR__))) . '/GenerativeConstants.php';
 
 $prefix = "Swagger";
-$excludeEntitiesWith=array("AbstractContext");//
+$excludeEntitiesWith = array("AbstractContext");//
 
-$excludeActionsWith=array(  "Asset",
-							"Datum",
-							"AbstractContext",
-							"Reference",
-							"Tag",
-							"Scene",
-							"Shot",
-							"Sentence",
-							"TextPart",
-							"Sign",
-							"StringAttribute",
-							"TimeCode",
-							"TimeRange",
-							"MovieCharacter",
-							"Actor"
-						);//We generate only the entity
-$unDeletableEntitiesWith=array();
-$unModifiableEntitiesWith=array();
-$doNotGenerate=array("AbstractContext");// Used by the flexions script to reject a flexed content
+$excludeActionsWith = [
+    "Asset",
+    "Datum",
+    "AbstractContext",
+    "Reference",
+    "Tag",
+    "Scene",
+    "Shot",
+    "Sentence",
+    "TextPart",
+    "Sign",
+    "StringAttribute",
+    "TimeCode",
+    "TimeRange",
+    "MovieCharacter",
+    "Actor"
+];//We generate only the entity
+$unDeletableEntitiesWith = [];
+$unModifiableEntitiesWith = [];
+$doNotGenerate = ["AbstractContext"];// Used by the flexions script to reject a flexed content
 
-if (isset ( $f )) {
-	$f->package = "Models/";
-	$f->company = "Chaosmos";
-	$f->prefix = $prefix;
-	$f->author = "benoit@chaosmos.fr";
-	$f->projectName = "YouDub";
-	//$f->license = FLEXIONS_MODULES_DIR."Licenses/LGPL.template.php";
+if (isset ($f)) {
+    $f->package = "Models/";
+    $f->company = "Bartleby's | https://bartlebys.org";
+    $f->prefix = $prefix;
+    $f->author = "b@bartlebys.org";
+    $f->projectName = "Bartleby";
+    //$f->license = FLEXIONS_MODULES_DIR."Licenses/LGPL.template.php";
 }
 
 /*

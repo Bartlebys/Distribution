@@ -145,8 +145,8 @@ if($d->httpMethod=='POST') {
             '.(($parameterIsNotAcollection===true)?
                 '$r = $collection->update ($q, $obj,$options );
             if ($r[\'ok\']==1) {
-                $this->createTrigger($parameters);
-                return new JsonResponse(VOID_RESPONSE,200);
+                $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+                return new JsonResponse($s,200);
             } else {
                 return new JsonResponse($r,412);
             }'
@@ -165,8 +165,8 @@ if($d->httpMethod=='POST') {
                     return new JsonResponse($q,412);
                 }
              }
-             $this->createTrigger($parameters);
-            return new JsonResponse(VOID_RESPONSE,200);'
+             $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+            return new JsonResponse($s,200);'
             ).'
 
         } catch ( \Exception $e ) {
@@ -202,8 +202,8 @@ if($d->httpMethod=='POST') {
         try {
             ' . (($parameterIsNotAcollection === true) ? '$r = $collection->insert ( $obj,$options );' : '$r = $collection->batchInsert( $obj,$options );') . '
              if ($r[\'ok\']==1) {
-                $this->createTrigger($parameters);
-                return new JsonResponse(VOID_RESPONSE,201);
+                $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+                return new JsonResponse($s,201);
             } else {
                 return new JsonResponse($r,412);
             }
@@ -212,8 +212,8 @@ if($d->httpMethod=='POST') {
             // MONGO E11000 duplicate key error
             if ( $e->getCode() == 11000 && $this->_configuration->IGNORE_MULTIPLE_CREATION_IN_CRUD_MODE() == true){
                 // We return A 200 not a 201
-                $this->createTrigger($parameters);
-                return new JsonResponse(\'This is not the first attempt.\',200);
+                $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),\'This is not the first attempt.\');
+                return new JsonResponse($s,200);
             }
             ':'').'
             return new JsonResponse( array (\'code\'=>$e->getCode(),
@@ -354,14 +354,14 @@ if($d->httpMethod=='POST') {
               if(array_key_exists(\'updatedExisting\',$r)){
                     $existed=$r[\'updatedExisting\'];
                     if($existed==true){
-                        $this->createTrigger($parameters);
-                        return new JsonResponse(VOID_RESPONSE,200);
+                         $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+                        return new JsonResponse($s,200);
                     }else{
                         return new JsonResponse(VOID_RESPONSE,404);
                     }
                 }
-                $this->createTrigger($parameters);
-                return new JsonResponse(VOID_RESPONSE,200);
+                 $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+                return new JsonResponse($s,200);
             } else {
                 return new JsonResponse($r,412);
             }'
@@ -380,8 +380,8 @@ if($d->httpMethod=='POST') {
                     return new JsonResponse($q,412);
                 }
              }
-             $this->createTrigger($parameters);
-            return new JsonResponse(VOID_RESPONSE,200);'
+              $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+            return new JsonResponse($s,200);'
         ).'
 
         } catch ( \Exception $e ) {
@@ -422,8 +422,8 @@ if($d->httpMethod=='POST') {
         if(isset ($ids) && count($ids)>0){
             $q = array( \'_id\' =>array( \'$in\' => $ids ));
         }else{
-            $this->createTrigger($parameters);
-            return new JsonResponse(VOID_RESPONSE,204);
+            $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+            return new JsonResponse(s,204);
         }'
 
     )
@@ -433,8 +433,8 @@ if($d->httpMethod=='POST') {
              if ($r[\'ok\']==1) {
                  $hasBeenRemoved=($r[\'n\'] >= 1);
                  if( $hasBeenRemoved || $this->_configuration->IGNORE_MULTIPLE_DELETION_ATTEMPT() === true ){
-                      $this->createTrigger($parameters);
-                     return new JsonResponse($hasBeenRemoved?VOID_RESPONSE:\'Already deleted\',200);
+                     $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),$hasBeenRemoved?NULL:\'Already deleted\');
+                     return new JsonResponse($s,200);
                  }else{
                      return new JsonResponse(VOID_RESPONSE,404);
                  }
@@ -464,23 +464,31 @@ if($d->httpMethod != 'GET' && $isGenericGETEndpoint===false){
         $baseName=str_replace('Create','',$classNameWithoutPrefix);
         $baseName=str_replace('Update','',$baseName);
         $action='Read'.$baseName;
+        if ($resultIsNotACollection){
+            $action .= "byId";
+        }else{
+            $action .= "byIds";
+        }
     }
 
 
     echoIndentCR( '
     
-    
-     /**
-      * Creates and relay the action using a trigger
-      * @param '.$callDataClassName.' $parameters
-      */
+
+    /**
+     * Creates and relay the action using a trigger
+     * 
+     * @param '.$callDataClassName.' $parameters
+     * @return  int  -1 if an error has occured and the trigger index on success
+     * @throws \Exception
+     */
     function createTrigger('.$callDataClassName.' $parameters){
         $ref=$parameters->getValueForKey('.$callDataClassName.'::'.$lastParameterName.');
         $homologousAction="'.$action.'";
         $user=$parameters->getCurrentUser();
         $userUID=$user["_id"];
         $spaceUID=$this->getSpaceUID();
-        $this->relayTrigger($spaceUID,$userUID,$homologousAction,$ref);
+        return $this->relayTrigger($spaceUID,$userUID,"'.$d->collectionName.'","'.$classNameWithoutPrefix.'",$homologousAction,$ref);
     }',0);
 
 }?>

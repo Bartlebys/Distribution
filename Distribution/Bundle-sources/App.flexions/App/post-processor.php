@@ -64,7 +64,8 @@ if ($h->stage==DefaultStages::STAGE_DEVELOPMENT){
     $www=dirname(dirname(__DIR__)).'/'.APP_PUBLIC_ROOT_FOLDER.'/';
     $deploy->rmPath($www.'/api/v1/_generated/');
     $deploy->copyFiles('/php/api/v1/_generated/',$www,true);
-
+    $deploy->copyFiles('/php/generated_destructiveInstaller.php',$www,true);
+    
     // We want to copy the package 'ios/' files to the iOS sources
     $deploy->rmPath(xOS_APP_EXPORT_PATH);
     $deploy->copyFiles('/xOS/',xOS_APP_EXPORT_PATH,true);

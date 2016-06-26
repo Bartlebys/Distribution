@@ -99,7 +99,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>');
         }else{
             $this->addTopScript('
-    <script src="'.$this->absolutePath('static/vendors/bootstrap/3.3.6/js/bootstrap.min.js').'"></script>');
+    <script src="'.$this->absoluteUrl('static/vendors/bootstrap/3.3.6/js/bootstrap.min.js').'"></script>');
         }
     }
 
@@ -112,7 +112,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
         }else{
             $this->addTopScript('
     <!-- jQuery (necessary for Bootstrap\'s JavaScript plugins) -->
-    <script src="'.$this->absolutePath('static/vendors/jquery/jquery-1.12.4.min.js').'"></script>');
+    <script src="'.$this->absoluteUrl('static/vendors/jquery/jquery-1.12.4.min.js').'"></script>');
         }
     }
 
@@ -130,8 +130,8 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn\'t work if you view the page via file:// -->
     <!--[if lt IE 9]>
-      <script src="' . $this->absolutePath('static/vendors/html5shiv/3.7.3/html5shiv.min.js') . '"></script>
-      <script src="' . $this->absolutePath('static/vendors/respond/1.4.2/html5shiv.min.js') . '"></script>
+      <script src="' . $this->absoluteUrl('static/vendors/html5shiv/3.7.3/html5shiv.min.js') . '"></script>
+      <script src="' . $this->absoluteUrl('static/vendors/respond/1.4.2/html5shiv.min.js') . '"></script>
     <![endif]-->';
         }
     }
@@ -146,8 +146,8 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">';
         }else{
             return'
-    <link rel="stylesheet" href="'.$this->absolutePath('static/vendors/bootstrap/3.3.6/css/bootstrap.min.css').'">
-    <link rel="stylesheet" href="'.$this->absolutePath('static/vendors/bootstrap/3.3.6/css/bootstrap-theme.min.css').'">';
+    <link rel="stylesheet" href="'.$this->absoluteUrl('static/vendors/bootstrap/3.3.6/css/bootstrap.min.css').'">
+    <link rel="stylesheet" href="'.$this->absoluteUrl('static/vendors/bootstrap/3.3.6/css/bootstrap-theme.min.css').'">';
         }
     }
 

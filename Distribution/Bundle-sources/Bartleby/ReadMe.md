@@ -1,6 +1,8 @@
 # Bartleby Version 1.0 #
 
-Bartleby is a robust framework for Natives Desktop & Mobile Apps to build Api & PHP document oriented Micro services using MongoDB as document store.
+Bartleby is a robust framework for Fault Tolerent Natives Distributed Desktop & Mobile Apps. 
+It provides a integrated full stack  (clients and servers Api)
+Api are written in PHP and uses MongoDB as document store.
 
 It offers a unique distributed execution strategy and a solid permission and security model that enables to build complex collaborative tools efficiently. It has been developed to be used in and is fully integrated with a code generator called 'Flexions'.
 
@@ -82,7 +84,7 @@ The permission are verified on any method call.
 + PERMISSION_NO_RESTRICTION = 1 
 + PERMISSION_BY_TOKEN = 2
 + PERMISSION_PRESENCE_OF_A_COOKIE = 3
-+ PERMISSION_IDENTIFIED_BY_COOKIE = 4
++ PERMISSION_BY_IDENTIFICATION = 4
 + PERMISSION_RESTRICTED_TO_ENUMERATED_USERS = 5 
 + PERMISSION_RESTRICTED_BY_QUERIES = 6 
 + PERMISSION_RESTRICTED_TO_GROUP_MEMBERS = 9
@@ -124,11 +126,11 @@ Any call without that cookie is reputed not identified
 
     array ( 'PathClassName->MethodName' => array( 'level' => PERMISSION_PRESENCE_OF_A_COOKIE,'name'=>'user-#spaceUID','value'=>'') 
 
-#### Level 4 (PERMISSION_IDENTIFIED_BY_COOKIE)
+#### Level 4 (PERMISSION_BY_IDENTIFICATION)
 Verification of the cookie 
 We check if the cookie correspond to a valid identified user.
 
-    array ( 'PathClassName->MethodName' => array( 'level' => PERMISSION_IDENTIFIED_BY_COOKIE) 
+    array ( 'PathClassName->MethodName' => array( 'level' => PERMISSION_BY_IDENTIFICATION) 
 
 #### Level 5 (PERMISSION_RESTRICTED_TO_ENUMERATED_USERS)
 Per path permission for enumerated users 

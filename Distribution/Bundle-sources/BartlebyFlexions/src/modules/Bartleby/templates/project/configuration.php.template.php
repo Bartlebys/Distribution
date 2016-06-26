@@ -63,7 +63,7 @@ while ($d->iterateOnActions() ) {
 
 
     //$string= "'".$classNameWithoutPrefix."->call'=>array('level' => PERMISSION_BY_TOKEN,TOKEN_CONTEXT=>'$classNameWithoutPrefix#rUID')";
-    $string= "'".$classNameWithoutPrefix."->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE)";
+    $string= "'".$classNameWithoutPrefix."->call'=>array('level' => PERMISSION_BY_IDENTIFICATION)";
 
     if(!$d->lastAction()){
         $string.=',';

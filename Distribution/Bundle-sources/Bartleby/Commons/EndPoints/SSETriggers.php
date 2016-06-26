@@ -21,6 +21,10 @@ final class SSETriggersCallData extends MongoCallDataRawWrapper {
 
     const lastIndex = 'lastIndex';
 
+    const  runUID = 'runUID';
+
+    const showDetails ='showDetails';
+
 }
 
 final class SSETriggers extends MongoEndPoint {
@@ -37,21 +41,25 @@ final class SSETriggers extends MongoEndPoint {
 
     private $_spaceUID = NULL;
 
+    private $_runUID = NULL;
+
+    private $_showDetails = false;
+
     function GET(SSETriggersCallData $parameters) {
 
         $s=$this;
 
         $this->_lastIndex = $parameters->getValueForKey(SSETriggersCallData::lastIndex);
         if (!isset($this->_lastIndex)){
-            $this->_lastIndex=0;
+            $this->_lastIndex = -1;
         }
-
-
         $this->_spaceUID = $parameters->getValueForKey(SSETriggersCallData::spaceUID);
-        /*
-        if (!isset($this->_spaceUID)){
-            return new JsonResponse('Data space is undefined',412);
-        }*/
+        $this->_runUID = $parameters->getValueForKey(SSETriggersCallData::runUID);
+
+        if ($parameters->keyExists(SSETriggersCallData::showDetails)){
+           $showDetailsValue = $parameters->getValueForKey(SSETriggersCallData::showDetails);
+            $this->_showDetails = (strtolower($showDetailsValue)=='true');
+        }
 
         $this->_db=$this->getDB();
         $this->_triggers=$this->_db->triggers;
@@ -62,29 +70,52 @@ final class SSETriggers extends MongoEndPoint {
         // Definition of the closure
         $f=function() use ($s,$sse,$parameters) {
 
+            try {
 
-            $q = array();
-            //$q ['spaceUID']=$this->_spaceUID;
-            $q ['index'] = array (
-                '$gte' => $this->_lastIndex+1
-            );
+                $q = array();
+                $q ['index'] = array(
+                    '$gte' => $this->_lastIndex + 1
+                );
+                // Filter by SpaceUID.
+                if (isset($this->_spaceUID)) {
+                    $q['spaceUID'] = $this->_spaceUID;
+                }
 
-            // Filter by SpaceUID.
-            if (isset($this->_spaceUID)){
-                $q['spaceUID']=$this->_spaceUID;
-            }
+                // Filter by runUID (is essential to prevent data larsen).
+                if (isset($this->_runUID)) {
+                    $q ['runUID'] = [
+                        // Not equal
+                        '$ne' => $this->_runUID
+                    ];
+                }
 
-            $cursor=$this->_triggers->find($q);
-            foreach ( $cursor as $trigger ) {
+                $cursor = $this->_triggers->find($q);
+                foreach ($cursor as $trigger) {
+                    $serverTime = time();
+                    $this->_counter++;
+                    $this->_lastIndex = $trigger['index'];
+                    $sender = $trigger['senderUID'];
+                    $runUID = $trigger['runUID'];
+                    $origin = $trigger['origin'];
+                    $action = $trigger['action'];
+                    $uids = $trigger['UIDS'];
+                    $collectionName = $trigger['collectionName'];
+                    $dataSpace = $trigger['spaceUID'];
+                    if ($this->_showDetails == false) {
+                        // Used by clients
+                        $sse->sendMsg($serverTime, 'relay', '{"i":' . $this->_lastIndex . ',"d":"' . $dataSpace . '","r":"' . $runUID . '","c":"' . $collectionName . '","a":"' . $action . '","u":"' . $uids . '"}');
+                    } else {
+                        // Used to display the trigger
+                        $sse->sendMsg($serverTime, 'relay', '{"i":' . $this->_lastIndex . ',"d":"' . $dataSpace . '","r":"' . $runUID . '","c":"' . $collectionName . '","s":"' . $sender . '","o":"' . $origin . '","a":"' . $action . '","u":"' . $uids . '"}');
+                    }
+                }
+
+            } catch (\Exception $e) {
                 $serverTime = time();
-                $this->_counter++;
-                $this->_lastIndex=$trigger["index"];
-                $sender=$trigger["senderUID"];
-                $action=$trigger["action"];
-                $uids=$trigger["UIDS"];
-                $dataSpace=$trigger["spaceUID"];
-                $sse->sendMsg($serverTime, 'relay', '{"i":' .$this->_lastIndex .',"s":"' .$sender .'","a":"' .$action .'","u":"' .$uids .'","d":"' .$dataSpace .'"}');
+                $result=["e"=>$e->getMessage()];
+                $sse->sendMsg($serverTime, 'exception', json_encode($result));
             }
+
         };
 
         $sse->callBack=$f;

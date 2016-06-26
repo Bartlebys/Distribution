@@ -144,7 +144,7 @@
         "description": "Find out more about Bartleby",
         "url": "https://www.bartleby.org/"
     }
-}#BMS#->{"filename":"post-processor.php","checksum":3126170036,"relativePath":"App.flexions\/App\/post-processor.php","size":2733}<-#BME#
+}#BMS#->{"filename":"post-processor.php","checksum":4208046175,"relativePath":"App.flexions\/App\/post-processor.php","size":2814}<-#BME#
 <?php
 
 
@@ -211,7 +211,8 @@ if ($h->stage==DefaultStages::STAGE_DEVELOPMENT){
     $www=dirname(dirname(__DIR__)).'/'.APP_PUBLIC_ROOT_FOLDER.'/';
     $deploy->rmPath($www.'/api/v1/_generated/');
     $deploy->copyFiles('/php/api/v1/_generated/',$www,true);
-
+    $deploy->copyFiles('/php/generated_destructiveInstaller.php',$www,true);
+    
     // We want to copy the package 'ios/' files to the iOS sources
     $deploy->rmPath(xOS_APP_EXPORT_PATH);
     $deploy->copyFiles('/xOS/',xOS_APP_EXPORT_PATH,true);
@@ -392,7 +393,19 @@ include FLEXIONS_MODULES_DIR . 'Bartleby/templates/project/document.swift.templa
  * Injects the variable and injects the module template.
  */
 include FLEXIONS_SOURCE_DIR.'/Shared.php';
-include FLEXIONS_MODULES_DIR . 'Bartleby/templates/project/configuration.php.template  .php';#BMS#->{"filename":"post-processor.php","checksum":658985932,"relativePath":"App.flexions\/EndPointsFromDefinitions\/post-processor.php","size":1475}<-#BME#
+include FLEXIONS_MODULES_DIR . 'Bartleby/templates/project/configuration.php.template  .php';#BMS#->{"filename":"destructiveInstaller.template.php","checksum":1069868788,"relativePath":"App.flexions\/App\/templates\/project\/project\/destructiveInstaller.template.php","size":208}<-#BME#
+<?php
+/**
+ * Injects the variable and injects the module template.
+ */
+include FLEXIONS_SOURCE_DIR.'/Shared.php';
+include FLEXIONS_MODULES_DIR . 'Bartleby/templates/project/destructiveInstaller.template.php';#BMS#->{"filename":"endPoints.json.template.php","checksum":1409133785,"relativePath":"App.flexions\/App\/templates\/project\/project\/endPoints.json.template.php","size":216}<-#BME#
+<?php
+/**
+ * Injects the variable and injects the module template.
+ */
+include FLEXIONS_SOURCE_DIR.'/Shared.php';
+include FLEXIONS_MODULES_DIR . 'Bartleby/modeling-meta-templates/project/endPoints.json.template.php';#BMS#->{"filename":"post-processor.php","checksum":658985932,"relativePath":"App.flexions\/EndPointsFromDefinitions\/post-processor.php","size":1475}<-#BME#
 <?php
 
 require_once FLEXIONS_MODULES_DIR . '/Deploy/FTPDeploy.php';
@@ -535,19 +548,7 @@ $protocols="";
 $imports = "\n#import \"$parentClass.h\"\n"; // NOT NEEDED FOR SWIFT
 $markAsDynamic = false;
 $allowScalars = true;
-*/#BMS#->{"filename":"destructiveInstaller.template.php","checksum":1069868788,"relativePath":"App.flexions\/EndPointsFromDefinitions\/templates\/project\/destructiveInstaller.template.php","size":208}<-#BME#
-<?php
-/**
- * Injects the variable and injects the module template.
- */
-include FLEXIONS_SOURCE_DIR.'/Shared.php';
-include FLEXIONS_MODULES_DIR . 'Bartleby/templates/project/destructiveInstaller.template.php';#BMS#->{"filename":"endPoints.json.template.php","checksum":1409133785,"relativePath":"App.flexions\/EndPointsFromDefinitions\/templates\/project\/endPoints.json.template.php","size":216}<-#BME#
-<?php
-/**
- * Injects the variable and injects the module template.
- */
-include FLEXIONS_SOURCE_DIR.'/Shared.php';
-include FLEXIONS_MODULES_DIR . 'Bartleby/modeling-meta-templates/project/endPoints.json.template.php';#BMS#->{"filename":"README.md","checksum":3947348978,"relativePath":"App.flexions\/README.md","size":853}<-#BME#
+*/#BMS#->{"filename":"README.md","checksum":3947348978,"relativePath":"App.flexions\/README.md","size":853}<-#BME#
 ## YouDub Api Generator
 
 + Generation of the server side api.
@@ -594,7 +595,7 @@ You can create a global flexions script.
     php -f run.php
     
     cd ../../
-#BMS#->{"filename":"Auth.php","checksum":882463817,"relativePath":"Bartleby\/Commons\/EndPoints\/Auth.php","size":5903}<-#BME#
+#BMS#->{"filename":"Auth.php","checksum":1921288361,"relativePath":"Bartleby\/Commons\/EndPoints\/Auth.php","size":7224}<-#BME#
 <?php
 
 namespace Bartleby\EndPoints;
@@ -631,10 +632,23 @@ final class AuthCallData extends MongoCallDataRawWrapper {
     const password = 'password';
 
 
+    /***
+     * The standard indentification mode is by "keys".
+     *
+     *  Auth::identificationByKey (the preferred method to permit massive multi-micro-auth on a same node.)
+     *  or
+     *  Auth::identificationByCookie (implicit this is the value if the method is undefined)
+     */
+    const identification = 'identification';
+
 }
 
 final class Auth extends MongoEndPoint{
 
+    const identificationByKey = 'Key';
+    const identificationByCookie = 'Cookie';
+    const kvidKey = 'kvid';
+    
     private $issues=array();
 
     function POST(AuthCallData $parameters){
@@ -642,7 +656,11 @@ final class Auth extends MongoEndPoint{
         $configuration=$this->getConfiguration();
         $currentUserUID = $parameters->getValueForKey(AuthCallData::userUID);
         $password = $parameters->getValueForKey(AuthCallData::password);
-        
+        $identification = $parameters->getValueForKey(AuthCallData::identification);
+        if (!isset($identification)){
+            $identification=Auth::identificationByCookie;
+        }
+
         if (!isset($password) || strlen($password)<3 ){
             return new JsonResponse("Password is not valid",400);
         }
@@ -696,8 +714,18 @@ final class Auth extends MongoEndPoint{
                         }
 
                         // Everything is OK
-                        $cookieUID=$this->_openSession($spaceUID,$user["_id"]);
-                        return new JsonResponse($this->issues,200);
+                        if ($identification==Auth::identificationByCookie){
+                            // by Cookies
+                            $cookieUID=$this->_openSessionWithCookies($spaceUID,$currentUserUID);
+                            return new JsonResponse(VOID_RESPONSE,200);
+                        }else{
+                            // by Keys
+                            // There is no need to open a session
+                            // The caller will resent this key value pair in a header on any identified call.
+                            $identification=array($configuration->getCryptedKEYForSpaceUID($spaceUID),$configuration->encryptIdentificationValue($spaceUID,$currentUserUID));
+                            return new JsonResponse($identification,200);
+                        }
+
                     }
 
                 return new JsonResponse(VOID_RESPONSE,401);
@@ -712,14 +740,12 @@ final class Auth extends MongoEndPoint{
         } catch ( MongoCursorException $e ) {
             return new JsonResponse('MongoCursorException' . $e->getCode() . ' ' . $e->getMessage(), 417);
         }
-
-
     }
 
 
     function DELETE(AuthCallData $parameters) {
         $spaceUID=$this->getSpaceUID();
-        if($this->_closeSessionFor($spaceUID)) {
+        if($this->_removeCookiesFor($spaceUID)) {
             return new JsonResponse(VOID_RESPONSE, 202);
         }else{
             return new JsonResponse(VOID_RESPONSE, 200);
@@ -733,23 +759,27 @@ final class Auth extends MongoEndPoint{
     // Session
     /////////////////////////
 
+    /////////////
+    // COOKIES
+    ////////////
+
     /**
      * Open the session
      * @param $spaceUID
      * @param $userID
      * @return string
      */
-    protected function _openSession($spaceUID,$userID){
+    protected function _openSessionWithCookies($spaceUID,$userID){
         return $this->_setCookie($spaceUID,$userID);
     }
 
-    private function _closeSessionFor($spaceUID){
+
+    private function _removeCookiesFor($spaceUID){
         $configuration=$this->getConfiguration();
-        $cookieKey=$configuration->getAuthCookieKEYForRUID($spaceUID);
+        $cookieKey=$configuration->getCryptedKEYForSpaceUID($spaceUID);
         if(array_key_exists($cookieKey,$_COOKIE)) {
             // Cookie expiration
             setcookie($cookieKey,'',time()-60,'/', null, false, false);
-            //unset($_COOKIE[$cookieKey]);
             return true;
         }else{
             return false;
@@ -759,8 +789,8 @@ final class Auth extends MongoEndPoint{
     private function _setCookie($spaceUID,$userID,$nbOfHours=240){
         $time=time();
         $configuration=$this->getConfiguration();
-        $cookieKey=$configuration->getAuthCookieKEYForRUID($spaceUID);
-        $cookieValue=$configuration->getCryptedAuthCookieValue($spaceUID,$userID);
+        $cookieKey=$configuration->getCryptedKEYForSpaceUID($spaceUID);
+        $cookieValue=$configuration->encryptIdentificationValue($spaceUID,$userID);
         $expires=$time+$nbOfHours*60*60;
         //setcookie ($name, $value = null, $expire = null, $path = null, $domain = null, $secure = null, $httponly = null) {}
         if (setcookie($cookieKey,$cookieValue,$expires, '/', null, false, false)===false){
@@ -843,7 +873,7 @@ final class Infos extends MongoEndPoint {
     }
 
 
-}#BMS#->{"filename":"Reachable.php","checksum":3385264520,"relativePath":"Bartleby\/Commons\/EndPoints\/Reachable.php","size":1166}<-#BME#
+}#BMS#->{"filename":"Reachable.php","checksum":2670873950,"relativePath":"Bartleby\/Commons\/EndPoints\/Reachable.php","size":1163}<-#BME#
 <?php
 
 namespace Bartleby\EndPoints;
@@ -875,7 +905,7 @@ final class Reachable extends MongoEndPoint {
     // Auth is required
     /***
      * Return 200 if the api is reachable and the credentials of the user valid for the current context.
-     * Permission  is set to: 'Reachable->verify'=> array('level'=> PERMISSION_IDENTIFIED_BY_COOKIE),
+     * Permission  is set to: 'Reachable->verify'=> array('level'=> PERMISSION_BY_IDENTIFICATION),
      * @param ReachableCallData $parameters
      * @return JsonResponse
      */
@@ -919,7 +949,7 @@ final class SSETime extends MongoEndPoint {
 
 }
 
-#BMS#->{"filename":"SSETriggers.php","checksum":318767246,"relativePath":"Bartleby\/Commons\/EndPoints\/SSETriggers.php","size":2694}<-#BME#
+#BMS#->{"filename":"SSETriggers.php","checksum":2124290622,"relativePath":"Bartleby\/Commons\/EndPoints\/SSETriggers.php","size":4273}<-#BME#
 <?php
 
 
@@ -943,6 +973,10 @@ final class SSETriggersCallData extends MongoCallDataRawWrapper {
 
     const lastIndex = 'lastIndex';
 
+    const  runUID = 'runUID';
+
+    const showDetails ='showDetails';
+
 }
 
 final class SSETriggers extends MongoEndPoint {
@@ -959,21 +993,25 @@ final class SSETriggers extends MongoEndPoint {
 
     private $_spaceUID = NULL;
 
+    private $_runUID = NULL;
+
+    private $_showDetails = false;
+
     function GET(SSETriggersCallData $parameters) {
 
         $s=$this;
 
         $this->_lastIndex = $parameters->getValueForKey(SSETriggersCallData::lastIndex);
         if (!isset($this->_lastIndex)){
-            $this->_lastIndex=0;
+            $this->_lastIndex = -1;
         }
-
-
         $this->_spaceUID = $parameters->getValueForKey(SSETriggersCallData::spaceUID);
-        /*
-        if (!isset($this->_spaceUID)){
-            return new JsonResponse('Data space is undefined',412);
-        }*/
+        $this->_runUID = $parameters->getValueForKey(SSETriggersCallData::runUID);
+
+        if ($parameters->keyExists(SSETriggersCallData::showDetails)){
+           $showDetailsValue = $parameters->getValueForKey(SSETriggersCallData::showDetails);
+            $this->_showDetails = (strtolower($showDetailsValue)=='true');
+        }
 
         $this->_db=$this->getDB();
         $this->_triggers=$this->_db->triggers;
@@ -984,29 +1022,52 @@ final class SSETriggers extends MongoEndPoint {
         // Definition of the closure
         $f=function() use ($s,$sse,$parameters) {
 
+            try {
 
-            $q = array();
-            //$q ['spaceUID']=$this->_spaceUID;
-            $q ['index'] = array (
-                '$gte' => $this->_lastIndex+1
-            );
+                $q = array();
+                $q ['index'] = array(
+                    '$gte' => $this->_lastIndex + 1
+                );
+                // Filter by SpaceUID.
+                if (isset($this->_spaceUID)) {
+                    $q['spaceUID'] = $this->_spaceUID;
+                }
 
-            // Filter by SpaceUID.
-            if (isset($this->_spaceUID)){
-                $q['spaceUID']=$this->_spaceUID;
-            }
+                // Filter by runUID (is essential to prevent data larsen).
+                if (isset($this->_runUID)) {
+                    $q ['runUID'] = [
+                        // Not equal
+                        '$ne' => $this->_runUID
+                    ];
+                }
 
-            $cursor=$this->_triggers->find($q);
-            foreach ( $cursor as $trigger ) {
+                $cursor = $this->_triggers->find($q);
+                foreach ($cursor as $trigger) {
+                    $serverTime = time();
+                    $this->_counter++;
+                    $this->_lastIndex = $trigger['index'];
+                    $sender = $trigger['senderUID'];
+                    $runUID = $trigger['runUID'];
+                    $origin = $trigger['origin'];
+                    $action = $trigger['action'];
+                    $uids = $trigger['UIDS'];
+                    $collectionName = $trigger['collectionName'];
+                    $dataSpace = $trigger['spaceUID'];
+                    if ($this->_showDetails == false) {
+                        // Used by clients
+                        $sse->sendMsg($serverTime, 'relay', '{"i":' . $this->_lastIndex . ',"d":"' . $dataSpace . '","r":"' . $runUID . '","c":"' . $collectionName . '","a":"' . $action . '","u":"' . $uids . '"}');
+                    } else {
+                        // Used to display the trigger
+                        $sse->sendMsg($serverTime, 'relay', '{"i":' . $this->_lastIndex . ',"d":"' . $dataSpace . '","r":"' . $runUID . '","c":"' . $collectionName . '","s":"' . $sender . '","o":"' . $origin . '","a":"' . $action . '","u":"' . $uids . '"}');
+                    }
+                }
+
+            } catch (\Exception $e) {
                 $serverTime = time();
-                $this->_counter++;
-                $this->_lastIndex=$trigger["index"];
-                $sender=$trigger["senderUID"];
-                $action=$trigger["action"];
-                $uids=$trigger["UIDS"];
-                $dataSpace=$trigger["spaceUID"];
-                $sse->sendMsg($serverTime, 'relay', '{"i":' .$this->_lastIndex .',"s":"' .$sender .'","a":"' .$action .'","u":"' .$uids .'","d":"' .$dataSpace .'"}');
+                $result=["e"=>$e->getMessage()];
+                $sse->sendMsg($serverTime, 'exception', json_encode($result));
             }
+
         };
 
         $sse->callBack=$f;
@@ -1020,7 +1081,7 @@ final class SSETriggers extends MongoEndPoint {
 
 }
 
-#BMS#->{"filename":"TriggerAfterIndex.php","checksum":344151567,"relativePath":"Bartleby\/Commons\/EndPoints\/TriggerAfterIndex.php","size":2136}<-#BME#
+#BMS#->{"filename":"TriggerAfterIndex.php","checksum":3122045175,"relativePath":"Bartleby\/Commons\/EndPoints\/TriggerAfterIndex.php","size":2339}<-#BME#
 <?php
 
 namespace Bartleby\EndPoints;
@@ -1034,64 +1095,74 @@ use Bartleby\Core\JsonResponse;
 use \MongoCollection;
 
 class  TriggerAfterIndexsCallData extends MongoCallDataRawWrapper {
-
-    const ids='ids';
-
-    const result_fields='result_fields';
-    /* the sort (MONGO DB) */
-    const sort='sort';
+    const lastIndex = 'lastIndex';
 }
 
 class  TriggerAfterIndex extends MongoEndPoint {
 
     function call(TriggerAfterIndexCallData $parameters) {
-        $db=$this->getDB();
+        $db = $this->getDB();
         /* @var \MongoCollection */
+
+        $lastIndex = $parameters->getValueForKey(SSETriggersCallData::lastIndex);
+        if (!isset($lastIndex)) {
+            return new JsonResponse("lastIndex is undefined", 412);
+        }
+
         $collection = $db->triggers;
-        $ids=$parameters->getValueForKey(TriggerAfterIndexsCallData::ids);
-        $f=$parameters->getValueForKey(TriggerAfterIndex::result_fields);
-        if(isset ($ids) && is_array($ids) && count($ids)){
-            $q = array( '_id'=>array( '$in' => $ids ));
-        }else{
-            return new JsonResponse(VOID_RESPONSE,204);
+
+        $q ['index'] = [
+            '$gte' => ($lastIndex + 1)
+        ];
+
+        ////////////////////////////////////////////
+        // SpaceUID confinement and runUID eviction
+        ////////////////////////////////////////////
+        try {
+            // Restrict to this spaceUID
+            $q['spaceUID'] = $this->getSpaceUID();
+        } catch (\Exception $e) {
+            return new JsonResponse("spaceUID is undefined", 412);
         }
         try {
-            $r=array();
-            if(isset($f)){
-                $cursor = $collection->find( $q , $f );
-            }else{
-                $cursor = $collection->find($q);
-            }
+            // Filter owned Triggers
+            $q ['runUID'] = [
+                // Not equal
+                '$ne' => $this->getRunUID()
+            ];
+        } catch (\Exception $e) {
+            return new JsonResponse("runUID is undefined", 412);
+        }
+
+        try {
+            $r = array();
+            $cursor = $collection->find($q);
             // Sort ?
-            $s=$parameters->getCastedDictionaryForKey(TriggerAfterIndex::sort);
-            if (isset($s) && count($s)>0){
-                $cursor=$cursor->sort($s);
-            }
-            if ($cursor->count ( TRUE ) > 0) {
-                foreach ( $cursor as $obj ) {
+            if ($cursor->count(TRUE) > 0) {
+                foreach ($cursor as $obj) {
                     $r[] = $obj;
                 }
             }
 
-            if (count($r)>0 ) {
-                return new JsonResponse($r,200);
+            if (count($r) > 0) {
+                return new JsonResponse($r, 200);
             } else {
-                return new JsonResponse(VOID_RESPONSE,404);
+                return new JsonResponse(VOID_RESPONSE, 404);
             }
-        } catch ( \Exception $e ) {
-            return new JsonResponse( array ('code'=>$e->getCode(),
-                'message'=>$e->getMessage(),
-                'file'=>$e->getFile(),
-                'line'=>$e->getLine(),
-                'trace'=>$e->getTraceAsString()
-            ),
+        } catch (\Exception $e) {
+            return new JsonResponse(['code' => $e->getCode(),
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ],
                 417
             );
         }
     }
 }
 
-?>#BMS#->{"filename":"TriggerForIndexes.php","checksum":2248422479,"relativePath":"Bartleby\/Commons\/EndPoints\/TriggerForIndexes.php","size":2162}<-#BME#
+?>#BMS#->{"filename":"TriggerForIndexes.php","checksum":2983913061,"relativePath":"Bartleby\/Commons\/EndPoints\/TriggerForIndexes.php","size":2594}<-#BME#
 <?php
 
 namespace Bartleby\EndPoints;
@@ -1106,10 +1177,8 @@ use \MongoCollection;
 use Bartleby\Configuration;
 
 class  TriggerForIndexesCallData extends MongoCallDataRawWrapper {
-    const ids='ids';
-    const result_fields='result_fields';
-    /* the sort (MONGO DB) */
-    const sort='sort';
+    const indexes='ids';
+    const ignoreHoles='ignoreHoles';
 }
 
 class  TriggerAfterIndex extends MongoEndPoint {
@@ -1118,31 +1187,47 @@ class  TriggerAfterIndex extends MongoEndPoint {
         $db=$this->getDB();
         /* @var \MongoCollection */
         $collection = $db->triggers;
-        $ids=$parameters->getValueForKey(TriggerForIndexesCallData::ids);
-        $f=$parameters->getValueForKey(TriggerForIndexesCallData::result_fields);
-        if(isset ($ids) && is_array($ids) && count($ids)){
-            $q = array( '_id'=>array( '$in' => $ids ));
+        $indexes=$parameters->getValueForKey(TriggerForIndexesCallData::indexes);
+        $ignoreHoles=$parameters->getValueForKey(TriggerForIndexesCallData::ignoreHoles);
+
+        // TODO support ignoreHoles
+
+        if(isset ($indexes) && is_array($indexes) && count($indexes)){
+
+            $q = array( 'indexes'=>array( '$in' => $indexes ));
+
+            ////////////////////////////////////////////
+            // SpaceUID confinement and runUID eviction
+            ////////////////////////////////////////////
+
+            try {
+                // Restrict to this spaceUID
+                $q['spaceUID'] = $this->getSpaceUID();
+            } catch (\Exception $e) {
+                return new JsonResponse("spaceUID is undefined", 412);
+            }
+            try {
+                // Filter owned Triggers
+                $q ['runUID'] = [
+                    // Not equal
+                    '$ne' => $this->getRunUID()
+                ];
+            } catch (\Exception $e) {
+                return new JsonResponse("runUID is undefined", 412);
+            }
+
         }else{
             return new JsonResponse(VOID_RESPONSE,204);
         }
         try {
+            
             $r=array();
-            if(isset($f)){
-                $cursor = $collection->find( $q , $f );
-            }else{
-                $cursor = $collection->find($q);
-            }
-            // Sort ?
-            $s=$parameters->getCastedDictionaryForKey(TriggerForIndexesCallData::sort);
-            if (isset($s) && count($s)>0){
-                $cursor=$cursor->sort($s);
-            }
+            $cursor = $collection->find($q);
             if ($cursor->count ( TRUE ) > 0) {
                 foreach ( $cursor as $obj ) {
                     $r[] = $obj;
                 }
             }
-
             if (count($r)>0 ) {
                 return new JsonResponse($r,200);
             } else {
@@ -1161,7 +1246,7 @@ class  TriggerAfterIndex extends MongoEndPoint {
     }
 }
 
-?>#BMS#->{"filename":"TriggersByIds.php","checksum":392926942,"relativePath":"Bartleby\/Commons\/EndPoints\/TriggersByIds.php","size":2265}<-#BME#
+?>#BMS#->{"filename":"TriggersByIds.php","checksum":1386792737,"relativePath":"Bartleby\/Commons\/EndPoints\/TriggersByIds.php","size":2505}<-#BME#
 <?php
 
 namespace Bartleby\EndPoints;
@@ -1176,60 +1261,74 @@ use \MongoCollection;
 use Bartleby\Configuration;
 
 class  TriggersByIdsCallData extends MongoCallDataRawWrapper {
-	const ids='ids';
-	const result_fields='result_fields';
-	/* the sort (MONGO DB) */
-	const sort='sort';
+    const ids = 'ids';
 }
 
- class  TriggersByIds extends MongoEndPoint {
+class  TriggersByIds extends MongoEndPoint {
 
-     function call(TriggersByIdsCallData $parameters) {
-        $db=$this->getDB();
+    function call(TriggersByIdsCallData $parameters) {
+        $db = $this->getDB();
         /* @var \MongoCollection */
         $collection = $db->triggers;
-        $ids=$parameters->getValueForKey(TriggersByIdsCallData::ids);
-        $f=$parameters->getValueForKey(TriggersByIdsCallData::result_fields);
-        if(isset ($ids) && is_array($ids) && count($ids)){
-            $q = array( '_id'=>array( '$in' => $ids ));
-        }else{
-            return new JsonResponse(VOID_RESPONSE,204);
-        }
-        try {
-           $r=array();
-           if(isset($f)){
-                $cursor = $collection->find( $q , $f );
-           }else{
-                $cursor = $collection->find($q);
-           }
-           // Sort ?
-           $s=$parameters->getCastedDictionaryForKey(TriggersByIdsCallData::sort);
-           if (isset($s) && count($s)>0){
-              $cursor=$cursor->sort($s);
-           }
-           if ($cursor->count ( TRUE ) > 0) {
-			foreach ( $cursor as $obj ) {
-				$r[] = $obj;
-			}
-		   }
+        $ids = $parameters->getValueForKey(TriggersByIdsCallData::ids);
+        if (isset ($ids) && is_array($ids) && count($ids)) {
+            $q = array('_id' => array('$in' => $ids));
 
-            if (count($r)>0 ) {
-                return new JsonResponse($r,200);
-            } else {
-                return new JsonResponse(VOID_RESPONSE,404);
+            ////////////////////////////////////////////
+            // SpaceUID confinement and runUID eviction
+            ////////////////////////////////////////////
+
+            try {
+                // Restrict to this spaceUID
+                $q['spaceUID'] = $this->getSpaceUID();
+            } catch (\Exception $e) {
+                return new JsonResponse("spaceUID is undefined", 412);
             }
-       } catch ( \Exception $e ) {
-            return new JsonResponse( array ('code'=>$e->getCode(),
-                                            'message'=>$e->getMessage(),
-                                            'file'=>$e->getFile(),
-                                            'line'=>$e->getLine(),
-                                            'trace'=>$e->getTraceAsString()
-                                            ),
-                                            417
-                                    );
+            try {
+                // Filter owned Triggers
+                $q ['runUID'] = [
+                    // Not equal
+                    '$ne' => $this->getRunUID()
+                ];
+            } catch (\Exception $e) {
+                return new JsonResponse("runUID is undefined", 412);
+            }
+
+
+        } else {
+            return new JsonResponse(VOID_RESPONSE, 204);
         }
-     }
- }
+
+        ////////////////////////////////////////////
+        // Query
+        ////////////////////////////////////////////
+
+        try {
+            $r = array();
+            $cursor = $collection->find($q);
+            if ($cursor->count(TRUE) > 0) {
+                foreach ($cursor as $obj) {
+                    $r[] = $obj;
+                }
+            }
+
+            if (count($r) > 0) {
+                return new JsonResponse($r, 200);
+            } else {
+                return new JsonResponse(VOID_RESPONSE, 404);
+            }
+        } catch (\Exception $e) {
+            return new JsonResponse(['code' => $e->getCode(),
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ],
+                417
+            );
+        }
+    }
+}
 
 ?>#BMS#->{"filename":"VerifyLocker.php","checksum":1184131196,"relativePath":"Bartleby\/Commons\/EndPoints\/VerifyLocker.php","size":3704}<-#BME#
 <?php
@@ -1542,7 +1641,7 @@ class UpdateUsers extends \Bartleby\EndPoints\UpdateUsers {
         return parent::call($parameters);
     }
 
-}#BMS#->{"filename":"Bootstrap3XPage.php","checksum":2946442906,"relativePath":"Bartleby\/Commons\/Pages\/Bootstrap3XPage.php","size":4983}<-#BME#
+}#BMS#->{"filename":"Bootstrap3XPage.php","checksum":4195849294,"relativePath":"Bartleby\/Commons\/Pages\/Bootstrap3XPage.php","size":4977}<-#BME#
 <?php
 
 namespace Bartleby\Commons\Pages;
@@ -1644,7 +1743,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>');
         }else{
             $this->addTopScript('
-    <script src="'.$this->absolutePath('static/vendors/bootstrap/3.3.6/js/bootstrap.min.js').'"></script>');
+    <script src="'.$this->absoluteUrl('static/vendors/bootstrap/3.3.6/js/bootstrap.min.js').'"></script>');
         }
     }
 
@@ -1657,7 +1756,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
         }else{
             $this->addTopScript('
     <!-- jQuery (necessary for Bootstrap\'s JavaScript plugins) -->
-    <script src="'.$this->absolutePath('static/vendors/jquery/jquery-1.12.4.min.js').'"></script>');
+    <script src="'.$this->absoluteUrl('static/vendors/jquery/jquery-1.12.4.min.js').'"></script>');
         }
     }
 
@@ -1675,8 +1774,8 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn\'t work if you view the page via file:// -->
     <!--[if lt IE 9]>
-      <script src="' . $this->absolutePath('static/vendors/html5shiv/3.7.3/html5shiv.min.js') . '"></script>
-      <script src="' . $this->absolutePath('static/vendors/respond/1.4.2/html5shiv.min.js') . '"></script>
+      <script src="' . $this->absoluteUrl('static/vendors/html5shiv/3.7.3/html5shiv.min.js') . '"></script>
+      <script src="' . $this->absoluteUrl('static/vendors/respond/1.4.2/html5shiv.min.js') . '"></script>
     <![endif]-->';
         }
     }
@@ -1691,12 +1790,58 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">';
         }else{
             return'
-    <link rel="stylesheet" href="'.$this->absolutePath('static/vendors/bootstrap/3.3.6/css/bootstrap.min.css').'">
-    <link rel="stylesheet" href="'.$this->absolutePath('static/vendors/bootstrap/3.3.6/css/bootstrap-theme.min.css').'">';
+    <link rel="stylesheet" href="'.$this->absoluteUrl('static/vendors/bootstrap/3.3.6/css/bootstrap.min.css').'">
+    <link rel="stylesheet" href="'.$this->absoluteUrl('static/vendors/bootstrap/3.3.6/css/bootstrap-theme.min.css').'">';
         }
     }
 
-}#BMS#->{"filename":"bartleby.json","checksum":1811505237,"relativePath":"Bartleby\/Commons.flexions\/App\/datasources\/bartleby.json","size":212304}<-#BME#
+}#BMS#->{"filename":"PostInstaller.php","checksum":3842710519,"relativePath":"Bartleby\/Commons\/Tools\/PostInstaller.php","size":1160}<-#BME#
+<?php
+/**
+ * Created by PhpStorm.
+ * User: bpds
+ * Date: 04/06/2016
+ * Time: 07:52
+ */
+
+namespace Bartleby\Tools;
+
+require_once BARTLEBY_PUBLIC_FOLDER . 'Configuration.php';
+
+use \MongoClient;
+use Bartleby\Core\Stages;
+
+class PostInstaller {
+
+    function logMessage($message=""){
+        echo ($message."<br>\n");
+    }
+
+    /*@var MongoDb */
+    protected $_db;
+
+    function run($configuration){
+        
+        $this->logMessage ("");
+        $this->logMessage ("Running Bartleby's POST INSTALLER");
+        try {
+            $this->logMessage("Connecting to MONGO");
+            $m = new MongoClient();
+        } catch (Exception $e) {
+            $this->logMessage("Mongo client must be installed ". $e->getMessage());
+        }
+        $this->logMessage("Selecting the database  ".$configuration->MONGO_DB_NAME());
+        $db = $m->selectDB($configuration->MONGO_DB_NAME());// Selecting  base
+
+        // INDEXES
+
+        $this->logMessage("Creating 'spaceUID' Index");
+        $db->triggers->createIndex(array('spaceUID' => 1));
+        $this->logMessage("Creating 'index'");
+        $db->triggers->createIndex(array('index' => 1), array());
+    }
+
+}#BMS#->{"filename":"bartleby.json","checksum":152564510,"relativePath":"Bartleby\/Commons.flexions\/App\/datasources\/bartleby.json","size":216842}<-#BME#
 {
     "bartleby-json-modeling": "1.0",
     "info": {
@@ -2076,6 +2221,24 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
                                 "cryptable": false
                             }
                         },
+                        "identificationMethod": {
+                            "type": "enum",
+                            "instanceOf": "string",
+                            "emumPreciseType": "RegistryMetadata.IdentificationMethod",
+                            "description": "The identification method (By cookie or by Key - kvid)",
+                            "enum": [
+                                "Key",
+                                "Cookie"
+                            ],
+                            "default": ".Key",
+                            "observable": false
+                        },
+                        "identificationValue": {
+                            "type": "string",
+                            "description": "The current kvid identification value (injected in HTTP headers)",
+                            "dynamic": false,
+                            "observable": false
+                        },
                         "rootObjectUID": {
                             "type": "string",
                             "description": "The rootObject UID",
@@ -2101,6 +2264,13 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
                                     "observable": false
                                 }
                             }
+                        },
+                        "online": {
+                            "type": "boolean",
+                            "description": "is the user performing Online",
+                            "dynamic": true,
+                            "default": "Bartleby.configuration.ONLINE_BY_DEFAULT",
+                            "observable": false
                         },
                         "stateDictionary": {
                             "type": "dictionary",
@@ -2129,20 +2299,56 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
                             "dynamic": false,
                             "observable": false
                         },
-                        "lastTriggerIndex": {
-                            "type": "integer",
-                            "description": "Last trigger index received",
-                            "default": -1,
-                            "dynamic": false,
-                            "observable": false
-                        },
                         "triggersIndexes": {
                             "schema": {
                                 "type": "array",
                                 "items": {
-                                    "description": "A collection of the trigger Indexes (used to detect data holes)",
+                                    "description": "A collection of trigger Indexes (used to detect data holes) the first entry should be equal to lastIntegratedTriggerIndex",
                                     "instanceOf": "integer",
                                     "default": "[Int]()",
+                                    "dynamic": false,
+                                    "observable": false
+                                }
+                            }
+                        },
+                        "ownedTriggersIndexes": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "The persistentcollection of triggers indexes owned by the current user (allows local distinctive analytics even on cloned documents)",
+                                    "instanceOf": "integer",
+                                    "default": "[Int]()",
+                                    "dynamic": false,
+                                    "observable": false
+                                }
+                            }
+                        },
+                        "missingTriggersIndexes": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "A collection of trigger Indexes that are missings (data holes)",
+                                    "instanceOf": "integer",
+                                    "default": "[Int]()",
+                                    "dynamic": false,
+                                    "observable": false
+                                }
+                            }
+                        },
+                        "lastIntegratedTriggerIndex": {
+                            "type": "integer",
+                            "description": "The index of the last trigger that has been integrated",
+                            "default": -1,
+                            "dynamic": false,
+                            "observable": false
+                        },
+                        "receivedTriggers": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "A collection Triggers that are temporarly stored before integration",
+                                    "$ref": "#/definitions/Trigger",
+                                    "default": "[Trigger]()",
                                     "dynamic": false,
                                     "observable": false
                                 }
@@ -2516,6 +2722,30 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
                         "spaceUID": {
                             "description": "The dataSpace UID",
                             "type": "string",
+                            "observable": false
+                        },
+                        "runUID": {
+                            "description": "The UID of the instance of Bartleby client that has created the trigger.",
+                            "type": "string",
+                            "observable": false
+                        },
+                        "origin": {
+                            "description": "The action that has initiated the trigger",
+                            "type": "string",
+                            "required": false,
+                            "observable": false
+                        },
+                        "collectionName": {
+                            "description": "The targetted collection name",
+                            "type": "string",
+                            "required": true,
+                            "default": "",
+                            "observable": false
+                        },
+                        "creationDate": {
+                            "description": "The server side creation date ( informative, use index for ranking)",
+                            "type": "date",
+                            "required": false,
                             "observable": false
                         },
                         "action": {
@@ -2896,7 +3126,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
             }
         },
         "/collectionMetadataByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "collectionMetadata"
                 ],
@@ -3247,7 +3477,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
             }
         },
         "/tasksByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "tasks"
                 ],
@@ -3598,7 +3828,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
             }
         },
         "/tasksGroupsByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "tasksGroups"
                 ],
@@ -3949,7 +4179,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
             }
         },
         "/progressionsByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "progressions"
                 ],
@@ -4300,7 +4530,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
             }
         },
         "/completionsByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "completions"
                 ],
@@ -4651,7 +4881,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
             }
         },
         "/registryMetadatasByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "registryMetadatas"
                 ],
@@ -5002,7 +5232,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
             }
         },
         "/usersByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "users"
                 ],
@@ -5353,7 +5583,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
             }
         },
         "/lockersByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "lockers"
                 ],
@@ -5704,7 +5934,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
             }
         },
         "/groupsByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "groups"
                 ],
@@ -6055,7 +6285,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
             }
         },
         "/operationsByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "operations"
                 ],
@@ -6406,7 +6636,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
             }
         },
         "/permissionsByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "permissions"
                 ],
@@ -6757,7 +6987,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
             }
         },
         "/triggersByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "triggers"
                 ],
@@ -7108,7 +7338,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
             }
         },
         "/jStringsByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "jStrings"
                 ],
@@ -7459,7 +7689,7 @@ abstract class Bootstrap3XPage extends MongoHTML5Page{
             }
         },
         "/jDatasByQuery": {
-            "post": {
+            "get": {
                 "tags": [
                     "jDatas"
                 ],
@@ -7685,7 +7915,7 @@ define ( "COMMANDLINE_MODE", true );
 // Invoke Flexions
 include_once dirname(dirname(dirname(__DIR__))).'/BartlebyFlexions/src/flexions.php';
 
-#BMS#->{"filename":"Shared.php","checksum":4107369647,"relativePath":"Bartleby\/Commons.flexions\/App\/Shared.php","size":2202}<-#BME#
+#BMS#->{"filename":"Shared.php","checksum":2761048853,"relativePath":"Bartleby\/Commons.flexions\/App\/Shared.php","size":1694}<-#BME#
 <?php
 
 // DEFINE IN THIS FILE ANY SHARED GLOBAL SETUPS
@@ -7702,39 +7932,43 @@ $prefix = "";// No prefix
 
 $modelsShouldConformToNSCoding = true; // (!) you can opt for NSCoding support (the model will not be pure swift models)
 
-$excludeEntitiesWith = array("AbstractContext"); //
+$excludeEntitiesWith = ["AbstractContext"]; //
 
-$xOSIncludeCollectionControllerForEntityNamed = array("Operation","TasksGroup","Task");
+$xOSIncludeCollectionControllerForEntityNamed = [
+    "Operation",
+    "TasksGroup",
+    "Task"
+];
 
-$excludeActionsWith = array(    "TaskArguments",// Base name for any task arguments.
-                                "JString","JDictionary","JData", // Primitive Wrapper
-                                "Trigger",
-                                "Operation",
-                                "TasksGroup",
-                                "Task",
-                                "Abstract", // Any abstract entity should be ignored
-                                "ExternalReference",   
-                                "Progression",
-                                "Completion",
-                                "BaseObject",
-                                "Tag",
-                                "CollectionMetadatum",
-                                "HTTPResponse",
-                                "RegistryMetadata",
-                                "CollectionMetadata",
-                                "CollectionMetadatum"//
+$excludeActionsWith = ["TaskArguments",// Base name for any task arguments.
+    "JString", "JDictionary", "JData", // Primitive Wrapper
+    "Trigger",
+    "Operation",
+    "TasksGroup",
+    "Task",
+    "Abstract", // Any abstract entity should be ignored
+    "ExternalReference",
+    "Progression",
+    "Completion",
+    "BaseObject",
+    "Tag",
+    "CollectionMetadatum",
+    "HTTPResponse",
+    "RegistryMetadata",
+    "CollectionMetadata",
+    "CollectionMetadatum"//
 
-                            );//We will generate only the entity ( On client and server side)
-$excludeFromServerActionsWith = array("");
+];//We will generate only the entity ( On client and server side)
+$excludeFromServerActionsWith = [""];
 
-$unDeletableEntitiesWith = array();
-$unModifiableEntitiesWith = array();
-$doNotGenerate = array();
+$unDeletableEntitiesWith = [];
+$unModifiableEntitiesWith = [];
+$doNotGenerate = [];
 
 if (isset ($f)) {
-    $f->company = "Chaosmos | https://chaosmos.fr";
+    $f->company = "Bartleby's | https://bartlebys.org";
     $f->prefix = $prefix;
-    $f->author = "benoit@pereira-da-silva.com";
+    $f->author = "b@bartlebys.org";
     $f->projectName = "Bartleby";
     //$f->license = FLEXIONS_MODULES_DIR."Licenses/LGPL.template.php";
 }
@@ -7903,7 +8137,7 @@ define ( "COMMANDLINE_MODE", true );
 
 // Invoke flexions
 include_once dirname(dirname(dirname(__DIR__))).'/BartlebyFlexions/src/flexions.php';
-#BMS#->{"filename":"Shared.php","checksum":4176176195,"relativePath":"Bartleby\/Commons.flexions\/EndPointsFromDefinitions\/Shared.php","size":1263}<-#BME#
+#BMS#->{"filename":"Shared.php","checksum":1515705902,"relativePath":"Bartleby\/Commons.flexions\/EndPointsFromDefinitions\/Shared.php","size":1249}<-#BME#
 <?php
 
 
@@ -7916,35 +8150,36 @@ require_once FLEXIONS_MODULES_DIR . 'Utils/Pluralization.php';
 include_once dirname(dirname(dirname(__DIR__))) . '/GenerativeConstants.php';
 
 $prefix = "Swagger";
-$excludeEntitiesWith=array("AbstractContext");//
+$excludeEntitiesWith = array("AbstractContext");//
 
-$excludeActionsWith=array(  "Asset",
-							"Datum",
-							"AbstractContext",
-							"Reference",
-							"Tag",
-							"Scene",
-							"Shot",
-							"Sentence",
-							"TextPart",
-							"Sign",
-							"StringAttribute",
-							"TimeCode",
-							"TimeRange",
-							"MovieCharacter",
-							"Actor"
-						);//We generate only the entity
-$unDeletableEntitiesWith=array();
-$unModifiableEntitiesWith=array();
-$doNotGenerate=array("AbstractContext");// Used by the flexions script to reject a flexed content
+$excludeActionsWith = [
+    "Asset",
+    "Datum",
+    "AbstractContext",
+    "Reference",
+    "Tag",
+    "Scene",
+    "Shot",
+    "Sentence",
+    "TextPart",
+    "Sign",
+    "StringAttribute",
+    "TimeCode",
+    "TimeRange",
+    "MovieCharacter",
+    "Actor"
+];//We generate only the entity
+$unDeletableEntitiesWith = [];
+$unModifiableEntitiesWith = [];
+$doNotGenerate = ["AbstractContext"];// Used by the flexions script to reject a flexed content
 
-if (isset ( $f )) {
-	$f->package = "Models/";
-	$f->company = "Chaosmos";
-	$f->prefix = $prefix;
-	$f->author = "benoit@chaosmos.fr";
-	$f->projectName = "YouDub";
-	//$f->license = FLEXIONS_MODULES_DIR."Licenses/LGPL.template.php";
+if (isset ($f)) {
+    $f->package = "Models/";
+    $f->company = "Bartleby's | https://bartlebys.org";
+    $f->prefix = $prefix;
+    $f->author = "b@bartlebys.org";
+    $f->projectName = "Bartleby";
+    //$f->license = FLEXIONS_MODULES_DIR."Licenses/LGPL.template.php";
 }
 
 /*
@@ -8054,7 +8289,7 @@ class CallData extends Model implements IAuthentified{
     
 }
 
-#BMS#->{"filename":"CallDataRawWrapper.php","checksum":1241517319,"relativePath":"Bartleby\/Core\/CallDataRawWrapper.php","size":1451}<-#BME#
+#BMS#->{"filename":"CallDataRawWrapper.php","checksum":2538262837,"relativePath":"Bartleby\/Core\/CallDataRawWrapper.php","size":1670}<-#BME#
 <?php
 
 namespace Bartleby\Core;
@@ -8085,7 +8320,6 @@ class CallDataRawWrapper implements IAuthentified {
     public function __construct($data) {
         $this->_isArray=is_array($data);
         $this->_storage = $data;
-
     }
 
     public function getValueForKey($key){
@@ -8098,6 +8332,17 @@ class CallDataRawWrapper implements IAuthentified {
         }
         return null;
     }
+
+
+    public function keyExists($key){
+        if($this->_isArray) {
+            return array_key_exists($key, $this->_storage);
+        }else{
+            return property_exists($this->_storage,$key);
+        }
+
+    }
+
 
     public function getDictionary(){
         return $this->_storage;
@@ -8123,13 +8368,16 @@ class CallDataRawWrapper implements IAuthentified {
     public function setCurrentUser($current_user) {
         $this->_current_user = $current_user;
     }
-}#BMS#->{"filename":"Configuration.php","checksum":3680710871,"relativePath":"Bartleby\/Core\/Configuration.php","size":15507}<-#BME#
+}#BMS#->{"filename":"Configuration.php","checksum":2566713751,"relativePath":"Bartleby\/Core\/Configuration.php","size":17653}<-#BME#
 <?php
 
 
 namespace Bartleby\Core;
 
 require_once __DIR__ . '/Stages.php';
+require_once BARTLEBY_ROOT_FOLDER.'/Commons/EndPoints/Auth.php';
+
+use  Bartleby\EndPoints\Auth;
 
 if (!defined('PERMISSION_IS_STATIC')) {
 
@@ -8141,7 +8389,7 @@ if (!defined('PERMISSION_IS_STATIC')) {
     define('PERMISSION_NO_RESTRICTION', 1);
     define('PERMISSION_BY_TOKEN', 2);
     define('PERMISSION_PRESENCE_OF_A_COOKIE', 3);
-    define('PERMISSION_IDENTIFIED_BY_COOKIE', 4);
+    define('PERMISSION_BY_IDENTIFICATION', 4); // Two approachs are possible byKeys (using a key value pair on each call) or by Cookies
     define('PERMISSION_RESTRICTED_TO_ENUMERATED_USERS', 5);
     define('PERMISSION_RESTRICTED_BY_QUERIES', 6);
     define('PERMISSION_RESTRICTED_TO_GROUP_MEMBERS', 7);
@@ -8157,7 +8405,7 @@ if (!defined('PERMISSION_IS_STATIC')) {
     define('UID_KEY', 'UID');
     define('MONGO_ID_KEY', '_id'); // For example : PERMISSION_RESTRICTED_TO_ENUMERATED_USERS the ids of the users
     define('SPACE_UID_KEY', 'spaceUID');
-    define('OBSERVABLE_UID_KEY', 'observableUID');
+    define('RUN_UID_KEY', 'runUID');
     define('LEVEL_KEY', 'level'); // The permission level.
     define('KEY_NAME', 'name'); // For example : when PERMISSION_PRESENCE_OF_A_TOKEN the name == the token key
     define('IDS_KEY', 'ids'); // For example : PERMISSION_RESTRICTED_TO_ENUMERATED_USERS the ids of the users
@@ -8235,6 +8483,28 @@ class Configuration {
      * @var array of overloaded paths.
      */
     private $_fixedPaths = array();
+    
+    /**
+     * Defines the HOST and the _STAGE
+     * If necessary the _HOST and _STAGE can be declared
+     */
+    protected function _autoDefineHostAndStage(array $hosts){
+        $serverName=$_SERVER['SERVER_NAME'];
+        foreach ($hosts as $stage => $host) {
+            if (strpos($host,$serverName)!==false){
+                $this->_STAGE=$stage;
+            }
+        }
+        if (!isset($this->_STAGE)){
+            $this->_STAGE = Stages::LOCAL;
+        }
+        $stage = $this->_STAGE;
+        if (array_key_exists($this->_STAGE,$hosts)){
+            $this->_HOST= $hosts[$this->_STAGE];
+        }else{
+            throw \Exception('Unexisting Host for stage'.$this->_STAGE);
+        }
+    }
 
     /**
      * An array of issues used for analysis
@@ -8309,13 +8579,13 @@ class Configuration {
     /**
      * You stop encrypting cookies to search key - and crypto error during development.
      */
-    const ENCRYPT_COOKIES = true;  // Should be set to true (!)
+    const USE_ENCRYPTION_FOR_IDENTIFICATION_VALUES = true;  // Should be set to true (!)
 
     /**
      * @return bool
      */
-    public function ENCRYPT_COOKIES() {
-        return $this::ENCRYPT_COOKIES;
+    public function USE_ENCRYPTION_FOR_IDENTIFICATION_VALUES() {
+        return $this::USE_ENCRYPTION_FOR_IDENTIFICATION_VALUES;
     }
 
     /**
@@ -8525,8 +8795,8 @@ class Configuration {
     ////////////////////////
 
 
-    function  getAuthCookieKEYForRUID($spaceUID) {
-        if ($this->ENCRYPT_COOKIES()){
+    function  getCryptedKEYForSpaceUID($spaceUID) {
+        if ($this->USE_ENCRYPTION_FOR_IDENTIFICATION_VALUES()){
             return $this->salt($spaceUID);
         }else{
             return $spaceUID;
@@ -8534,21 +8804,21 @@ class Configuration {
 
     }
 
-    function getCryptedAuthCookieValue($spaceUID, $userID) {
-        if ($this->ENCRYPT_COOKIES()){
+    function encryptIdentificationValue($spaceUID, $userID) {
+        if ($this->USE_ENCRYPTION_FOR_IDENTIFICATION_VALUES()){
         // We use $this->_SECRET_KEY truncated to 32Bytes as key
         // We use $spaceUID as Initialization vector
-         return mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->_32SALT(), $userID, MCRYPT_MODE_ECB, $spaceUID);
+         return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->_32SALT(), $userID, MCRYPT_MODE_ECB, $spaceUID));
         }else{
             return $userID;
         }
     }
 
-    function decryptAuthCookieValue($spaceUID, $cryptedUserID) {
-        if ($this->ENCRYPT_COOKIES()){
+    function decryptIdentificationValue($spaceUID, $cryptedUserID) {
+        if ($this->USE_ENCRYPTION_FOR_IDENTIFICATION_VALUES()){
         // We use $this->_SECRET_KEY truncated to 32Bytes as key
         // We use $spaceUID as Initialization vector
-        return mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->_32SALT(), $cryptedUserID, MCRYPT_MODE_ECB, $spaceUID);
+        return mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->_32SALT(), base64_decode($cryptedUserID), MCRYPT_MODE_ECB, $spaceUID);
         }else{
             return $cryptedUserID;
         }
@@ -8562,22 +8832,62 @@ class Configuration {
         return substr($this->_SECRET_KEY, 0, 32);
     }
 
+
+
+
+
+    /**
+     * Returns the userID if there is one in the "kvid" HTTP header field or a cookie.
+     * @param $spaceUID
+     * @return null|string
+     */
+    public function getUserID($spaceUID){
+        if (!isset($spaceUID)){
+            $this->issues[]='spaceUID is not set';
+            return NULL;
+        }
+        // We the "kvid" http header.
+        $userUID=$this->_getUserIDFromKVI($spaceUID);
+        if (isset($userUID)){
+            return $userUID;
+        }
+        // And fall back on the cookie.
+        return $this->_getUserIDFromCookie($spaceUID);
+    }
+
+
+    /**
+     * Returns the userID from the kvi
+     * @param $spaceUID
+     * @return null|string
+     */
+    private function _getUserIDFromKVI($spaceUID) {
+        if (!isset($_COOKIE)){
+            $this->issues[]='Php\'s _COOKIE global is not existing.';
+        }
+        $allHeader=getallheaders();
+        if (array_key_exists(Auth::kvidKey,$allHeader)) {
+            $cryptedUserID = $allHeader[Auth::kvidKey];
+            $userID = $this->decryptIdentificationValue($spaceUID, $cryptedUserID);
+            return $userID;
+        }
+        return NULL;
+    }
+
+
     /**
      * Returns the userID from the cookie
      * @param $spaceUID
      * @return null|string
      */
-    function getUserIDFromCookie($spaceUID) {
-        if (!isset($spaceUID)){
-            $this->issues[]='dID is not set';
-        }
+    private function _getUserIDFromCookie($spaceUID) {
         if (!isset($_COOKIE)){
             $this->issues[]='Php\'s _COOKIE global is not existing.';
         }
-        $cookieKey = $this->getAuthCookieKEYForRUID($spaceUID);
+        $cookieKey = $this->getCryptedKEYForSpaceUID($spaceUID);
         if (array_key_exists($cookieKey, $_COOKIE)) {
             $cookieValue = $_COOKIE[$cookieKey];
-            $userID = $this->decryptAuthCookieValue($spaceUID, $cookieValue);
+            $userID = $this->decryptIdentificationValue($spaceUID, $cookieValue);
             return $userID;
         }else{
             $this->issues[]='Cookie key '.$cookieKey.' is not existing. ';
@@ -8586,13 +8896,15 @@ class Configuration {
         return NULL;
     }
 
+
+
     /**
      * return true if there is a consistant cookie for the context
      * @param $spaceUID
      * @return bool
      */
     function hasUserAuthCookie($spaceUID) {
-        $cookieKey = $this->getAuthCookieKEYForRUID($spaceUID);
+        $cookieKey = $this->getCryptedKEYForSpaceUID($spaceUID);
         return (array_key_exists($cookieKey, $_COOKIE));
     }
 
@@ -8741,7 +9053,7 @@ class ContextDescriptor {
         }
         return $clean_input;
     }
-}#BMS#->{"filename":"Controller.php","checksum":4031252254,"relativePath":"Bartleby\/Core\/Controller.php","size":6915}<-#BME#
+}#BMS#->{"filename":"Controller.php","checksum":2770654981,"relativePath":"Bartleby\/Core\/Controller.php","size":9193}<-#BME#
 <?php
 
 namespace Bartleby\Core;
@@ -8810,7 +9122,7 @@ class Controller {
         if(isset($this->_userID)){
             return $this->_userID;
         }
-       $this->_userID=$this->_configuration->getUserIDFromCookie($spaceUID);
+       $this->_userID=$this->_configuration->getUserID($spaceUID);
         return $this->_userID;
     }
 
@@ -8833,6 +9145,28 @@ class Controller {
         }
         throw new \Exception("Undefined space UID");
     }
+
+
+
+    /**
+     * Grabs the runUID or throws and Exception
+     * @return mixed|string the dataSpace UID.
+     * @throws \Exception
+     */
+    public function getRunUID(){
+        $runUID=NULL;
+        $headers=getallheaders();
+        if(is_array($headers)){
+            if(array_key_exists(RUN_UID_KEY,$headers)==true){
+                $runUID=$headers[RUN_UID_KEY];
+            }
+        }
+        if (isset($runUID)){
+            return $runUID;
+        }
+        throw new \Exception("Undefined runUID");
+    }
+
 
 
 
@@ -8874,18 +9208,37 @@ class Controller {
         //sem_release ( $semaphoreIdentifier);
     }
 
+
     /**
      * Inserts a trigger into the triggers collection to be relayed via SSE.
      *
      * @param string $spaceUID
      * @param string $senderUID
+     *  @param string $collectionName the collection name
+     * @param string $origin the action that has created the trigger
      * @param string $homologousAction  e.g: `CreateUser would trigger homologous action `ReadUser`
      * @param mixed $reference can be a collection or a single instance.
+     * @return  int  -1 if an error has occured and the trigger index on success.
+     * @throws \Exception
      */
-    public function relayTrigger($spaceUID,$senderUID,$homologousAction,$reference){
+    public function relayTrigger($spaceUID,$senderUID,$collectionName,$origin,$homologousAction,$reference){
 
-        // LOCK todo verify concurrency behaviour
+        // LOCK todo verify concurrency behaviour ?
         $sID=$this->lock(__FILE__);
+
+
+        // Determine if the trigger should be ephemeral
+        $ephemeral=NULL;
+        $runUID="NO_UID";
+        $allHEADER=getallheaders();
+        if ($allHEADER!=false){
+            if (array_key_exists('ephemeral',$allHEADER)){
+                $ephemeral='1';
+            }
+            if(array_key_exists('runUID',$allHEADER)){
+                $runUID=$allHEADER['runUID'];
+            }
+        }
 
 
 
@@ -8893,8 +9246,8 @@ class Controller {
             $UIDS=$this->_extractUIDS($reference);
 
             if(!isset($senderUID) || $senderUID==""){
-                if($homologousAction=="ReadUser" && count($UIDS)==1){
-                    // It should be an Auto-creation.
+                if((strpos($homologousAction,"ReadUser")!==false) && count($UIDS)==1){
+                    // It is an Auto-creation.
                     $senderUID=$UIDS[0];
                 }else{
                     $senderUID='?('.count($UIDS).')';
@@ -8913,7 +9266,10 @@ class Controller {
                 $trigger=new Trigger();
                 $trigger->spaceUID=$spaceUID;
                 $trigger->senderUID=$senderUID;
+                $trigger->runUID=$runUID;
                 $trigger->index=$collection->count();
+                $trigger->origin=$origin;
+                $trigger->collectionName=$collectionName;
                 $trigger->action=$homologousAction;
                 $trigger->UIDS=join(',',$UIDS);
 
@@ -8925,27 +9281,38 @@ class Controller {
 
                 //Todo - how to encode trigger correctly before insertion?
                 // We should have 
-                
-                $array=array(
+
+                $date=new \DateTime();
+                $iso8601=$date->format(DATE_ISO8601);
+                $q=array(
                                 "spaceUID"=>$trigger->spaceUID,
                                 "senderUID"=>$trigger->senderUID,
+                                "runUID"=>$trigger->runUID,
                                 "index"=>$trigger->index,
+                                "origin"=>$trigger->origin,
                                 "action"=>$trigger->action,
-                                "UIDS"=>$trigger->UIDS
+                                "collectionName"=>$trigger->collectionName,
+                                "UIDS"=>$trigger->UIDS,
+                                "creationDate"=>$iso8601
                 );
 
-                $r = $collection->insert( $array,$options );
+                if (isset($ephemeral)){
+                    // To consistent with current JOBject encodings in MongoDB.
+                    // We use '1' and not true
+                    $q['ephemeral']='1';
+                }
+                $r = $collection->insert( $q,$options );
 
                 /////////////
                 // UNLOCK !
                 /////////////
+
                 $this->unlock($sID);
 
                 if ($r['ok']==1) {
-
-                    return new JsonResponse(VOID_RESPONSE,201);
+                    return $trigger->index;
                 } else {
-                    return new JsonResponse($r,412);
+                    return -1;
                 }
 
 
@@ -8963,8 +9330,24 @@ class Controller {
             $this->unlock($sID);
             throw new \Exception("Inconsitent trigger $spaceUID $senderUID $homologousAction $reference",0);
         }
+    }
+
+
+    /**
+     * Returns a json encoded string
+     * @param $index with the triggerIndex and and optionnal message
+     * @param $optionnalMessage
+     * @return string
+     */
+    public function responseStringWithTriggerIndex($index,$optionnalMessage){
+       if (isset($message)){
+           return array("triggerIndex"=>$index,"message"=>$optionnalMessage);
+       }else{
+           return array("triggerIndex"=>$index);
+       }
 
     }
+
 
     /**
      * Extracts the UIDS from a given reference.
@@ -8995,7 +9378,7 @@ class Controller {
         return $UIDS;
     }
 
-}#BMS#->{"filename":"GateKeeper.php","checksum":2945496788,"relativePath":"Bartleby\/Core\/GateKeeper.php","size":18669}<-#BME#
+}#BMS#->{"filename":"GateKeeper.php","checksum":1685262724,"relativePath":"Bartleby\/Core\/GateKeeper.php","size":18937}<-#BME#
 <?php
 
 namespace Bartleby\Core;
@@ -9003,10 +9386,13 @@ namespace Bartleby\Core;
 require_once __DIR__ . '/IAuthentified.php';
 require_once __DIR__ . '/KeyPath.php';
 require_once __DIR__ . '/Configuration.php';
+require_once BARTLEBY_ROOT_FOLDER . '/Commons/EndPoints/Auth.php';
 
 use Bartleby\Core\KeyPath;
 
 //TODO Split and create MongoGateKeeper
+use Bartleby\EndPoints\Auth;
+use Bartleby\EndPoints\AuthCallData;
 use \MongoClient;
 use \MongoCollection;
 use \MongoCursorException;
@@ -9018,7 +9404,7 @@ use \MongoId;
  * The GateKeeper implements the security layer of Bartleby's framework.
  */
 
-class GateKeeper implements IAuthentified{
+class GateKeeper implements IAuthentified {
 
 
     /* @var  \Bartleby\Configuration */
@@ -9040,15 +9426,15 @@ class GateKeeper implements IAuthentified{
     private $_currentUserToken;
 
     /*@var string */
-    private $_currentUsedSpaceUID;
+    private $_currentUserUID;
 
     private $_spaceUID = DEFAULT_SPACE_UID;
 
-    // an Array with All the headers merged with the parameters.
+    /* @var  array an Array with All the headers merged with the parameters. */
     private $_all;
 
     /* @var string */
-    public $explanation="";
+    public $explanation = "";
 
     /**
      * @param Configuration $configuration
@@ -9057,7 +9443,7 @@ class GateKeeper implements IAuthentified{
      */
     public function __construct(Configuration $configuration, $className, $methodName) {
         $this->_configuration = $configuration;
-        $components = explode('\\',$className);
+        $components = explode('\\', $className);
         $this->_className = end($components);
         $this->_methodName = $methodName;
         $this->_all = getallheaders();
@@ -9095,7 +9481,7 @@ class GateKeeper implements IAuthentified{
         if (array_key_exists($key, $rules)) {
             $currentRuleValue = $rules[$key];
             $level = $this->_levelOfRule($currentRuleValue);
-            $this->explanation.='Applicable rule level = '.$level.'. ';
+            $this->explanation .= 'Applicable rule level = ' . $level . '. ';
             if ($level == PERMISSION_IS_BLOCKED) {
                 // We block even the SuperAdmins
                 return false;
@@ -9104,8 +9490,8 @@ class GateKeeper implements IAuthentified{
             if ($allowed) {
                 return true;
             }
-        }else{
-            $this->explanation.="Unexisting permission rule key! ".$key;
+        } else {
+            $this->explanation .= "Unexisting permission rule key! " . $key;
         }
 
         // By default if the permission is not blocked
@@ -9147,8 +9533,8 @@ class GateKeeper implements IAuthentified{
                         case PERMISSION_PRESENCE_OF_A_COOKIE:
                             return PERMISSION_PRESENCE_OF_A_COOKIE;
 
-                        case PERMISSION_IDENTIFIED_BY_COOKIE:
-                            return PERMISSION_IDENTIFIED_BY_COOKIE;
+                        case PERMISSION_BY_IDENTIFICATION:
+                            return PERMISSION_BY_IDENTIFICATION;
 
                         case PERMISSION_RESTRICTED_TO_ENUMERATED_USERS:
                             if ($hasValidIdsList == true) {
@@ -9196,19 +9582,19 @@ class GateKeeper implements IAuthentified{
             case PERMISSION_PRESENCE_OF_A_COOKIE:
                 return $this->_configuration->hasUserAuthCookie($this->_spaceUID);
 
-            case PERMISSION_IDENTIFIED_BY_COOKIE:
-                return $this->_cookieIsValid($this->_spaceUID);
+            case PERMISSION_BY_IDENTIFICATION:
+                return $this->_identityIsValid($this->_spaceUID);
 
             case PERMISSION_RESTRICTED_TO_ENUMERATED_USERS:
 
-                if (!$this->_resultOfRule(PERMISSION_IDENTIFIED_BY_COOKIE,$key,$rule)){
+                if (!$this->_resultOfRule(PERMISSION_BY_IDENTIFICATION, $key, $rule)) {
                     return false;
                 }
 
                 if (array_key_exists(IDS_KEY, $rule)) {
                     $ids = $rule[IDS_KEY];
                     if (is_array($ids)) {
-                        $isEnumerated = in_array($this->_getCurrentUsedID(), $ids);
+                        $isEnumerated = in_array($this->_getCurrentUserUID(), $ids);
                         return $isEnumerated;
                     } else {
                         return false;
@@ -9219,16 +9605,16 @@ class GateKeeper implements IAuthentified{
 
             case PERMISSION_RESTRICTED_BY_QUERIES:
 
-                if (!$this->_resultOfRule(PERMISSION_IDENTIFIED_BY_COOKIE,$key,$rule)){
+                if (!$this->_resultOfRule(PERMISSION_BY_IDENTIFICATION, $key, $rule)) {
                     return false;
                 }
 
                 if (array_key_exists(ARRAY_OF_QUERIES, $rule)) {
-                    $queries=$rule[ARRAY_OF_QUERIES];
+                    $queries = $rule[ARRAY_OF_QUERIES];
 
-                    if( is_array($queries) && count($queries)>0){
+                    if (is_array($queries) && count($queries) > 0) {
 
-                        $userID = $this->_getCurrentUsedID();
+                        $userID = $this->_getCurrentUserUID();
                         if (isset($userID)) {
                             $this->_getCurrentUser($userID);
                             if (isset($this->_user)) {
@@ -9249,7 +9635,7 @@ class GateKeeper implements IAuthentified{
                                 */
 
 
-                                foreach ($queries as $query){
+                                foreach ($queries as $query) {
                                     if (
 
                                         array_key_exists(SELECT_COLLECTION_NAME, $query) &&
@@ -9298,7 +9684,7 @@ class GateKeeper implements IAuthentified{
                                                     $result = false;
                                                     $toBeEvaluated = '$result=("' . $operand1 . '"' . $operator . '"' . $operand2 . '");';
                                                     eval($toBeEvaluated);
-                                                    if($result==true){
+                                                    if ($result == true) {
                                                         return $result;
                                                     }
 
@@ -9318,7 +9704,7 @@ class GateKeeper implements IAuthentified{
 
             case PERMISSION_RESTRICTED_TO_GROUP_MEMBERS:
 
-                if (!$this->_resultOfRule(PERMISSION_IDENTIFIED_BY_COOKIE,$key,$rule)){
+                if (!$this->_resultOfRule(PERMISSION_BY_IDENTIFICATION, $key, $rule)) {
                     return false;
                 }
 
@@ -9355,10 +9741,10 @@ class GateKeeper implements IAuthentified{
      * @return bool
      */
     private function _isSuperAdmin() {
-        $currentUID = $this->_getCurrentUsedID();
+        $currentUID = $this->_getCurrentUserUID();
         $ids = $this->_configuration->getSuperAdminUIDS();
         if (is_array($ids)) {
-            if (in_array($currentUID, $ids) && $this->_cookieIsValid($this->_spaceUID)) {
+            if (in_array($currentUID, $ids)) {
                 return true;
             }
         }
@@ -9378,17 +9764,17 @@ class GateKeeper implements IAuthentified{
     private function _tokenIsValid($rule, $spaceUID) {
         if ($this->_configuration->BY_PASS_SALTED_TOKENS()) {
             return true;
-        } else if (array_key_exists(TOKEN_CONTEXT_KEY, $rule)){
+        } else if (array_key_exists(TOKEN_CONTEXT_KEY, $rule)) {
             $context = $rule[TOKEN_CONTEXT_KEY];
             $tokenHeaderkey = str_replace("#" . SPACE_UID_KEY, "#" . $spaceUID, $context);
             $saltedTokenHeaderkey = $this->_configuration->saltWithSharedKey($tokenHeaderkey);
             $expectedValue = $this->_configuration->saltWithSharedKey($saltedTokenHeaderkey);
             if (array_key_exists($saltedTokenHeaderkey, $this->_all)) {
                 $matches = ($this->_all[$saltedTokenHeaderkey] == $expectedValue);
-                $this->explanation.="Token is exists, ".( $matches ? "and its value matches! ":" but its value is not matching! ");
+                $this->explanation .= "Token is exists, " . ($matches ? "and its value matches! " : " but its value is not matching! ");
                 return $matches;
-            }else{
-                $this->explanation.='Unexisting token key! ';
+            } else {
+                $this->explanation .= 'Unexisting token key! ';
             }
         }
 
@@ -9397,43 +9783,48 @@ class GateKeeper implements IAuthentified{
 
 
     /**
-     * The cookies are crypted.
-     * Returns true if the crypted user id exists.
+     * Returns true if we have found a valid user for this spaceUID
      * @return bool
      */
-    private function _cookieIsValid($rRUID) {
-        $userID = $this->_configuration->getUserIDFromCookie($rRUID);
-        $this->explanation.='Configuration.issues:('.implode(' ',$this->_configuration->issues).') ';
+    private function _identityIsValid($spaceUID) {
+        // The user is extracted via "kvid" httpheader value or via a Cookie.
+        $userID = $this->_getCurrentUserUID();
+        $this->explanation .= 'Configuration.issues:(' . implode(' ', $this->_configuration->issues) . ') ';
         if (isset($userID)) {
-            $this->explanation.="User has been extracted from cookie! ";
+            $this->explanation .= "User has been extracted";
             $user = $this->_getCurrentUser($userID);
             if (isset($user)) {
                 return true;
-            }else{
-                $this->explanation.="User not found! ";
+            } else {
+                $this->explanation .= "User not found! ";
             }
-        }else{
-            $this->explanation.="User cannot be extracted from cookie! ";
+        } else {
+            $this->explanation .= "User cannot be extracted from cookie! ";
         }
+
         return false;
     }
+
 
     /**
      * Returns the dynamic permission for a given key
      * @param $key
      * @return array
      */
-    private function  _getDynamicPermissionForKey($key) {
+    private function _getDynamicPermissionForKey($key) {
         // Todo implement a fully dynamic approach if necessary
         // The dynamic features may be deprecated.
-        return array ();
+        return array();
     }
 
 
     /**
-     * @return array
+     * @return array|null the user or null
      */
     private function _getCurrentUser($userID) {
+        if (strlen($userID)<24){
+            return NULL;
+        }
         if (isset($this->_user)) {
             return $this->_user;
         }
@@ -9448,12 +9839,13 @@ class GateKeeper implements IAuthentified{
             }
         } catch (\Exception $e) {
             // Silent
+            return NULL;
         }
         return $this->_user;
     }
 
 
-    private function _searchEntity($collectionName,$entityKey,$searchValue) {
+    private function _searchEntity($collectionName, $entityKey, $searchValue) {
         try {
             $db = $this->getDB();
             /* @var \MongoCollection */
@@ -9474,12 +9866,12 @@ class GateKeeper implements IAuthentified{
      * Returns the current usedID form the cookie
      * @return string
      */
-    private function _getCurrentUsedID() {
-        if (isset($this->_currentUsedSpaceUID)) {
-            return $this->_currentUsedSpaceUID;
+    private function _getCurrentUserUID() {
+        if (isset($this->_currentUserUID)) {
+            return $this->_currentUserUID;
         }
-        $this->_currentUsedSpaceUID = $this->_configuration->getUserIDFromCookie($this->_spaceUID);
-        return $this->_currentUsedSpaceUID;
+        $this->_currentUserUID = $this->_configuration->getUserID($this->_spaceUID);
+        return $this->_currentUserUID;
     }
 
 
@@ -9487,7 +9879,7 @@ class GateKeeper implements IAuthentified{
      * @return boolean
      */
     private function _isInGroup($ids) {
-        $usedID = $this->_getCurrentUsedID();
+        $usedID = $this->_getCurrentUserUID();
         // TODO implement
         return false;
     }
@@ -9525,7 +9917,7 @@ class GateKeeper implements IAuthentified{
         return $this->_mongoClient;
     }
 
-    
+
     ////////////////////
     // IAuthentified
     ////////////////////
@@ -9544,9 +9936,8 @@ class GateKeeper implements IAuthentified{
         // For security purposes we prefer not to alter the $current_user
         /// $this->_user = $current_user;
     }
-
-
-}#BMS#->{"filename":"Gateway.php","checksum":1204132246,"relativePath":"Bartleby\/Core\/Gateway.php","size":8868}<-#BME#
+    
+}#BMS#->{"filename":"Gateway.php","checksum":2498909070,"relativePath":"Bartleby\/Core\/Gateway.php","size":9057}<-#BME#
 <?php
 
 namespace Bartleby\Core;
@@ -9629,8 +10020,6 @@ class Gateway {
                     $unexistingPaths[] = $possiblePath;
                 }
             }
-        }else{
-            $bingo="";
         }
 
         if ($filePath == "") {
@@ -9747,7 +10136,6 @@ class Gateway {
                 return; //  stop the execution flow.
             }
         }
-
     }
 
     /**
@@ -9756,6 +10144,11 @@ class Gateway {
      */
     public function getResponse() {
         if (isset($this->_response)) {
+            if ($this->_response instanceof IHTTPResponse){
+                if ($this->_response->getStatusCode() <= 0) {
+                    throw new \Exception("Inconsistent HTTPStatus code");
+                }
+            }
             if (isset($this->_response->data)) {
                 // Run Filter OUT
                 if ($this->_configuration->hasFilterOUT($this->_filterKey)) {
@@ -9818,14 +10211,18 @@ interface IFilter {
 
     function filterData($data);
 
-}#BMS#->{"filename":"IResponse.php","checksum":1914103391,"relativePath":"Bartleby\/Core\/IResponse.php","size":77}<-#BME#
+}#BMS#->{"filename":"IResponse.php","checksum":347819733,"relativePath":"Bartleby\/Core\/IResponse.php","size":155}<-#BME#
 <?php
 
 namespace Bartleby\Core;
 
 interface IResponse {
     function send();
-}#BMS#->{"filename":"JsonResponse.php","checksum":1655601752,"relativePath":"Bartleby\/Core\/JsonResponse.php","size":1634}<-#BME#
+}
+
+interface  IHTTPResponse extends  IResponse{
+    function getStatusCode();
+}#BMS#->{"filename":"JsonResponse.php","checksum":3102664758,"relativePath":"Bartleby\/Core\/JsonResponse.php","size":1641}<-#BME#
 <?php
 
 
@@ -9834,7 +10231,7 @@ namespace Bartleby\Core;
 require_once __DIR__ . '/IResponse.php';
 require_once __DIR__ . '/Response.php';
 
-class JsonResponse extends Response implements  IResponse{
+class JsonResponse extends Response implements  IHTTPResponse{
 
     /* @var $data the data (we keep the property public for DataFilters) */
     public $data;
@@ -9842,7 +10239,7 @@ class JsonResponse extends Response implements  IResponse{
     /**
      * @var Integer|int
      */
-    private $_statusCode;
+    private $_statusCode=-1;
 
     /**
      * JsonResponse constructor.
@@ -10185,7 +10582,7 @@ abstract class Transformer implements  IModelTransformer{
         return (new Model())->patchFromDictionary($dictionary);
     }
 }
-#BMS#->{"filename":"Request.php","checksum":2115723426,"relativePath":"Bartleby\/Core\/Request.php","size":2719}<-#BME#
+#BMS#->{"filename":"Request.php","checksum":435326389,"relativePath":"Bartleby\/Core\/Request.php","size":2945}<-#BME#
 <?php
 
 namespace Bartleby\Core;
@@ -10206,9 +10603,6 @@ class Request {
     /* @var $_parameters array*/
     private $_parameters=array();
 
-
-    private $_flow;
-
     /**
      * Request constructor.
      */
@@ -10223,6 +10617,11 @@ class Request {
         $this->_path = '/';
         if(array_key_exists('request',$_REQUEST)){
             $this->_path .= $_REQUEST ['request'];
+            $posOfQuestionMark=strpos($this->_path,'?');
+            // We filter the query string from the path
+            if ($posOfQuestionMark !== false){
+                $this->_path = substr($this->_path,0,$posOfQuestionMark);
+            }
         }
 
         // METHOD
@@ -10916,7 +11315,7 @@ namespace Bartleby\Mongo;
 require_once __DIR__ . '/MongoPage.php';
 
 abstract class MongoHTML5Page extends MongoPage {
-}#BMS#->{"filename":"MongoPage.php","checksum":1993925276,"relativePath":"Bartleby\/Mongo\/MongoPage.php","size":2541}<-#BME#
+}#BMS#->{"filename":"MongoPage.php","checksum":1648601932,"relativePath":"Bartleby\/Mongo\/MongoPage.php","size":2539}<-#BME#
 <?php
 
 namespace Bartleby\Mongo;
@@ -10978,7 +11377,7 @@ abstract class MongoPage extends MongoController {
      * @param $relativePath
      */
     protected  function importJSFile($relativePath){
-        $this->_BOTTOM_SCRIPTS[]='<script src="'.$this->absolutePath($relativePath).'"></script>';
+        $this->_BOTTOM_SCRIPTS[]='<script src="'.$this->absoluteUrl($relativePath).'"></script>';
     }
     
     /***
@@ -11031,14 +11430,16 @@ abstract class MongoPage extends MongoController {
 
     //
 
-    public function absolutePath($relativePath){
+    public function absoluteUrl($relativePath){
         return $this->_configuration->HOST().ltrim($relativePath,'/');
     }
 
-}#BMS#->{"filename":"ReadMe.md","checksum":909751827,"relativePath":"Bartleby\/ReadMe.md","size":12360}<-#BME#
+}#BMS#->{"filename":"ReadMe.md","checksum":1818996625,"relativePath":"Bartleby\/ReadMe.md","size":12417}<-#BME#
 # Bartleby Version 1.0 #
 
-Bartleby is a robust framework for Natives Desktop & Mobile Apps to build Api & PHP document oriented Micro services using MongoDB as document store.
+Bartleby is a robust framework for Fault Tolerent Natives Distributed Desktop & Mobile Apps. 
+It provides a integrated full stack  (clients and servers Api)
+Api are written in PHP and uses MongoDB as document store.
 
 It offers a unique distributed execution strategy and a solid permission and security model that enables to build complex collaborative tools efficiently. It has been developed to be used in and is fully integrated with a code generator called 'Flexions'.
 
@@ -11120,7 +11521,7 @@ The permission are verified on any method call.
 + PERMISSION_NO_RESTRICTION = 1 
 + PERMISSION_BY_TOKEN = 2
 + PERMISSION_PRESENCE_OF_A_COOKIE = 3
-+ PERMISSION_IDENTIFIED_BY_COOKIE = 4
++ PERMISSION_BY_IDENTIFICATION = 4
 + PERMISSION_RESTRICTED_TO_ENUMERATED_USERS = 5 
 + PERMISSION_RESTRICTED_BY_QUERIES = 6 
 + PERMISSION_RESTRICTED_TO_GROUP_MEMBERS = 9
@@ -11162,11 +11563,11 @@ Any call without that cookie is reputed not identified
 
     array ( 'PathClassName->MethodName' => array( 'level' => PERMISSION_PRESENCE_OF_A_COOKIE,'name'=>'user-#spaceUID','value'=>'') 
 
-#### Level 4 (PERMISSION_IDENTIFIED_BY_COOKIE)
+#### Level 4 (PERMISSION_BY_IDENTIFICATION)
 Verification of the cookie 
 We check if the cookie correspond to a valid identified user.
 
-    array ( 'PathClassName->MethodName' => array( 'level' => PERMISSION_IDENTIFIED_BY_COOKIE) 
+    array ( 'PathClassName->MethodName' => array( 'level' => PERMISSION_BY_IDENTIFICATION) 
 
 #### Level 5 (PERMISSION_RESTRICTED_TO_ENUMERATED_USERS)
 Per path permission for enumerated users 
@@ -13741,7 +14142,7 @@ try {
 }catch (Exception $e){
     echo 'ROOT EXCEPTION '.$e->getMessage();
 }
-#BMS#->{"filename":"endPoints.json.template.php","checksum":3969442354,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/modeling-meta-templates\/project\/endPoints.json.template.php","size":18662}<-#BME#
+#BMS#->{"filename":"endPoints.json.template.php","checksum":2882801176,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/modeling-meta-templates\/project\/endPoints.json.template.php","size":18661}<-#BME#
 <?php
 
 include  FLEXIONS_SOURCE_DIR.'/Shared.php';
@@ -14303,7 +14704,7 @@ foreach ($d->entities as $entity ) {
 
     $genericQueryGetPathBlock = '
         "/' . lcfirst($pluralizedName) . 'ByQuery" : {
-            "post" : {
+            "get" : {
                 "tags" : [
                     "' . $pluralizedName . '"
                 ],
@@ -14380,7 +14781,7 @@ for ($i=0;$i<$nbOfBlocks;$i++){
 }
 <?php /*<- END OF TEMPLATE */
 
-?>#BMS#->{"filename":"cuds.withWeakLogic.swift.template.php","checksum":3901123518,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/templates\/actions\/cuds.withWeakLogic.swift.template.php","size":21958}<-#BME#
+?>#BMS#->{"filename":"cuds.withWeakLogic.swift.template.php","checksum":1387911371,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/templates\/actions\/cuds.withWeakLogic.swift.template.php","size":22999}<-#BME#
 <?php
 
 /*
@@ -14729,14 +15130,14 @@ if( $modelsShouldConformToNSCoding ) {
 
     func commit(){
         let context=Context(code:<?php echo crc32($baseClassName.'.commit') ?>, caller: "<?php echo$baseClassName ?>.commit")
-        if let registry = Bartleby.sharedInstance.getRegistryByUID(self._spaceUID) {
+        if let document = Bartleby.sharedInstance.getDocumentByUID(self._spaceUID) {
 
                 // Prepare the operation serialization
                 self.defineUID()
                 self._operation.defineUID()
                 self._operation.counter=0
                 self._operation.status=Operation.Status.Pending
-                self._operation.baseUrl=registry.registryMetadata.collaborationServerURL
+                self._operation.baseUrl=document.registryMetadata.collaborationServerURL
                 self._operation.creationDate=NSDate()
                 self._operation.spaceUID=self._spaceUID
 <?php
@@ -14757,15 +15158,15 @@ if ($httpMethod=="DELETE"){
 }
 ?>
 
-                if let currentUser=registry.registryMetadata.currentUser{
+                if let currentUser=document.registryMetadata.currentUser{
                     self._operation.creatorUID=currentUser.UID
                     self.creatorUID=currentUser.UID
                 }
 
                 // Provision the operation.
                 do{
-                    let ic:OperationsCollectionController = try registry.getCollection()
-                    ic.add(self._operation)
+                    let ic:OperationsCollectionController = try document.getCollection()
+                    ic.add(self._operation, commit:false)
                 }catch{
                     Bartleby.sharedInstance.dispatchAdaptiveMessage(context,
                     title: "Structural Error",
@@ -14788,7 +15189,7 @@ if ($httpMethod=="DELETE"){
             }
         ?>
         }else{
-            // This registry is not available there is nothing to do.
+            // This document is not available there is nothing to do.
             let m=NSLocalizedString("Registry is missing", comment: "Registry is missing")
             Bartleby.sharedInstance.dispatchAdaptiveMessage(context,
                     title: NSLocalizedString("Structural error", comment: "Structural error"),
@@ -14801,7 +15202,7 @@ if ($httpMethod=="DELETE"){
 
     public func push(sucessHandler success:(context:JHTTPResponse)->(),
         failureHandler failure:(context:JHTTPResponse)->()){
-        if let <?php if($httpMethod=="POST"){echo("registry");}else{echo("_");} ?> = Bartleby.sharedInstance.getRegistryByUID(self._spaceUID) {
+        if let <?php if($httpMethod=="POST"){echo("document");}else{echo("_");} ?> = Bartleby.sharedInstance.getDocumentByUID(self._spaceUID) {
             // The unitary operation are not always idempotent
             // so we do not want to push multiple times unintensionnaly.
             if  self._operation.status==Operation.Status.Pending ||
@@ -14812,7 +15213,7 @@ if ($httpMethod=="DELETE"){
                     $dataSpaceSyntagm:self._spaceUID,".cr() ?>
                     sucessHandler: { (context: JHTTPResponse) -> () in
                         <?php if ($httpMethod=="POST") {
-                            echo("registry.markAsDistributed(&self._$firstParameterName)".cr());
+                            echo("document.markAsDistributed(&self._$firstParameterName)".cr());
                         } else {
                             echo(cr());
                         }
@@ -14832,7 +15233,7 @@ if ($httpMethod=="DELETE"){
                     }
                 )
             }else{
-                // This registry is not available there is nothing to do.
+                // This document is not available there is nothing to do.
                 let context=Context(code:<?php echo crc32($baseClassName.'.push') ?>, caller: "<?php echo$baseClassName ?>.push")
                 Bartleby.sharedInstance.dispatchAdaptiveMessage(context,
                     title: NSLocalizedString("Push error", comment: "Push error"),
@@ -14851,7 +15252,7 @@ if ($httpMethod=="DELETE"){
                 let pathURL=baseURL.URLByAppendingPathComponent("<?php echo$varName ?>")<?php echo $executeArgumentSerializationBlock?>
                 let urlRequest=HTTPManager.mutableRequestWithToken(inDataSpace:spaceUID,withActionName:"<?php echo$baseClassName ?>" ,forMethod:"<?php echo$httpMethod?>", and: pathURL)
                 let r:Request=request(ParameterEncoding.JSON.encode(urlRequest, parameters: parameters).0)
-                r.responseString{ response in
+                r.responseJSON{ response in
 
                     // Store the response
                     let request=response.request
@@ -14878,13 +15279,25 @@ if ($httpMethod=="DELETE"){
                             title: NSLocalizedString("Unsuccessfull attempt result.isFailure is true",
                             comment: "Unsuccessfull attempt"),
                             body:"\(m) \n \(response)" ,
-                            trigger:{ (selectedIndex) -> () in
+                            transmit:{ (selectedIndex) -> () in
                         })
                         reactions.append(failureReaction)
                         failure(context:context)
                     }else{
                         if let statusCode=response?.statusCode {
                             if 200...299 ~= statusCode {
+                                // Acknowledge the trigger and log QA issue
+                                if let dictionary = result.value as? Dictionary< String,AnyObject > {
+                                    if let index=dictionary["triggerIndex"] as? NSNumber{
+                                        if let document=Bartleby.sharedInstance.getDocumentByUID(spaceUID){
+                                            document.acknowledgeOwnedTriggerIndex(index.integerValue)
+                                        }
+                                    }else{
+                                        bprint("QA Trigger index is missing \(context)", file: #file, function: #function, line: #line, category:bprintCategoryFor(Trigger))
+                                    }
+                                }else{
+                                    bprint("QA Trigger index dictionary is missing \(context)", file: #file, function: #function, line: #line, category:bprintCategoryFor(Trigger))
+                                }
                                 success(context:context)
                             }else{
                                 // Bartlby does not currenlty discriminate status codes 100 & 101
@@ -14898,7 +15311,7 @@ if ($httpMethod=="DELETE"){
                                     title: NSLocalizedString("Unsuccessfull attempt",
                                     comment: "Unsuccessfull attempt"),
                                     body: "\(m) \n \(response)",
-                                    trigger:{ (selectedIndex) -> () in
+                                    transmit:{ (selectedIndex) -> () in
                                     })
                                 reactions.append(failureReaction)
                                 failure(context:context)
@@ -14910,7 +15323,7 @@ if ($httpMethod=="DELETE"){
                 }
             }
 }
-<?php /*<- END OF TEMPLATE */?>#BMS#->{"filename":"endpoint.php.template.php","checksum":4194946977,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/templates\/actions\/endpoint.php.template.php","size":17381}<-#BME#
+<?php /*<- END OF TEMPLATE */?>#BMS#->{"filename":"endpoint.php.template.php","checksum":1480290738,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/templates\/actions\/endpoint.php.template.php","size":18010}<-#BME#
 <?php
 require_once FLEXIONS_MODULES_DIR . '/Bartleby/templates/Requires.php';
 
@@ -15058,8 +15471,8 @@ if($d->httpMethod=='POST') {
             '.(($parameterIsNotAcollection===true)?
                 '$r = $collection->update ($q, $obj,$options );
             if ($r[\'ok\']==1) {
-                $this->createTrigger($parameters);
-                return new JsonResponse(VOID_RESPONSE,200);
+                $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+                return new JsonResponse($s,200);
             } else {
                 return new JsonResponse($r,412);
             }'
@@ -15078,8 +15491,8 @@ if($d->httpMethod=='POST') {
                     return new JsonResponse($q,412);
                 }
              }
-             $this->createTrigger($parameters);
-            return new JsonResponse(VOID_RESPONSE,200);'
+             $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+            return new JsonResponse($s,200);'
             ).'
 
         } catch ( \Exception $e ) {
@@ -15115,8 +15528,8 @@ if($d->httpMethod=='POST') {
         try {
             ' . (($parameterIsNotAcollection === true) ? '$r = $collection->insert ( $obj,$options );' : '$r = $collection->batchInsert( $obj,$options );') . '
              if ($r[\'ok\']==1) {
-                $this->createTrigger($parameters);
-                return new JsonResponse(VOID_RESPONSE,201);
+                $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+                return new JsonResponse($s,201);
             } else {
                 return new JsonResponse($r,412);
             }
@@ -15125,8 +15538,8 @@ if($d->httpMethod=='POST') {
             // MONGO E11000 duplicate key error
             if ( $e->getCode() == 11000 && $this->_configuration->IGNORE_MULTIPLE_CREATION_IN_CRUD_MODE() == true){
                 // We return A 200 not a 201
-                $this->createTrigger($parameters);
-                return new JsonResponse(\'This is not the first attempt.\',200);
+                $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),\'This is not the first attempt.\');
+                return new JsonResponse($s,200);
             }
             ':'').'
             return new JsonResponse( array (\'code\'=>$e->getCode(),
@@ -15267,14 +15680,14 @@ if($d->httpMethod=='POST') {
               if(array_key_exists(\'updatedExisting\',$r)){
                     $existed=$r[\'updatedExisting\'];
                     if($existed==true){
-                        $this->createTrigger($parameters);
-                        return new JsonResponse(VOID_RESPONSE,200);
+                         $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+                        return new JsonResponse($s,200);
                     }else{
                         return new JsonResponse(VOID_RESPONSE,404);
                     }
                 }
-                $this->createTrigger($parameters);
-                return new JsonResponse(VOID_RESPONSE,200);
+                 $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+                return new JsonResponse($s,200);
             } else {
                 return new JsonResponse($r,412);
             }'
@@ -15293,8 +15706,8 @@ if($d->httpMethod=='POST') {
                     return new JsonResponse($q,412);
                 }
              }
-             $this->createTrigger($parameters);
-            return new JsonResponse(VOID_RESPONSE,200);'
+              $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+            return new JsonResponse($s,200);'
         ).'
 
         } catch ( \Exception $e ) {
@@ -15335,8 +15748,8 @@ if($d->httpMethod=='POST') {
         if(isset ($ids) && count($ids)>0){
             $q = array( \'_id\' =>array( \'$in\' => $ids ));
         }else{
-            $this->createTrigger($parameters);
-            return new JsonResponse(VOID_RESPONSE,204);
+            $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+            return new JsonResponse(s,204);
         }'
 
     )
@@ -15346,8 +15759,8 @@ if($d->httpMethod=='POST') {
              if ($r[\'ok\']==1) {
                  $hasBeenRemoved=($r[\'n\'] >= 1);
                  if( $hasBeenRemoved || $this->_configuration->IGNORE_MULTIPLE_DELETION_ATTEMPT() === true ){
-                      $this->createTrigger($parameters);
-                     return new JsonResponse($hasBeenRemoved?VOID_RESPONSE:\'Already deleted\',200);
+                     $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),$hasBeenRemoved?NULL:\'Already deleted\');
+                     return new JsonResponse($s,200);
                  }else{
                      return new JsonResponse(VOID_RESPONSE,404);
                  }
@@ -15377,29 +15790,37 @@ if($d->httpMethod != 'GET' && $isGenericGETEndpoint===false){
         $baseName=str_replace('Create','',$classNameWithoutPrefix);
         $baseName=str_replace('Update','',$baseName);
         $action='Read'.$baseName;
+        if ($resultIsNotACollection){
+            $action .= "byId";
+        }else{
+            $action .= "byIds";
+        }
     }
 
 
     echoIndentCR( '
     
-    
-     /**
-      * Creates and relay the action using a trigger
-      * @param '.$callDataClassName.' $parameters
-      */
+
+    /**
+     * Creates and relay the action using a trigger
+     * 
+     * @param '.$callDataClassName.' $parameters
+     * @return  int  -1 if an error has occured and the trigger index on success
+     * @throws \Exception
+     */
     function createTrigger('.$callDataClassName.' $parameters){
         $ref=$parameters->getValueForKey('.$callDataClassName.'::'.$lastParameterName.');
         $homologousAction="'.$action.'";
         $user=$parameters->getCurrentUser();
         $userUID=$user["_id"];
         $spaceUID=$this->getSpaceUID();
-        $this->relayTrigger($spaceUID,$userUID,$homologousAction,$ref);
+        return $this->relayTrigger($spaceUID,$userUID,"'.$d->collectionName.'","'.$classNameWithoutPrefix.'",$homologousAction,$ref);
     }',0);
 
 }?>
  }
 
-<?php echo '?>'?><?php /*<- END OF TEMPLATE */?>#BMS#->{"filename":"endpoint.swift.template.php","checksum":3857048013,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/templates\/actions\/endpoint.swift.template.php","size":12717}<-#BME#
+<?php echo '?>'?><?php /*<- END OF TEMPLATE */?>#BMS#->{"filename":"endpoint.swift.template.php","checksum":2752238537,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/templates\/actions\/endpoint.swift.template.php","size":12719}<-#BME#
 <?php
 require_once FLEXIONS_MODULES_DIR . '/Bartleby/templates/Requires.php';
 
@@ -15650,7 +16071,7 @@ foreach ($d->responses as $rank=>$responsePropertyRepresentation ) {
         title: NSLocalizedString("Deserialization issue",
             comment: "Deserialization issue"),
         body:"(result.value)",
-        trigger:{ (selectedIndex) -> () in
+        transmit:{ (selectedIndex) -> () in
     })
    reactions.append(failureReaction)
    failure(context:context)
@@ -15677,7 +16098,7 @@ if let r=result.value as? ' . $successTypeString . '{
         title: NSLocalizedString("Deserialization issue",
             comment: "Deserialization issue"),
         body:"(result.value)",
-        trigger:{ (selectedIndex) -> () in
+        transmit:{ (selectedIndex) -> () in
     })
    reactions.append(failureReaction)
    failure(context:context)
@@ -15698,7 +16119,7 @@ if($d->httpMethod=='GET'){
     '.(($d->containsParametersOutOfPath()?'let dictionary:Dictionary<String, AnyObject>?=Mapper().toJSON(parameters)':'let dictionary:Dictionary<String, AnyObject>=[:]')).'
     let urlRequest=HTTPManager.mutableRequestWithToken(inDataSpace:spaceUID,withActionName:"'.$d->class.'" ,forMethod:"'.$d->httpMethod.'", and: pathURL)
     let r:Request=request(ParameterEncoding.'.$parameterEncodingString.'.encode(urlRequest, parameters: dictionary).0)
-    r.'.(($successTypeString=='')?'responseString':'responseJSON').'{ response in
+    r.'.(($successTypeString=='')?'responseJSON':'responseJSON').'{ response in
 
 	    let request=response.request
         let result=response.result
@@ -15723,7 +16144,7 @@ if($d->httpMethod=='GET'){
                 context: context,
                 title: NSLocalizedString("Unsuccessfull attempt",comment: "Unsuccessfull attempt"),
                 body:NSLocalizedString("Explicit Failure",comment: "Explicit Failure"),
-                trigger:{ (selectedIndex) -> () in
+                transmit:{ (selectedIndex) -> () in
             })
             reactions.append(failureReaction)
             failure(context:context)
@@ -15740,7 +16161,7 @@ if($d->httpMethod=='GET'){
                     context: context,
                     title: NSLocalizedString("Unsuccessfull attempt",comment: "Unsuccessfull attempt"),
                     body:NSLocalizedString("Implicit Failure",comment: "Implicit Failure"),
-                    trigger:{ (selectedIndex) -> () in
+                    transmit:{ (selectedIndex) -> () in
                 })
                reactions.append(failureReaction)
                failure(context:context)
@@ -16244,7 +16665,7 @@ if( $modelsShouldConformToNSCoding ) {
 
 }
 
-<?php /*<- END OF TEMPLATE */?>#BMS#->{"filename":"modelCollectionController.swift.template.php","checksum":726300959,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/templates\/entities\/modelCollectionController.swift.template.php","size":12414}<-#BME#
+<?php /*<- END OF TEMPLATE */?>#BMS#->{"filename":"modelCollectionController.swift.template.php","checksum":4089352686,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/templates\/entities\/modelCollectionController.swift.template.php","size":14072}<-#BME#
 <?php
 
 require_once FLEXIONS_MODULES_DIR . '/Bartleby/templates/Requires.php';
@@ -16375,7 +16796,7 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
 
     - parameter on: the closure
     */
-    public func superIterate(@noescape on:(element: protocol<Collectible,Supervisable>)->()){
+    public func superIterate(@noescape on:(element: Collectible)->()){
         for item in self.items {
             on(element:item)
         }
@@ -16424,10 +16845,14 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
 
 }else{
 echo('
+
     /**
-    Those item are not committable.
+     Commit is ignored because
+     Distant persistency is not allowed for '.$entityRepresentation->name.'
     */
-    public func commitChanges() ->[String] { return [String]() }
+    public func commitChanges() ->[String] { 
+        return [String]()
+    }
     
 ');
 }
@@ -16440,6 +16865,9 @@ echo('
 
     dynamic public var items:[<?php echo ucfirst($entityRepresentation->name)?>]=[<?php echo ucfirst($entityRepresentation->name)?>]()
 
+    public func getCollectibleItems()->[Collectible]{
+        return items
+    }
 
     // MARK: Identifiable
 
@@ -16474,23 +16902,52 @@ if( $modelsShouldConformToNSCoding ) {
     include  FLEXIONS_MODULES_DIR.'Bartleby/templates/blocks/NSSecureCoding.swift.block.php';
 }?>
 
+
+
+    // MARK: Upsert
+
+    public func upsert(item: Collectible, commit:Bool){
+
+        if let idx=items.indexOf({return $0.UID == item.UID}){
+            // it is an update
+            // we must patch it
+            let currentInstance=items[idx]
+            if commit==false{
+                // When upserting from a trigger
+                // We do not want to produce Larsen effect on data.
+                // So we lock the auto commit observer before applying the patch
+                // And we unlock the autoCommit Observer after the patch.
+                currentInstance.lockAutoCommitObserver()
+            }
+
+            let dictionary=item.dictionaryRepresentation()
+            currentInstance.patchFrom(dictionary)
+            if commit==false{
+                currentInstance.unlockAutoCommitObserver()
+            }
+        }else{
+            // It is a creation
+            self.add(item, commit:commit)
+        }
+    }
+
     // MARK: Add
 
-    public func add(item:Collectible){
+    public func add(item:Collectible, commit:Bool){
         #if os(OSX) && !USE_EMBEDDED_MODULES
         if let arrayController = self.arrayController{
-            self.insertObject(item, inItemsAtIndex: arrayController.arrangedObjects.count)
+            self.insertObject(item, inItemsAtIndex: arrayController.arrangedObjects.count, commit:commit)
         }else{
-            self.insertObject(item, inItemsAtIndex: items.count)
+            self.insertObject(item, inItemsAtIndex: items.count, commit:commit)
         }
         #else
-        self.insertObject(item, inItemsAtIndex: items.count)
+        self.insertObject(item, inItemsAtIndex: items.count, commit:commit)
         #endif
     }
 
     // MARK: Insert
 
-    public func insertObject(item: Collectible, inItemsAtIndex index: Int) {
+    public func insertObject(item: Collectible, inItemsAtIndex index: Int, commit:Bool) {
         if let item=item as? <?php echo ucfirst($entityRepresentation->name)?>{
 
 <?php if ($entityRepresentation->isUndoable()) {
@@ -16507,7 +16964,7 @@ if( $modelsShouldConformToNSCoding ) {
 
             // Add the inverse of this invocation to the undo stack
             if let undoManager: NSUndoManager = undoManager {
-                undoManager.prepareWithInvocationTarget(self).removeObjectFromItemsAtIndex(index)
+                undoManager.prepareWithInvocationTarget(self).removeObjectFromItemsAtIndex(index, commit:commit)
                 if !undoManager.undoing {
                     undoManager.setActionName(NSLocalizedString("Add' . ucfirst($entityRepresentation->name) . '", comment: "Add' . ucfirst($entityRepresentation->name) . ' undo action"))
                 }
@@ -16544,9 +17001,14 @@ if( $modelsShouldConformToNSCoding ) {
 
 <?php if ($entityRepresentation->isDistantPersistencyOfCollectionAllowed()){
     echo("
-            if item.committed==false{
+            if item.committed==false && commit==true{
                Create$entityRepresentation->name.commit(item, inDataSpace:self.spaceUID)
             }".cr());
+}else{
+        echo('
+            // Commit is ignored because
+            // Distant persistency is not allowed for '.$entityRepresentation->name.'
+            ');
 }
 ?>
 
@@ -16560,7 +17022,7 @@ if( $modelsShouldConformToNSCoding ) {
 
     // MARK: Remove
 
-    public func removeObjectFromItemsAtIndex(index: Int) {
+    public func removeObjectFromItemsAtIndex(index: Int, commit:Bool) {
         if let item : <?php echo ucfirst($entityRepresentation->name)?> = items[index] {
 <?php if ($entityRepresentation->isUndoable()) {
     echo(
@@ -16571,7 +17033,7 @@ if( $modelsShouldConformToNSCoding ) {
                 // But with the objc magic casting undoManager.prepareWithInvocationTarget(self) as? UsersCollectionController fails
                 // That\'s why we have added an registerUndo extension on NSUndoManager
                 undoManager.registerUndo({ () -> Void in
-                   self.insertObject(item, inItemsAtIndex: index)
+                   self.insertObject(item, inItemsAtIndex: index, commit:commit)
                 })
                 if !undoManager.undoing {
                     undoManager.setActionName(NSLocalizedString("Remove' . ucfirst($entityRepresentation->name) . '", comment: "Remove ' . ucfirst($entityRepresentation->name) . ' undo action"))
@@ -16599,7 +17061,14 @@ if( $modelsShouldConformToNSCoding ) {
 
         <?php if ($entityRepresentation->isDistantPersistencyOfCollectionAllowed()) {
             echo('
-            Delete'.$entityRepresentation->name.'.commit(item.UID,fromDataSpace:self.spaceUID)  '.cr());
+            if commit==true{
+                Delete'.$entityRepresentation->name.'.commit(item.UID,fromDataSpace:self.spaceUID) 
+            }'.cr());
+        }else{
+            echo('
+            // Commit is ignored because
+            // Distant persistency is not allowed for '.$entityRepresentation->name.'
+            ');
         }
         ?>
 
@@ -16607,11 +17076,11 @@ if( $modelsShouldConformToNSCoding ) {
         }
     }
 
-    public func removeObject(item: Collectible)->Bool{
+    public func removeObject(item: Collectible, commit:Bool)->Bool{
         var index=0
         for storedItem in items{
             if item.UID==storedItem.UID{
-                self.removeObjectFromItemsAtIndex(index)
+                self.removeObjectFromItemsAtIndex(index, commit:commit)
                 return true
             }
             index += 1
@@ -16619,11 +17088,11 @@ if( $modelsShouldConformToNSCoding ) {
         return false
     }
 
-    public func removeObjectWithID(id:String)->Bool{
+    public func removeObjectWithID(id:String, commit:Bool)->Bool{
         var index=0
         for storedItem in items{
             if id==storedItem.UID{
-                self.removeObjectFromItemsAtIndex(index)
+                self.removeObjectFromItemsAtIndex(index, commit:commit)
                 return true
             }
             index += 1
@@ -16648,7 +17117,7 @@ if (isset($f,$filemame,$package,$prototypePath)){
     echo file_get_contents($prototypePath);
 }else{
     return NULL;
-}#BMS#->{"filename":"commons.configuration.php.template.php","checksum":1566237262,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/templates\/project\/commons.configuration.php.template.php","size":16290}<-#BME#
+}#BMS#->{"filename":"commons.configuration.php.template.php","checksum":512091796,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/templates\/project\/commons.configuration.php.template.php","size":16121}<-#BME#
 <?php
 
 require_once FLEXIONS_MODULES_DIR . '/Bartleby/templates/Requires.php';
@@ -16785,17 +17254,17 @@ class BartlebyCommonsConfiguration extends MongoConfiguration {
 
             'NotFound->GET'=> array('level'=> PERMISSION_NO_RESTRICTION),
             'Reachable->GET'=> array('level'=> PERMISSION_NO_RESTRICTION),
-            'Reachable->verify'=> array('level'=> PERMISSION_IDENTIFIED_BY_COOKIE),
+            'Reachable->verify'=> array('level'=> PERMISSION_BY_IDENTIFICATION),
             'Auth->POST' => array('level' => PERMISSION_BY_TOKEN,TOKEN_CONTEXT=>'LoginUser#spaceUID'),// (!) do not change
             'Auth->DELETE' => array('level'  => PERMISSION_NO_RESTRICTION), // (!)
-            'SSETime->GET'=> array('level'=> PERMISSION_IDENTIFIED_BY_COOKIE),
+            'SSETime->GET'=> array('level'=> PERMISSION_BY_IDENTIFICATION),
 
             // The configuration infos endpoint
             'Infos->GET'=>array('level' => PERMISSION_NO_RESTRICTION),
 
             // USERS
 
-            'ReadUserById->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
+            'ReadUserById->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
             'CreateUser->call'=>array('level' => PERMISSION_BY_TOKEN,TOKEN_CONTEXT=>'CreateUser#spaceUID'),
 
             'UpdateUser->call'=>array(
@@ -16847,7 +17316,7 @@ class BartlebyCommonsConfiguration extends MongoConfiguration {
             )
             ,
             'CreateUsers->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
-            'ReadUsersByIds->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
+            'ReadUsersByIds->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
             'UpdateUsers->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
             'DeleteUsers->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
             'ReadUsersByQuery->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
@@ -16862,8 +17331,8 @@ class BartlebyCommonsConfiguration extends MongoConfiguration {
      			4# On successful verification the locker is returned with its cake :)
 			*/
 
-			'VerifyLocker->POST' => array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-			'CreateLocker->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
+			'VerifyLocker->POST' => array('level' => PERMISSION_BY_IDENTIFICATION),
+			'CreateLocker->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
 			'UpdateLocker->call'=>array(
 				'level' => PERMISSION_RESTRICTED_BY_QUERIES,
 				ARRAY_OF_QUERIES =>array(
@@ -16901,12 +17370,12 @@ class BartlebyCommonsConfiguration extends MongoConfiguration {
 
             // GROUPS
 
-            'ReadGroupById->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
+            'ReadGroupById->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
             'CreateGroup->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
             'UpdateGroup->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
             'DeleteGroup->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
             'CreateGroups->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
-            'ReadGroupsByIds->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
+            'ReadGroupsByIds->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
             'UpdateGroups->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
             'DeleteGroups->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
             'ReadGroupsByQuery->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
@@ -16951,19 +17420,12 @@ class BartlebyCommonsConfiguration extends MongoConfiguration {
             'ReadPermissionsByQuery->call'=>array('level' => PERMISSION_BY_TOKEN,TOKEN_CONTEXT=>'ReadPermissionsByQuery#spaceUID'),
 
 
-            // Nobody can update a trigger.
+            // Nobody can delete triggers.
 
-            'CreateTrigger->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-            'UpdateTrigger->call'=>array('level' => PERMISSION_IS_BLOCKED),
-            'DeleteTrigger->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
-            'CreateTriggers->call'=>array('level' => PERMISSION_IS_BLOCKED),
-            'ReadTriggersByIds->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-            'UpdateTriggers->call'=>array('level' => PERMISSION_IS_BLOCKED),
-            'DeleteTriggers->call'=>array('level' => PERMISSION_IS_BLOCKED),
-            'ReadTriggersByQuery->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE)
-
-
-
+            'SSETriggers->GET'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+            'TriggerAfterIndex->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+            'TriggerForIndexes->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+            'TriggersByIds->call'=>array('level' => PERMISSION_BY_IDENTIFICATION)
 
 
 <?php
@@ -17000,7 +17462,7 @@ while ($d->iterateOnActions() ) {
 
 
     //$string= "'".$classNameWithoutPrefix."->call'=>array('level' => PERMISSION_BY_TOKEN,TOKEN_CONTEXT=>'$classNameWithoutPrefix#rUID')";
-    $string= "'".$classNameWithoutPrefix."->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE)";
+    $string= "'".$classNameWithoutPrefix."->call'=>array('level' => PERMISSION_BY_IDENTIFICATION)";
 
     if(!$d->lastAction()){
         $string.=',';
@@ -17024,7 +17486,8 @@ echoIndentCR("*/",2);
             'POST:/user/logout' => array('Auth','DELETE'), // Will call explicitly DELETE (equivalent to explicit call of DELETE login)
             'GET:/verify/credentials' => array('Reachable','verify'),
             'POST:/locker/verify' => array('VerifyLocker','POST'),
-
+            'GET:/{spaceUID}/triggers/after/{lastIndex}' => array('TriggerAfterIndex','call'),// Multi route test
+            'GET:/triggers/after/{lastIndex}' => array('TriggerAfterIndex','call'),
 <?php
 $history=array();
 /* @var $d ProjectRepresentation */
@@ -17067,9 +17530,8 @@ while ($d->iterateOnActions() ) {
         );
         return new RoutesAliases($mapping);
     }
-
 }
-<?php echo '?>'?><?php /*<- END OF TEMPLATE */?>#BMS#->{"filename":"configuration.php.template.php","checksum":568559406,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/templates\/project\/configuration.php.template.php","size":4350}<-#BME#
+<?php echo '?>'?><?php /*<- END OF TEMPLATE */?>#BMS#->{"filename":"configuration.php.template.php","checksum":1492125666,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/templates\/project\/configuration.php.template.php","size":4347}<-#BME#
 <?php
 
 require_once FLEXIONS_MODULES_DIR . '/Bartleby/templates/Requires.php';
@@ -17135,7 +17597,7 @@ while ($d->iterateOnActions() ) {
 
 
     //$string= "'".$classNameWithoutPrefix."->call'=>array('level' => PERMISSION_BY_TOKEN,TOKEN_CONTEXT=>'$classNameWithoutPrefix#rUID')";
-    $string= "'".$classNameWithoutPrefix."->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE)";
+    $string= "'".$classNameWithoutPrefix."->call'=>array('level' => PERMISSION_BY_IDENTIFICATION)";
 
     if(!$d->lastAction()){
         $string.=',';
@@ -17225,7 +17687,7 @@ while ($d->iterateOnActions() ) {
         return $routes;
     }
 }
-<?php echo '?>'?><?php /*<- END OF TEMPLATE */?>#BMS#->{"filename":"destructiveInstaller.template.php","checksum":543106028,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/templates\/project\/destructiveInstaller.template.php","size":3064}<-#BME#
+<?php echo '?>'?><?php /*<- END OF TEMPLATE */?>#BMS#->{"filename":"destructiveInstaller.template.php","checksum":2616949946,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/templates\/project\/destructiveInstaller.template.php","size":3998}<-#BME#
 <?php
 
 require_once FLEXIONS_MODULES_DIR . '/Bartleby/templates/Requires.php';
@@ -17301,17 +17763,22 @@ logMessage("Recreating the collections");
 // Collection creation
 
 // Bartleby's commons
-logMessage("Creating the users collection");
+logMessage("Creating the 'users' collection");
 $users=$db->createCollection("users");
-logMessage("Creating the groups collection");
+logMessage("Creating 'ephemeral' Index for 'users'");
+$users->createIndex(array("ephemeral" => 1));
+logMessage("Creating the 'groups' collection");
 $groups=$db->createCollection("groups");
-logMessage("Creating the permissions collection");
+logMessage("Creating 'ephemeral' Index for 'groups'");
+$groups->createIndex(array("ephemeral" => 1));
+logMessage("Creating the 'permissions' collection");
 $permissions=$db->createCollection("permissions");
-logMessage("Creating the aliases collection");
-$aliases=$db->createCollection("aliases");
-logMessage("Creating the triggers collection");
+logMessage("Creating 'ephemeral' Index for 'permissions'");
+$permissions->createIndex(array("ephemeral" => 1));
+logMessage("Creating the 'triggers' collection");
 $triggers=$db->createCollection("triggers");
-
+logMessage("Creating 'ephemeral' Index for 'triggers'");
+$triggers->createIndex(array("ephemeral" => 1));
 
 <?php
 /* @var $d ProjectRepresentation */
@@ -17321,12 +17788,25 @@ foreach ($d->entities as $entity ) {
     if(isset($prefix)){
         $name=str_replace($prefix,'',$name);
     }
-    if (isset($excludeActionsWith) && in_array($name,$excludeActionsWith)){
+    $shouldBeExlcuded=false;
+    if (isset($excludeActionsWith)) {
+        foreach ($excludeActionsWith as $actionTobeExcluded ) {
+            if (strpos(strtolower($name), strtolower($actionTobeExcluded)) !== false) {
+                $shouldBeExlcuded = true;
+            }
+        }
+    }
+
+    if ($shouldBeExlcuded==true){
         continue;
     }
+
     $pluralized=lcfirst(Pluralization::pluralize($name));
-    echoIndentCR('logMessage("Creating the '.$pluralized.' collection");',0);
+    echoIndentCR('logMessage("Creating the \''.$pluralized.'\' collection");',0);
     echoIndentCR('$'.$pluralized.'=$db->createCollection("'.$pluralized.'");',0);
+    echoIndentCR('logMessage("Creating \'ephemeral\' Index for \''.$pluralized.'\'");',0);
+    echoIndentCR('$'.$pluralized.'->createIndex(array("ephemeral" => 1));',0);
+
 }
 ?>
 
@@ -17334,8 +17814,15 @@ logMessage("");
 logMessage("**********************************************************************");
 logMessage("Please set  Configuration::ALLOW_DESTRUCTIVE_INSTALLER const to FALSE!");
 
+
+
+require_once BARTLEBY_PUBLIC_FOLDER.'Protected/PostInstaller.php';
+use Bartleby\PostInstaller;
+$postInstaller=new PostInstaller();
+$postInstaller->run($configuration);
+
 <?php /*<- END OF TEMPLATE */?>
-#BMS#->{"filename":"document.swift.template.php","checksum":3541819312,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/templates\/project\/document.swift.template.php","size":12260}<-#BME#
+#BMS#->{"filename":"document.swift.template.php","checksum":3939565237,"relativePath":"BartlebyFlexions\/src\/modules\/Bartleby\/templates\/project\/document.swift.template.php","size":12237}<-#BME#
 <?php
 
 require_once FLEXIONS_MODULES_DIR . '/Bartleby/templates/Requires.php';
@@ -17417,8 +17904,8 @@ public class <?php echo($configurator->getClassName())?> : <?php
 
     // MARK - Universal Type Support
 
-    override public class func declareCollectibleTypes() {
-        super.declareCollectibleTypes()
+    override public class func declareTypes() {
+        super.declareTypes()
 <?php
 // ENTITIES
 
@@ -17600,11 +18087,11 @@ foreach ($project->entities as $entity) {
         }
     }
 
-// MARK: - OSX specific
+    // MARK: - OSX specific
 
  #if os(OSX) && !USE_EMBEDDED_MODULES
 
-// MARK: KVO
+    // MARK: KVO
 
     override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         guard context == &_KVOContext else {
@@ -17650,7 +18137,7 @@ foreach ($project->entities as $entity) {
     public func deleteSelected'.$entityName.'() {
         // you should override this method if you want to cascade the deletion(s)
         if let selected=self.selected'.$entityName.'{
-            self.'.$pluralizedEntity.'.removeObject(selected)
+            self.'.$pluralizedEntity.'.removeObject(selected, commit:true)
         }
     }
         ',0);
@@ -17667,13 +18154,13 @@ foreach ($project->entities as $entity) {
 
     required public init() {
         super.init()
-        <?php echo($configurator->getClassName().'.declareCollectibleTypes()'); ?>
+        <?php echo($configurator->getClassName().'.declareTypes()'); ?>
     }
     #else
 
     public required init(fileURL url: NSURL) {
         super.init(fileURL: url)
-        <?php echo($configurator->getClassName().'.declareCollectibleTypes()'); ?>
+        <?php echo($configurator->getClassName().'.declareTypes()'); ?>
     }
 
     #endif
@@ -19044,54 +19531,7 @@ class GenerativeHelperForSwift extends GenerativeHelper {
 
 }
 
-?>#BMS#->{"filename":"FlexionsObjcLang.php","checksum":1807537500,"relativePath":"BartlebyFlexions\/src\/modules\/Languages\/FlexionsObjcLang.php","size":1573}<-#BME#
-<?php
-
-require_once FLEXIONS_ROOT_DIR . 'flexions/representations/flexions/FlexionsTypes.php';
-
-class FlexionsObjcLang implements IFlexionsLanguageMapping {
-
-    /**
-     * @param  $flexionsType
-     * @return String the native type
-     */
-    static function nativeTypeFor($flexionsType){
-        switch ($flexionsType) {
-            case FlexionsTypes::STRING:
-                return 'NString';
-            case FlexionsTypes::INTEGER:
-                return 'NSInteger';
-            case FlexionsTypes::BOOLEAN:
-                return 'Bool';
-            case FlexionsTypes::OBJECT:
-                return 'object';//Pseudo type (the instanceOf type will apply)
-            case FlexionsTypes::COLLECTION:
-                return 'collection';//Pseudo type (the instanceOf type will apply)
-            case FlexionsTypes::ENUM:
-                return 'Emum';//Pseudo type (the instanceOf type will apply)
-            case FlexionsTypes::FILE:
-                return 'NSURL';
-            case FlexionsTypes::FLOAT:
-                return 'Float';
-            case FlexionsTypes::DOUBLE:
-                return 'Double';
-            case FlexionsTypes::BYTE:
-                return 'Byte';
-            case FlexionsTypes::DATETIME:
-                return 'NSDate';
-            case FlexionsTypes::URL:
-                return 'NSURL';
-            case FlexionsTypes::DICTIONARY:
-                return 'NSDictionary';
-            case FlexionsTypes::DATA:
-                return 'NSData';
-        }
-        return FlexionsTypes::NOT_SUPPORTED.'->'.$flexionsType;
-    }
-
-
-
-}#BMS#->{"filename":"FlexionsSwiftLang.php","checksum":3765346128,"relativePath":"BartlebyFlexions\/src\/modules\/Languages\/FlexionsSwiftLang.php","size":1651}<-#BME#
+?>#BMS#->{"filename":"FlexionsSwiftLang.php","checksum":3765346128,"relativePath":"BartlebyFlexions\/src\/modules\/Languages\/FlexionsSwiftLang.php","size":1651}<-#BME#
 <?php
 
 require_once FLEXIONS_ROOT_DIR . 'flexions/representations/flexions/IFlexionsLanguageMapping.php';
@@ -20066,1024 +20506,7 @@ class Pluralization{
         }
         return 'NOT_SINGULARIZED';
     }
-}#BMS#->{"filename":"ObjCGeneric.functions.php","checksum":1151319306,"relativePath":"BartlebyFlexions\/src\/modules\/Watt-Objective-c\/ObjCGeneric.functions.php","size":2460}<-#BME#
-<?php
-
-/*
-Created by Benoit Pereira da Silva on 20/04/2013.
-Copyright (c) 2013  http://www.chaosmos.fr
-
-This file is part of Flexions
-
-Flexions is free software: you can redistribute it and/or modify
-it under the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Flexions is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU LESSER GENERAL PUBLIC LICENSE for more details.
-
-You should have received a copy of the GNU LESSER GENERAL PUBLIC LICENSE
-along with Flexions  If not, see <http://www.gnu.org/Licenses/>
- */
-
-require_once FLEXIONS_ROOT_DIR . 'flexions/Core/Flexed.php';
-require_once FLEXIONS_ROOT_DIR . 'flexions/representations/flexions/FlexionsRepresentationsIncludes.php';
-require_once FLEXIONS_MODULES_DIR . 'Watt-Objective-c/ObjectiveCHelper.class.php';
-
-
-
-
-/**
- *
- * @var $f Flexed
- * @var $d \stdClass
- *     
- */
-
-
-/**
- * Returns a class name fragment
- *
- * @param string $d
- * @param string $classesPrefix
- * @return string
- */
-function getCurrentClassNameFragment($d,$classesPrefix="") {
-	if (! $d)
-		return '$d should be set in getCurrentClassFragment( )';
-	if (property_exists ( $d, 'name' )) {
-		return $classesPrefix.$d->name ;
-	} else {
-		return 'UNDEFINDED-CLASS-FRAGMENT';
-	}
-}
-
-
-/**
- * Get action documentation
- *
- * @param string $d
- * @return string
- */
-function getDocumentation($d) {
-	if (! $d)
-		return '$d should be set in getDocumentation( )';
-	if (property_exists ( $d, 'description' ))
-		return "\n/*\n" . $d->description . "\n*/\n";
-	else
-		return '';
-}
-
-/**
- * Returns the comment "header"
- *
- * @param Flexed $flexed        	
- * @return string
- */
-function getCommentHeader($flexed) {
-	return "//  ".$flexed->fileName."
-//  ".$flexed->projectName."
-//
-//  Generated by Flexions  
-//  Copyright (c) ".  $flexed->year." ". $flexed->company." All rights reserved.\n \n";
-}
-
-
-/**
- * 
- * @param string $prefix
- * @param string $baseClassName
- * @return string
- */
-function getCollectionClassName($prefix,$baseClassName ){
-	return ucfirst($prefix).COLLECTION_OF.$baseClassName;
-}
-
-/**
- * 
- * @param string $collectionClassName
- * @return string
- */
-function getClassNameFromCollectionClassName($collectionClassName){
-	return str_replace(COLLECTION_OF, "", $collectionClassName) ;
-	
-}
-
-
-#BMS#->{"filename":"ObjCModel.h.php","checksum":1176857049,"relativePath":"BartlebyFlexions\/src\/modules\/Watt-Objective-c\/ObjCModel.h.php","size":5458}<-#BME#
-<?php
-
-/*
- * Created by Benoit Pereira da Silva on 20/04/2013. Copyright (c) 2013
- * http://www.chaosmos.fr
- * 
- * This file is part of Flexions Flexions is free software: you can
- * redistribute it and/or modify it under the terms of the GNU LESSER GENERAL PUBLIC LICENSE as
- * published by the Free Software Foundation, either version 3 of the License, or (at your option)
- * any later version. 
- * 
- * Flexions is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE. See the GNU LESSER GENERAL PUBLIC LICENSE for more details. You should have received a
- * copy of the GNU LESSER GENERAL PUBLIC LICENSE along with Flexions If not, see
- * <http://www.gnu.org/Licenses/>
- */
-
-/**
- * When using this template you must define : $f->prefix
- * and you can inject : $imports, $parentClass
- */
-require_once FLEXIONS_MODULES_DIR . '/Watt-Objective-c/ObjCGeneric.functions.php';
-
-/* @var $f Flexed */
-/* @var $d EntityRepresentation */
-/* @var $languageHelper ObjectiveCHelper */
-/* @var $imports string */
-/* @var $parentClass string */
-
-$f->fileName = getCurrentClassNameFragment ( $d, $f->prefix ) . '.h';
-$languageHelper = new ObjectiveCHelper ();
-?><?php // ////////// GENERATION STARTS HERE //////////?>
-<?php
-if ($f->license != null)
-	include $f->license;
-?>
-<?php echo getCommentHeader($f);?>
-<?php echo getDocumentation($d );?>
-<?php echo $imports?>
-<?php
-
-// Import the parent class.
-if ($d->instanceOf != null) {
-	echoindent ( "#import \"" . $d->instanceOf . ".h\"\n", 0 );
-}
-// /////////////////////////////////////////////////////////////////////////
-// Explicit collection generation directive : generateCollectionClass
-// //////////////////////////////////////////////////////////////////////////
-
-/* @var $d EntityRepresentation */
-if ($d->generateCollectionClass == true) {
-	for($i = 0; $i < 2; $i ++) {
-
-		// TO generate a collection
-		// We instantiate a sub Flexed
-		$sf = new Flexed ();
-		$sf->package = $f->package;
-		$sf->prefix = $f->prefix;
-		$sf->company = $f->company;
-		$sf->author = $f->author;
-		$sf->projectName = $f->projectName;
-		// We qualify the $collectionClassName required by the collection template
-
-		$collectionClassName =  getCollectionClassName($f->prefix,$d->name);
-		$tplExtension = "h";
-		if ($i == 1) {
-			$tplExtension = "m";
-		}
-		// subTPL execution
-		ob_start ();
-        include FLEXIONS_MODULES_DIR . "/Watt-Objective-c/ObjCObjectCollection.$tplExtension.php";
-		$subResult = ob_get_clean ();
-		// End of subTPL execution
-		$sf->source = $subResult; // We store the generation result
-		                          // and the package path
-		$sf->packagePath = $destination . $sf->package;
-		// We add the flexed the Hypotypose for the post processors
-		$h->addFlexed ( $sf );
-	}
-}
-
-// /////////////////////////////////////////////////////////////////////////
-// Relationships imports an Sub generation of collections.
-// //////////////////////////////////////////////////////////////////////////
-
-while ( $d->iterateOnProperties () === true ) {
-	$property = $d->getProperty ();
-	if ($property->instanceOf != null ) {
-		$instanceOf = $property->instanceOf;
-		echoindent ( "@class $instanceOf;\n", 0 );
-	}		
-	if ($property->instanceOf != null && $property->isExternal==false) {
-		// SUB GENERATION OF COLLECTIONS
-		// we do generate .h and .m in the same sub-loop
-		// The sub templates relies on $s
-		
-		$pos = strpos ( $instanceOf, COLLECTION_OF );
-		if ($pos !==false) {
-			// Generate a collection (it is a 1-n or n-n relationship)
-			for($i = 0; $i < 2; $i ++) {
-				// We instanciate a sub Flexed
-				$sf = new Flexed ();
-				$sf->package = $f->package;
-				$sf->prefix = $f->prefix;
-				$sf->company = $f->company;
-				$sf->author = $f->author;
-				$sf->projectName = $f->projectName;
-				// We qualify the $collectionClassName required by the collection template
-				$collectionClassName = $instanceOf;
-				$tplExtension = "h";
-				if ($i == 1) {
-					$tplExtension = "m";
-				}
-				// subTPL execution
-				ob_start ();
-				include FLEXIONS_MODULES_DIR . "/Watt-Objective-c/ObjCObjectCollection.$tplExtension.php";
-				$subResult = ob_get_clean ();
-				// End of subTPL execution
-				$sf->source = $subResult; // We store the generation result
-				                          // and the package path
-				$sf->packagePath = $destination . $sf->package;
-				// We add the flexed the Hypotypose for the post processors
-				$h->addFlexed ( $sf );
-			}
-		}else{
-			// The standard object is already generated (it is a 1-1 relationship)
-		}
-	}
-}
-?>
-
-@interface <?php echo getCurrentClassNameFragment($d,$f->prefix)?>:<?php
-// We determine the parent class
-if ($d->instanceOf != null) {
-	echo $d->instanceOf;
-} else if ($parentClass != null) {
-	echo $parentClass;
-} else {
-	echo "NSObject";
-}
-?><?php echo (isset($protocols))?"<$protocols>":""; ?>{
-}
-
-<?php
-while ( $d->iterateOnProperties () === true ) {
-	$property = $d->getProperty ();
-	echoindent ( $languageHelper->getPropertyDeclaration ( $property, $allowScalars ), 0 );
-	if($property->isExtractible==false){
-			echo ("// non extractible\n");
-	}else{
-		echo("\n");	
-	}
-}
-?>
-
-<?php
-while ( $d->iterateOnProperties () === true ) {
-	$property = $d->getProperty ();
-	if($property->isGeneratedType){
-		echoIndent("- (".$property->instanceOf."*)".$property->name."_auto;\n",0);
-	}
-}
-?>
-
-@end
-<?php ////////////   GENERATION ENDS HERE   ////////// ?>#BMS#->{"filename":"ObjCModel.m.php","checksum":3198261451,"relativePath":"BartlebyFlexions\/src\/modules\/Watt-Objective-c\/ObjCModel.m.php","size":6929}<-#BME#
-<?php
-
-/*
- Created by Benoit Pereira da Silva on 20/04/2013.
-Copyright (c) 2013  http://www.chaosmos.fr
-
-This file is part of Flexions
-
-Flexions is free software: you can redistribute it and/or modify
-it under the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Flexions is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU LESSER GENERAL PUBLIC LICENSE for more details.
-
-You should have received a copy of the GNU LESSER GENERAL PUBLIC LICENSE
-along with Flexions  If not, see <http://www.gnu.org/Licenses/>
-*/
-
-/**
- * 	When using this template you must define :	$f->prefix, $allowScalars 
- *	And you can inject : 	$markAsDynamic==true to inject a @dynamic tag (for Core data)
- */
-
-require_once FLEXIONS_MODULES_DIR . 'Watt-Objective-c/ObjCGeneric.functions.php';
-require_once FLEXIONS_MODULES_DIR . 'Watt-Objective-c/ObjCObjectCollection.m.php';
-
-/* @var $f Flexed */
-/* @var $d EntityRepresentation */
-/* @var $languageHelper ObjectiveCHelper */
-/* @var $maskedImports string */
-
-$f->fileName = getCurrentClassNameFragment($d,$f->prefix).'.m';
-$languageHelper=new ObjectiveCHelper();
-
-?><?php ////////////   GENERATION STARTS HERE   ////////// ?>
-<?php if($f->license!=null) include $f->license;?>
-<?php echoIndent( getCommentHeader($f),0);?>
-<?php echoIndent('#import "'.getCurrentClassNameFragment($d,$f->prefix).'.h"',0);?> 
-<?php 
-while ( $d ->iterateOnProperties() === true ) {
-	$property = $d->getProperty();
-	if($property->instanceOf!=null){
-		$instanceOf=$property->instanceOf;
-		echoIndent("#import \"$instanceOf.h\"\n",0);
-	}
-}
-?>
-
-@implementation <?php echo getCurrentClassNameFragment($d,$f->prefix);?> 
-<?php 
-if($markAsDynamic==true){
-	// We generate the dynamic
-	echoIndent("\n",0);
-	while ( $d ->iterateOnProperties() === true ) {
-		$property = $d->getProperty();
-		$name=$property->name;
-		echoIndent("@dynamic $name;\n",0);
-	}
-}else{
-	// We generate the synthesize
-	echoIndent("\n",0);
-	while ( $d ->iterateOnProperties() === true ) {
-		$property = $d->getProperty();
-		$name=$property->name;
-		echoIndent("@synthesize $name=_$name;\n",0);
-	}
-}
-?>
-
-- (void)setValue:(id)value forKey:(NSString *)key {
-<?php
-	if(count($d->properties)==0){
-		echoIndent("[super setValue:value forKey:key];\n",1);
-	}else{
-		while ( $d ->iterateOnProperties() === true ) {
-			$property = $d->getProperty();
-		    $name=$property->name;
-		    $valueString=$languageHelper->valueStringForProperty("value",$property);
-		    if($d->firstProperty()){
-		    	echoIndent("if ([key isEqualToString:@\"$name\"]){\n",1);
-		    		echoIndent("[super setValue:$valueString forKey:@\"$name\"];\n",2);
-		    }else{
-				echoIndent("} else if ([key isEqualToString:@\"$name\"]) {\n",1);
-					echoIndent("[super setValue:$valueString forKey:@\"$name\"];\n",2);
-			}
-			if ($d->lastProperty()){
-				echoIndent("} else {\n",1);
-					echoIndent("[super setValue:value forKey:key];\n",2);	
-				echoIndent("}\n",1);
-			}
-		}
-}
-?>
-}
-
-<?php  
-	// We generate the setters && getters with aliases support
-	while ( $d ->iterateOnProperties() === true ) {
-		$property = $d->getProperty();
-		$name=$property->name;
-		if($property->isGeneratedType){
-				$ivarName="_".$name;
-				
-				// Getter 
-				echoIndent("- (". $property->instanceOf."*)$name{\n",0);
-					echoIndent("if([$ivarName isAnAlias]){\n",1);
-						echoIndent("id o=[_registry objectWithUinstID:$ivarName.uinstID];\n",2);
-						echoIndent("if(o){\n",2);
-						echoIndent("$ivarName=o;\n",3);
-						echoIndent("}\n",2);
-					echoIndent("}\n",1);
-					echoIndent("return $ivarName;\n",1);
-				echoIndent("}\n",0);
-				echoIndent("\n",0);
-				echoIndent("\n",0);
-				
-				// Auto Getter (that create an instance if nil) 
-				echoIndent("- (".$property->instanceOf."*)".$name."_auto{\n",0);
-					echoIndent("$ivarName=[self $name];\n",1);
-					echoIndent("if(!$ivarName){\n",1);
-						echoIndent("$ivarName=[[".$property->instanceOf." alloc] initInRegistry:_registry];\n",2);
-					echoIndent("}\n",1);
-					echoIndent("return $ivarName;\n",1);
-				echoIndent("}\n",0);
-				echoIndent("\n",0);
-				
-				// Setter 
-				echoIndent("- (void)set".ucfirst($name).":(".$property->instanceOf."*)$name{\n",0);
-					echoIndent("$ivarName=$name;\n",1);
-				echoIndent("}\n",0);
-				echoIndent("\n",0);
-		}
-	}
-?>
-
-- (NSDictionary *)dictionaryRepresentationWithChildren:(BOOL)includeChildren{
-	NSMutableDictionary *wrapper = [NSMutableDictionary dictionary];
-	[wrapper setObject:NSStringFromClass([self class]) forKey:__className__];
-    [wrapper setObject:[self dictionaryOfPropertiesWithChildren:includeChildren] forKey:__properties__];
-    [wrapper setObject:[NSNumber numberWithInteger:self.uinstID] forKey:__uinstID__];
-    return wrapper;
-}
-
-- (NSMutableDictionary*)dictionaryOfPropertiesWithChildren:(BOOL)includeChildren{
-    NSMutableDictionary *dictionary=[super dictionaryOfPropertiesWithChildren:includeChildren];
-<?php
-	while ( $d ->iterateOnProperties() === true ) {
-		$property = $d->getProperty();
-	    $nativeType=$languageHelper->nativeTypeForProperty($property,$allowScalars);
-	    $name=$property->name;
-	    $s=$languageHelper->objectFromExpression("self.$name", $nativeType);
-	    $ivar="_".$name;
-	 	if($property->isGeneratedType==true){
-			echoIndent("if($ivar){\n",1);
-				echoIndent("if(includeChildren){\n",2);
-					echoIndent("[dictionary setValue:[$s dictionaryRepresentationWithChildren:includeChildren] forKey:@\"$name\"];\n",3);
-				echoIndent("}else{\n",2);
-					echoIndent("[dictionary setValue:[$s aliasDictionaryRepresentation] forKey:@\"$name\"];\n",3);
-				echoIndent("}\n",2);
-			echoIndent("}\n",1);
-		}else{
-			if($languageHelper->isScalar($nativeType)){
-				echoIndent("[dictionary setValue:$s forKey:@\"$name\"];\n",1);
-			}else{
-				echoIndent("if($ivar){\n",1);
-					echoIndent("[dictionary setValue:$s forKey:@\"$name\"];\n",2);
-				echoIndent("}\n",1);			
-			}
-		}
-	}
- ?>
-    return dictionary;
-}
-
-
-- (NSString*)description{
-    if([self isAnAlias])
-        return [super aliasDescription];
-    NSMutableString *s=[NSMutableString stringWithString:[super description]];
-	[s appendFormat:@"Instance of %@ (%@.%@) :\n",@"<?php echo getCurrentClassNameFragment($d,$f->prefix);?> ",_registry.uidString,@(_uinstID)];
-<?php
-	while ( $d ->iterateOnProperties() === true ) {
-		$property = $d->getProperty();
-	    $type=$languageHelper->nativeTypeForProperty($property,$allowScalars);
-	    $name=$property->name;
-	    if($property->isGeneratedType==true){
-			$s="NSStringFromClass([self.$name class])";
-		}else{
-			$s=$languageHelper->objectFromExpression("self.$name", $type);
-		}
-	    echoIndent("[s appendFormat:@\"$name : %@\\n\",$s];\n",1);
-	}
- ?>
-	return s;
-}
-
-@end
-<?php ////////////   GENERATION ENDS HERE   ////////// ?>#BMS#->{"filename":"ObjCObjectCollection.h.php","checksum":901339308,"relativePath":"BartlebyFlexions\/src\/modules\/Watt-Objective-c\/ObjCObjectCollection.h.php","size":2671}<-#BME#
-<?php
-
-/*
- Created by Benoit Pereira da Silva on 20/04/2013.
-Copyright (c) 2013  http://www.chaosmos.fr
-
-This file is part of Flexions
-
-Flexions is free software: you can redistribute it and/or modify
-it under the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Flexions is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU LESSER GENERAL PUBLIC LICENSE for more details.
-
-You should have received a copy of the GNU LESSER GENERAL PUBLIC LICENSE
-along with Flexions  If not, see <http://www.gnu.org/Licenses/>
-*/
-
-/**
- * THIS TEMPLATE IS A SUB-TEMPLATE
- * IT RELIES ON  $sf
- * 	When using this template  you must define :  $collectionClassName;
- */
-require_once FLEXIONS_MODULES_DIR . 'Watt-Objective-c/ObjCGeneric.functions.php';
-
-/* @var $sf Flexed */
-/* @var string $collectionClassName */
-
-
-if(!isset($collectionClassName)){
-    $collectionClassName='UNDEFINED_COLLECTION_CLASS_NAME';
-}
-
-$sf->fileName =$collectionClassName.".h";
-$className=getClassNameFromCollectionClassName($collectionClassName);
-
-?><?php ////////////   GENERATION STARTS HERE   ////////// ?>
-<?php if($f->license!=null) include $f->license;?>
-<?php echo getCommentHeader($sf);?>
-<?php echo "#import \"$className.h\"";?> 
-<?php echo "#import \"$collectionParentClass.h\"";?> 
-
-@interface <?php echo"$collectionClassName:$collectionParentClass"?> <?php echo(isset($protocols))?"<$protocols>":"";?>{
-}
-- (void)enumerateObjectsUsingBlock:(void (^)(<?php echo $className;?> *obj, NSUInteger idx, BOOL *stop))block reverse:(BOOL)useReverseEnumeration;
-- ( <?php echo"$collectionClassName"?>*)filteredCollectionUsingBlock:(BOOL (^)(<?php echo $className;?>  *obj))block withRegistry:(WattRegistry *)registry;
-- (<?php echo $collectionClassName;?>*)filteredCollectionUsingPredicate:(NSPredicate *)predicate withRegistry:(WattRegistry *)registry;
-- (NSUInteger)count;
-- (<?php echo $className;?> *)objectAtIndex:(NSUInteger)index;
-- (<?php echo $className;?> *)firstObject;
-- (<?php echo $className;?> *)lastObject;
-- (<?php echo $className;?> *)firstObjectCommonWithArray:(NSArray*)array;
-- (void)addObject:(<?php echo $className;?>*)anObject;
-- (void)insertObject:(<?php echo $className;?>*)anObject atIndex:(NSUInteger)index;
-- (void)removeLastObject;
-- (void)removeObjectAtIndex:(NSUInteger)index;
-- (void)replaceObjectAtIndex:(NSUInteger)index withObject:(<?php echo $className;?>*)anObject;
-
-@end
-<?php ////////////   GENERATION ENDS HERE   ////////// ?>#BMS#->{"filename":"ObjCObjectCollection.m.php","checksum":400517555,"relativePath":"BartlebyFlexions\/src\/modules\/Watt-Objective-c\/ObjCObjectCollection.m.php","size":4507}<-#BME#
-<?php
-
-/*
- Created by Benoit Pereira da Silva on 20/04/2013.
-Copyright (c) 2013  http://www.chaosmos.fr
-
-This file is part of Flexions
-
-Flexions is free software: you can redistribute it and/or modify
-it under the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Flexions is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU LESSER GENERAL PUBLIC LICENSE for more details.
-
-You should have received a copy of the GNU LESSER GENERAL PUBLIC LICENSE
-along with Flexions  If not, see <http://www.gnu.org/Licenses/>
-*/
-
-/**
- * THIS TEMPLATE IS A SUB-TEMPLATE
- * IT RELIES ON  $sf
- * 	When using this template  you must define :  $collectionClassName;
- */
-require_once FLEXIONS_MODULES_DIR . 'Watt-Objective-c/ObjCGeneric.functions.php';
-
-/* @var $sf Flexed */
-/* @var string $collectionClassName */
-
-if(!isset($collectionClassName)){
-    $collectionClassName='UNDEFINED_COLLECTION_CLASS_NAME';
-}
-
-$sf->fileName =$collectionClassName.".m";
-$className=getClassNameFromCollectionClassName($collectionClassName);
-
-
-?><?php ////////////   GENERATION STARTS HERE   ////////// ?>
-<?php if($f->license!=null) include $f->license;?>
-<?php echo getCommentHeader($f);?>
-
-<?php echo "#import \"$collectionClassName.h\"";?> 
-
-@implementation <?php echo $collectionClassName;?>{
-}
-
-- (instancetype)initInRegistry:(WattRegistry*)registry{
-    self=[super initInRegistry:registry];
-    if(self){
-        _collection=[NSMutableArray array];
-    }
-    return self;
-}
-
-- (NSString*)description{
-    if([self isAnAlias])
-        return [super aliasDescription];
-	NSMutableString *s=[NSMutableString string];
-	[s appendFormat:@"Instance of %@ (%@) :\n",NSStringFromClass([self class]),@(self.uinstID)];
-    [s appendFormat:@"Collection of %@\n",@"<?php echo $className;?>"];
-    [s appendFormat:@"With of %@ members\n",@([_collection count])];
-	return s;
-}
-
-- (void)enumerateObjectsUsingBlock:(void (^)(<?php echo $className;?> *obj, NSUInteger idx, BOOL *stop))block reverse:(BOOL)useReverseEnumeration{
-	 NSUInteger idx = 0;
-    BOOL stop = NO;
-    NSEnumerator * enumerator=useReverseEnumeration?[_collection reverseObjectEnumerator]: [_collection objectEnumerator];
-    for( <?php echo $className;?>* obj in enumerator ){
-        block(obj, idx++, &stop);
-        if( stop )
-            break;
-    }
-}
-
-- ( <?php echo"$collectionClassName"?>*)filteredCollectionUsingBlock:(BOOL (^)(<?php echo $className;?>  *obj))block withRegistry:(WattRegistry *)registry{
-	 <?php echo $collectionClassName;?> *__block collection=[[<?php echo $collectionClassName;?> alloc] initInRegistry:registry];
-	    [self enumerateObjectsUsingBlock:^(<?php echo $className;?> *obj, NSUInteger idx, BOOL *stop) {
-	        if(block(obj)){
-	            [collection addObject:obj];
-	        }
-	    } reverse:NO];
-	    return collection;
-	}
-
-- (<?php echo $collectionClassName;?>*)filteredCollectionUsingPredicate:(NSPredicate *)predicate withRegistry:(WattRegistry *)registry{
-	return (<?php echo $collectionClassName;?>*)[super filteredCollectionUsingPredicate:predicate withRegistry:registry];
-}
-
-- (NSUInteger)count{
-    return [_collection count];
-}
-- (<?php echo $className;?> *)objectAtIndex:(NSUInteger)index{
-	return (<?php echo $className;?>*)[super  objectAtIndex:index];
-}
-
-- (<?php echo $className;?> *)lastObject{
-    return  (<?php echo $className;?>*)[super lastObject];
-}
-
-- (<?php echo $className;?> *)firstObject{
-    return  (<?php echo $className;?>*)[super firstObject];
-}
-
-- (<?php echo $className;?> *)firstObjectCommonWithArray:(NSArray*)array{
-    return (<?php echo $className;?>*)[super firstObjectCommonWithArray:array];
-}
-
-- (void)addObject:(<?php echo $className;?>*)anObject{
- 	[super addObject:anObject];
-}
-
-- (void)insertObject:(<?php echo $className;?>*)anObject atIndex:(NSUInteger)index{
-	[super insertObject:anObject atIndex:index];
-}
-
-- (void)removeLastObject{
-	[super removeLastObject];
-}
-
-- (void)removeObjectAtIndex:(NSUInteger)index{
-    [super removeObjectAtIndex:index];
-}
-
-- (void)replaceObjectAtIndex:(NSUInteger)index withObject:(<?php echo $className;?>*)anObject{
-    [super replaceObjectAtIndex:index withObject:anObject];
-}
-
-- (Class)collectedObjectClass{
-	return [<?php echo $className;?> class];
-}
-
-@end
-<?php ////////////   GENERATION ENDS HERE   ////////// ?>#BMS#->{"filename":"ObjectiveCHelper.class.php","checksum":3099936992,"relativePath":"BartlebyFlexions\/src\/modules\/Watt-Objective-c\/ObjectiveCHelper.class.php","size":9813}<-#BME#
-<?php
-
-/*
- * Created by Benoit Pereira da Silva on 20/04/2013. Copyright (c) 2013
- * http://www.chaosmos.fr This file is part of Flexions Flexions is free software: you can
- * redistribute it and/or modify it under the terms of the GNU LESSER GENERAL PUBLIC LICENSE as
- * published by the Free Software Foundation, either version 3 of the License, or (at your option)
- * any later version. Flexions is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE. See the GNU LESSER GENERAL PUBLIC LICENSE for more details. You should have received a
- * copy of the GNU LESSER GENERAL PUBLIC LICENSE along with Flexions If not, see
- * <http://www.gnu.org/Licenses/>
- */
-
-require_once FLEXIONS_ROOT_DIR . 'flexions/representations/flexions/FlexionsRepresentationsIncludes.php';
-
-class ObjectiveCHelper {
-	const UNDEFINED_TYPE = "UNDEFINED_TYPE";
-	
-	/**
-	 */
-	public $useARC = true; // Non ARC will be soon deprecated (it is not usefull anymore)
-	
-	/*
-	 * we do expose primitive types for documentation purposes to perform metaprogramming more
-	 * easily
-	 */
-	
-	/**
-	 *
-	 * @return array of string enumerates the supported types as en entries in the hypotypose
-	 */
-	public function getPrimitiveTypes() {
-		return array (
-				"string",
-				"mutable_string",
-				"object",
-				"array",
-				"mutable_array",
-				"mutable_dictionary",
-				"dictionary",
-				"null",
-				"any",
-				"uint",
-				"int",
-				"int 16",
-				"int 32",
-				"int 64",
-				"unsigned int",
-				"long long",
-				"unsigned long",
-				"unsigned long long",
-				"integer",
-				"float",
-				"double",
-				"bool",
-				"number",
-				"numeric",
-				"rect",
-				"size",
-				"point" 
-		);
-	}
-	
-	/**
-	 *
-	 * @return array of string the list of the supported native types.
-	 */
-	public function getPrimitiveNativeTypes() {
-		return array (
-				"NSString",
-				"NSMutableString",
-				"NSObject",
-				"NSArray",
-				"NSMutableArray",
-				"NSDictionary",
-				"NSMutableDictionary",
-				"NSNull",
-				"id",
-				"NSInteger",
-				"float",
-				"double",
-				"BOOL",
-				"NSNumber",
-				"GGRect",
-				"CGSize",
-				"CGPoint" 
-		);
-	}
-	
-	/**
-	 * Returns the property d�claration
-	 *
-	 * @param PropertyRepresentation $property        	
-	 * @param bool $allowScalars
-	 *        	used for example when generating for Core data
-	 * @return string
-	 */
-	public function getPropertyDeclaration(PropertyRepresentation $property, $allowScalars = true) {
-		$t = $this->nativeTypeForProperty ( $property, $allowScalars );
-		$options = $this->propertyDeclarationOptionForNativeType ( $t );
-		$p = $this->isScalar ( $t ) == true ? "" : "*";
-		return "@property (" . $options . ") " . $t . " " . $p . " " . $property->name . ";";
-	}
-	
-	/**
-	 * Return a string containing the property declaration options
-	 *
-	 * @param string $nativeTypeName        	
-	 * @return string
-	 */
-	public function propertyDeclarationOptionForNativeType($nativeTypeName) {
-		if ($nativeTypeName == 'NSInteger' or $nativeTypeName == 'NSUInteger' or $nativeTypeName == 'CGRect' or $nativeTypeName == 'CGSize' or $nativeTypeName == 'CGPoint' or $nativeTypeName == 'id' or $nativeTypeName == 'float' or $nativeTypeName == 'double' or $nativeTypeName == 'BOOL') {
-			return "nonatomic,assign";
-		}
-		if ($nativeTypeName == "NSString" or $nativeTypeName == "NSMutableString")
-			return "nonatomic,copy";
-		return "nonatomic,strong";
-	}
-	
-	/**
-	 *
-	 * @param PropertyRepresentation $property        	
-	 * @param bool $allowScalars        	
-	 * @return string
-	 */
-	public function nativeTypeForProperty(PropertyRepresentation $property, $allowScalars = true) {
-		return $this->determineNativeTypeFromString ( $property->type, $property->instanceOf, $allowScalars );
-	}
-	
-	/**
-	 * From the allowable types, determine the type that the variable matches
-	 *
-	 * @param string $type
-	 *        	Parameter type
-	 * @return string Returns the matching type on
-	 */
-	public function determineNativeTypeFromString($type, $instanceOf = null, $allowScalars = true) {
-		// We return directly any UNDEFINED_TYPE
-		if ($type == ObjectiveCHelper::UNDEFINED_TYPE) {
-			return $type;
-		}
-		$rType = $type;
-		$t = trim ( strtolower ( $type ) );
-		
-		if ($t == 'string') {
-			$rType = 'NSString';
-		} elseif ($t == 'mutable_string') {
-			$rType = 'NSMutableString';
-		} elseif ($t == 'object' && $instanceOf == null) {
-			$rType = 'NSObject';
-		} elseif ($t == 'array') {
-			$rType = 'NSArray';
-		} elseif ($t == 'mutable_array') {
-			$rType = 'NSMutableArray';
-		} elseif ($t == 'dictionary') {
-			$rType = 'NSDictionary';
-		} elseif ($t == 'mutable_dictionary') {
-			$rType = 'NSMutableDictionary';
-		} elseif ($t == 'null') {
-			$rType = 'NSNull';
-		} elseif ($t == 'any') {
-			$rType = 'id';
-		} elseif (	strpos ( $t, 'int' ) === 0 or
-						strpos ( $t, 'int32_t' === 0 )	or
-						strpos ( $t, 'int64_t' === 0 )or
-						strpos ( $t, 'long' === 0 )
-				) {
-			if ( 	strpos ( $t, 'uint' ) !== false  or 
-					strpos ( $t, 'u_' !== false ) or
-					strpos ( $t, 'unsigned' !== false )
-					) {
-					$rType = 'NSUInteger';
-			} else {
-				$rType = 'NSInteger';
-			}
-		} elseif ($t == 'float') {
-			$rType = 'float';
-		} elseif ($t == 'double') {
-			$rType = 'double';
-		} elseif ($t == 'boolean') {
-			$rType = 'BOOL';
-		} elseif ($t == 'number') {
-			$rType = 'NSNumber';
-		} elseif ($t == 'numeric') {
-			$rType = 'NSNumber';
-		} elseif ($t == 'rect') {
-			$rType = 'CGRect';
-		} elseif ($t == 'size') {
-			$rType = 'CGSize';
-		} elseif ($t == 'point') {
-			$rType = 'CGPoint';
-		}
-		
-		// We cast any scalar to NSNumber
-		if ($allowScalars == false && $this->isScalar ( $rType ) == true && $rType != 'id') {
-			$rType = 'NSNumber';
-		}
-		// The $rType can still be equal to the initial type.
-		if ($t == 'object' && $instanceOf != null) {
-			// We consider that it is not a primitive and return the entry
-			$rType = $instanceOf;
-		}
-		return $rType;
-	}
-	
-	// @todo
-	public function formatSpecifierFromNativeType($type) {
-		$type = strtolower ( $type );
-		$type = trim ( $type );
-		if ($type == 'int')
-			return "%i";
-		if ($type == 'float' or $type == 'double')
-			return "%f";
-		return "%@";
-	}
-	
-	/**
-	 *
-	 * @param string $expr
-	 *        	for example :"self.propertyName"
-	 * @param string $type
-	 *        	the native type
-	 * @return string
-	 */
-	public function objectFromExpression($expr, $type) {
-		
-		/*
-		 * NSNumber support : Supported : + (NSNumber *)numberWithChar:(char)value; + (NSNumber
-		 * *)numberWithShort:(short)value; + (NSNumber *)numberWithLong:(long)value; + (NSNumber
-		 * *)numberWithFloat:(float)value; + (NSNumber *)numberWithDouble:(double)value; + (NSNumber
-		 * *)numberWithBool:(BOOL)value; + (NSNumber *)numberWithInteger:(NSInteger)value
-		 * NS_AVAILABLE(10_5, 2_0); + (NSNumber *)numberWithUnsignedInteger:(NSUInteger)value
-		 * NS_AVAILABLE(10_5, 2_0); Currently not supported : + (NSNumber
-		 * *)numberWithInt:(int)value; // We use NSInteger and NSUInteger + (NSNumber
-		 * *)numberWithUnsignedChar:(unsigned char)value; + (NSNumber
-		 * *)numberWithUnsignedShort:(unsigned short)value; + (NSNumber
-		 * *)numberWithUnsignedInt:(unsigned int)value; + (NSNumber
-		 * *)numberWithUnsignedLong:(unsigned long)value; + (NSNumber *)numberWithLongLong:(long
-		 * long)value; + (NSNumber *)numberWithUnsignedLongLong:(unsigned long long)value;
-		 */
-		if ($type == 'char')
-			return "@(" . $expr . ")";
-		
-		if ($type == 'short')
-			return "@(" . $expr . ")";
-		
-		if ($type == 'NSUInteger')
-			return "@(" . $expr . ")";
-		
-		if ($type == 'NSInteger')
-			return "@(" . $expr . ")";
-		
-		if ($type == 'long')
-			return "@(" . $expr . ")";
-		
-		if ($type == 'float')
-			return "@(" . $expr . ")";
-		
-		if ($type == 'double')
-			return "@(" . $expr . ")";
-		
-		if ($type == 'BOOL')
-			return "@(" . $expr . ")";
-		
-		if ($type == "CGRect")
-			return "[NSValue valueWithCGRect:$expr]";
-		
-		if ($type == 'CGSize')
-			return "[NSValue valueWithCGSize:$expr]";
-		
-		if ($type == "CGPoint")
-			return "[NSValue valueWithCGPoint:$expr]";
-			
-			// Any object
-		return ( string ) $expr;
-	}
-	
-	/**
-	 * We define a symetric KVC implementation for extended supported types.
-	 *
-	 * Example of usage :
-	 *
-	 * $valueString=$languageHelper->valueStringForProperty("value",$property);
-	 * echoIndent("[self setValue:$valueString forKey:@\"$name\"];\n",2);
-	 *
-	 * @param string $valueString        	
-	 * @param PropertyRepresentation $p        	
-	 * @return string
-	 */
-	function valueStringForProperty($valueString, PropertyRepresentation $p) {
-		if ($p->isGeneratedType == true) {
-			return "[" . $p->instanceOf . " instanceFromDictionary:$valueString inRegistry:_registry includeChildren:NO]";
-		}
-		$nativeType = $this->nativeTypeForProperty ( $p );
-		/*
-		 * NOT USEFULL if($nativeType=='CGRect') return "[$valueString CGRectValue]";
-		 * if($nativeType=='CGSize') return "[$valueString CGSizeValue]"; if($nativeType=='CGPoint')
-		 * return "[$valueString CGPointValue]";
-		 */
-		return $valueString;
-	}
-	
-	/**
-	 *
-	 * @param string $nativeTypeName        	
-	 * @return boolean
-	 */
-	public function isScalar($nativeTypeName) {
-		if (
-				$nativeTypeName == 'id' or 		// Not really scalar.
-				$nativeTypeName =='char' or 
-				$nativeTypeName =='short' or
-				$nativeTypeName =='long' or
-				$nativeTypeName == 'NSInteger' or 
-				$nativeTypeName == 'NSUInteger' or
-				$nativeTypeName == 'float' or 
-				$nativeTypeName == 'double' or 
-				$nativeTypeName == 'BOOL' or 
-				$nativeTypeName == 'CGRect' or
-				$nativeTypeName == 'CGPoint' or 
-				$nativeTypeName == 'CGSize'
-			)
-			return true;
-		return false;
-	}
-	
-	/**
-	 *
-	 * @param string $source        	
-	 * @param string $style        	
-	 * @return string
-	 */
-	public function indent($source, $style) {
-		return $source;
-	}
-
-}
-
-?>#BMS#->{"filename":"NotesXcdata.txt","checksum":3249140636,"relativePath":"BartlebyFlexions\/src\/modules\/XcDataModelXMLImporter\/NotesXcdata.txt","size":1868}<-#BME#
+}#BMS#->{"filename":"NotesXcdata.txt","checksum":3249140636,"relativePath":"BartlebyFlexions\/src\/modules\/XcDataModelXMLImporter\/NotesXcdata.txt","size":1868}<-#BME#
 Modeling tool constraint :
 --------------------------------
 
@@ -21573,7 +20996,7 @@ if (!defined('BARTLEBY_SYNC_VERSION')) {
     define('BDestination', 1);
     define('BSource', 2);
 
-}#BMS#->{"filename":"CommandInterpreter.php","checksum":2033036004,"relativePath":"BartlebySync\/Core\/CommandInterpreter.php","size":8566}<-#BME#
+}#BMS#->{"filename":"CommandInterpreter.php","checksum":142928795,"relativePath":"BartlebySync\/Core\/CommandInterpreter.php","size":8561}<-#BME#
 <?php
 
 namespace BartlebySync\Core;
@@ -21718,7 +21141,7 @@ class CommandInterpreter {
 
             // Save the hashMap.
 
-			$this->ioManager->mkdir ( $this->ioManager->absolutePath ( $treeId, METADATA_FOLDER.'/' ) );
+			$this->ioManager->mkdir ( $this->ioManager->absoluteUrl ( $treeId, METADATA_FOLDER.'/' ) );
 			if ($this->ioManager->saveHashMap ( $treeId, $finalHashMap )) {
 				return NULL;
 			} else {
@@ -21760,9 +21183,9 @@ class CommandInterpreter {
 		foreach ( $this->listOfFiles as $file ) {
 			if (substr ( $file, - 1 ) != "/") {
 				$relativePath = dirname ( $file ) . DIRECTORY_SEPARATOR . $syncIdentifier . basename ( $file );
-				$protectedPath = $this->ioManager->absolutePath ( $treeId, $relativePath );
+				$protectedPath = $this->ioManager->absoluteUrl ( $treeId, $relativePath );
 				if ($this->ioManager->exists ( $protectedPath )) {
-					$this->ioManager->rename ( $protectedPath, $this->ioManager->absolutePath ( $treeId, $file ) );
+					$this->ioManager->rename ( $protectedPath, $this->ioManager->absoluteUrl ( $treeId, $file ) );
 				} else {
 					$failures [] = 'Unexisting path : ' . $protectedPath . ' -> ' . $treeId . ' (' . $relativePath . ') ';
 				}
@@ -21785,8 +21208,8 @@ class CommandInterpreter {
 		if (count ( $cmd )> 1 ) {
 			$command = $cmd [0];
 			// Absolute paths
-			$destination = $this->ioManager->absolutePath ( $treeId, $cmd [BDestination] );
-			$source = $this->ioManager->absolutePath ( $treeId, $cmd [BSource] );
+			$destination = $this->ioManager->absoluteUrl ( $treeId, $cmd [BDestination] );
+			$source = $this->ioManager->absoluteUrl ( $treeId, $cmd [BSource] );
             $sourceExistsString=($this->ioManager->exists($source))?"Yes":"No";
             $destinationExistsString=($this->ioManager->exists($destination))?"Yes":"No";
 
@@ -21849,7 +21272,7 @@ class CommandInterpreter {
 		return 'CMD ' . json_encode ( $cmd ) . ' is not valid';
 	}
 }
-?>#BMS#->{"filename":"IOManager.php","checksum":3838790442,"relativePath":"BartlebySync\/Core\/IOManager.php","size":9727}<-#BME#
+?>#BMS#->{"filename":"IOManager.php","checksum":3033658682,"relativePath":"BartlebySync\/Core\/IOManager.php","size":9721}<-#BME#
 <?php
 
 namespace BartlebySync\Core;
@@ -21905,7 +21328,7 @@ interface  IOManager extends IOManagerPersistency{
 	 * @param string $relativePath
 	 * @return string|NULL
 	 */
-	public function absolutePath($treeId, $relativePath);
+	public function absoluteUrl($treeId, $relativePath);
 
 	/**
 	 *  Returns the current public uri for a given resource
@@ -22004,7 +21427,7 @@ abstract class IOManagerAbstract  {
 	}
 
 
-	public function absolutePath($treeId, $relativePath) {
+	public function absoluteUrl($treeId, $relativePath) {
 		$currentId=$this->_currentPublicId($treeId);
 		if($currentId!=NULL){
 			return $this->repositoryAbsolutePath () . $this->_currentPublicId($currentId). DIRECTORY_SEPARATOR . $relativePath;
@@ -22015,9 +21438,9 @@ abstract class IOManagerAbstract  {
 
 	public function uriFor($treeId, $relativePath) {
 		$currentId = $this->_currentPublicId ( $treeId );
-		$absolutePath = $this->absolutePath ( $treeId, $relativePath );
+		$absoluteUrl = $this->absoluteUrl ( $treeId, $relativePath );
 		if ($currentId != NULL) {
-			if ($this->exists ( $absolutePath )) {
+			if ($this->exists ( $absoluteUrl )) {
 				$uri = REPOSITORY_HOST . $currentId . DIRECTORY_SEPARATOR . $relativePath;
 				$uri= str_replace(" ","%20",$uri );
 					// @todo 401 if not authorized;
@@ -22132,7 +21555,7 @@ abstract class IOManagerAbstract  {
 
 
 	public function saveHashMap($treeId, $finalHashMap) {
-		$destination = $this->absolutePath ( $treeId, METADATA_FOLDER .DIRECTORY_SEPARATOR. HASHMAP_FILENAME );
+		$destination = $this->absoluteUrl ( $treeId, METADATA_FOLDER .DIRECTORY_SEPARATOR. HASHMAP_FILENAME );
 		return $this->put_contents($destination,$finalHashMap);
 	}
 
@@ -22579,7 +22002,7 @@ final class BartlebySyncDeleteTree extends BartlebySyncAbstractEndPoint {
 
         }
     }
-}#BMS#->{"filename":"BartlebySyncFinalizeTransactionIn.php","checksum":782775831,"relativePath":"BartlebySync\/EndPoints\/BartlebySyncFinalizeTransactionIn.php","size":4978}<-#BME#
+}#BMS#->{"filename":"BartlebySyncFinalizeTransactionIn.php","checksum":1740649019,"relativePath":"BartlebySync\/EndPoints\/BartlebySyncFinalizeTransactionIn.php","size":4974}<-#BME#
 <?php
 
 namespace Bartleby\EndPoints;
@@ -22684,7 +22107,7 @@ final class BartlebySyncFinalizeTransactionIn extends BartlebySyncAbstractEndPoi
         }
 
         $this->ioManager = $this->getIoManager();
-        $rootPath = $this->ioManager->absolutePath($parameters->treeId, '');
+        $rootPath = $this->ioManager->absoluteUrl($parameters->treeId, '');
         $fileList = $this->ioManager->listRelativePathsIn($rootPath);
         $deletedPath = array();
         $unModifiedPath = array();
@@ -22695,8 +22118,8 @@ final class BartlebySyncFinalizeTransactionIn extends BartlebySyncAbstractEndPoi
                 $pathInfos = pathinfo($relativePath);
                 $fileName = $pathInfos ['basename'];
                 if ($this->_stringStartsWith($fileName,$parameters->syncIdentifier)) {
-                    $absolutePath = $this->ioManager->absolutePath($parameters->treeId, $relativePath);
-                    $this->ioManager->delete($absolutePath);
+                    $absoluteUrl = $this->ioManager->absoluteUrl($parameters->treeId, $relativePath);
+                    $this->ioManager->delete($absoluteUrl);
                     $deletedPath [] = $relativePath;
                 } else {
                     $unModifiedPath[] = $relativePath;
@@ -22710,7 +22133,7 @@ final class BartlebySyncFinalizeTransactionIn extends BartlebySyncAbstractEndPoi
         return (strpos($haystack, $needle) !== FALSE);
     }
 
-}#BMS#->{"filename":"BartlebySyncGetFile.php","checksum":3972045517,"relativePath":"BartlebySync\/EndPoints\/BartlebySyncGetFile.php","size":2547}<-#BME#
+}#BMS#->{"filename":"BartlebySyncGetFile.php","checksum":953688619,"relativePath":"BartlebySync\/EndPoints\/BartlebySyncGetFile.php","size":2546}<-#BME#
 <?php
 
 namespace Bartleby
@@ -22770,7 +22193,7 @@ final class BartlebySyncGetFile extends BartlebySyncAbstractEndPoint {
         }
 
         $this->ioManager = $this->getIoManager();
-        $path = $this->ioManager->absolutePath($parameters->treeId, $parameters->path);
+        $path = $this->ioManager->absoluteUrl($parameters->treeId, $parameters->path);
         if (!$this->ioManager->exists($path)) {
             return new JsonResponse(VOID_RESPONSE, 404);
         }
@@ -22802,7 +22225,7 @@ final class BartlebySyncGetFile extends BartlebySyncAbstractEndPoint {
     }
 }
 
-#BMS#->{"filename":"BartlebySyncGetHashMap.php","checksum":1822776298,"relativePath":"BartlebySync\/EndPoints\/BartlebySyncGetHashMap.php","size":2065}<-#BME#
+#BMS#->{"filename":"BartlebySyncGetHashMap.php","checksum":1292478824,"relativePath":"BartlebySync\/EndPoints\/BartlebySyncGetHashMap.php","size":2064}<-#BME#
 <?php
 
 namespace Bartleby\EndPoints;
@@ -22849,7 +22272,7 @@ final class BartlebySyncGetHashMap extends BartlebySyncAbstractEndPoint {
         }
 
         $this->ioManager = $this->getIoManager ();
-        $path = $this->ioManager->absolutePath ( $parameters->treeId, METADATA_FOLDER . '/'. HASHMAP_FILENAME );
+        $path = $this->ioManager->absoluteUrl ( $parameters->treeId, METADATA_FOLDER . '/'. HASHMAP_FILENAME );
         if (! $this->ioManager->exists ( $path )) {
             return new JsonResponse(VOID_RESPONSE, 404 );
         }
@@ -22972,7 +22395,7 @@ final class BartlebySyncTouchTree extends BartlebySyncAbstractEndPoint{
         }
 
     }
-}#BMS#->{"filename":"BartlebySyncUploadFileTo.php","checksum":1764101048,"relativePath":"BartlebySync\/EndPoints\/BartlebySyncUploadFileTo.php","size":4420}<-#BME#
+}#BMS#->{"filename":"BartlebySyncUploadFileTo.php","checksum":3237022050,"relativePath":"BartlebySync\/EndPoints\/BartlebySyncUploadFileTo.php","size":4417}<-#BME#
 <?php
 
 
@@ -23011,14 +22434,14 @@ final class BartlebySyncUploadFileTo extends BartlebySyncAbstractEndPoint {
         if (isset ($parameters->destination) && isset ($parameters->syncIdentifier)) {
 
             $this->ioManager = $this->getIoManager();
-            $treeFolder = $this->ioManager->absolutePath($parameters->treeId, '');
+            $treeFolder = $this->ioManager->absoluteUrl($parameters->treeId, '');
 
             if (isset ($treeFolder) && $this->ioManager->exists($treeFolder)) {
 
                 $destination = $parameters->destination;
                 $syncIdentifier = $parameters->syncIdentifier;
                 $isAFolder = (substr($destination, -1) == "/");
-                $d = $this->ioManager->absolutePath($parameters->treeId, $destination);
+                $d = $this->ioManager->absoluteUrl($parameters->treeId, $destination);
 
                 if ($isAFolder == true) {
 
@@ -23033,7 +22456,7 @@ final class BartlebySyncUploadFileTo extends BartlebySyncAbstractEndPoint {
 
                     // there is a source it should be a file.
                     $d = dirname($destination) . DIRECTORY_SEPARATOR . $syncIdentifier . basename($destination);
-                    $destinationPath = $this->ioManager->absolutePath($parameters->treeId, $d);
+                    $destinationPath = $this->ioManager->absoluteUrl($parameters->treeId, $d);
 
                     // We create the folder if necessary.
                     $this->ioManager->mkdir(dirname($destinationPath));
@@ -23097,7 +22520,7 @@ final class BartlebySyncUploadFileTo extends BartlebySyncAbstractEndPoint {
 
 
 
-#BMS#->{"filename":"README.md","checksum":4271138400,"relativePath":"BartlebySync\/README.md","size":17979}<-#BME#
+#BMS#->{"filename":"README.md","checksum":3166715634,"relativePath":"BartlebySync\/README.md","size":17955}<-#BME#
 # BartlebySync 1.0 
 
 BartlebySync is a delta synchronizer for documents and data between devices.It allows to synchronizes local and distant grouped files tree.The standard synchronization topology relies on a client software and a light blind Restfull service, but can work locally and using P2P.
@@ -23240,15 +22663,15 @@ Add the persmission in _configure()
  
     // BartlebySync
     'BartlebySyncSupports->call'=>array('level' => PERMISSION_NO_RESTRICTION),
-    'BartlebySyncInstall->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-    'BartlebySyncCreateTree->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-    'BartlebySyncTouchTree->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-    'BartlebySyncGetHashMap->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-    'BartlebySyncGetFile->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-    'BartlebySyncUploadFileTo->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-    'BartlebySyncFinalizeTransactionIn->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
+    'BartlebySyncInstall->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+    'BartlebySyncCreateTree->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+    'BartlebySyncTouchTree->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+    'BartlebySyncGetHashMap->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+    'BartlebySyncGetFile->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+    'BartlebySyncUploadFileTo->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+    'BartlebySyncFinalizeTransactionIn->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
     'BartlebySyncFinalizeTransactionIn->cleanUp'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),// May be suspended ( it is used on finalizeTransactionIn)
-    'BartlebySyncRemoveGhosts->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE)
+    'BartlebySyncRemoveGhosts->call'=>array('level' => PERMISSION_BY_IDENTIFICATION)
 ```
 
 Add the routes aliases 
@@ -23836,7 +23259,7 @@ try {
     $header = 'HTTP/1.1 ' . $status . ' ' . JsonResponse::getRequestStatus($status);
     header($header);
     echo json_encode(Array('error' => $e->getMessage()));
-}#BMS#->{"filename":"Configuration.php","checksum":219851704,"relativePath":"www\/Configuration.php","size":7992}<-#BME#
+}#BMS#->{"filename":"Configuration.php","checksum":763551156,"relativePath":"www\/Configuration.php","size":7968}<-#BME#
 <?php
 
 // SHARED CONFIGURATION BETWEEN THE API & MAIN PAGES
@@ -23967,14 +23390,14 @@ class Configuration extends GeneratedConfiguration {
             'Time->GET'=>array('level' => PERMISSION_NO_RESTRICTION),
 
             // BartlebySync
-            'BartlebySyncSupports->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-            'BartlebySyncInstall->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-            'BartlebySyncCreateTree->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-            'BartlebySyncTouchTree->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-            'BartlebySyncGetHashMap->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-            'BartlebySyncGetFile->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-            'BartlebySyncUploadFileTo->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-            'BartlebySyncFinalizeTransactionIn->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
+            'BartlebySyncSupports->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+            'BartlebySyncInstall->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+            'BartlebySyncCreateTree->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+            'BartlebySyncTouchTree->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+            'BartlebySyncGetHashMap->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+            'BartlebySyncGetFile->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+            'BartlebySyncUploadFileTo->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+            'BartlebySyncFinalizeTransactionIn->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
             'BartlebySyncFinalizeTransactionIn->cleanUp'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),// May be suspended ( it is used on finalizeTransactionIn)
             'BartlebySyncRemoveGhosts->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY)
         );
@@ -24069,7 +23492,7 @@ if (isset($_GET['cookiecheck'])) {
     setcookie('testcookie', "testvalue");
     die(header("Location: " . $_SERVER['PHP_SELF'] . "?cookiecheck=1"));
 }
-?>#BMS#->{"filename":"is-mcrypt-supported.php","checksum":3579840248,"relativePath":"www\/Diagnostics\/is-mcrypt-supported.php","size":591}<-#BME#
+?>#BMS#->{"filename":"is-mcrypt-supported.php","checksum":3067284155,"relativePath":"www\/Diagnostics\/is-mcrypt-supported.php","size":592}<-#BME#
 <?php
 
 require_once dirname(__DIR__).'/Configuration.php';
@@ -24083,7 +23506,7 @@ if(function_exists('mcrypt_encrypt')) {
 }else{
     print '"mcrypt" is not available! ';
 }
-if ($configuration->getCryptedAuthCookieValue('NO_BODY','NO_DOCUMENT')=='NO_DOCUMENT'){
+if ($configuration->encryptIdentificationValue('NO_BODY','NO_DOCUMENT')=='NO_DOCUMENT'){
     print "But the authentication engine is not able to use it. That's a minor security issue that exposes publicly the userID via a cookie.";
 }else{
     print '"userId" is crypted!';

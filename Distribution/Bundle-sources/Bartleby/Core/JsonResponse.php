@@ -6,7 +6,7 @@ namespace Bartleby\Core;
 require_once __DIR__ . '/IResponse.php';
 require_once __DIR__ . '/Response.php';
 
-class JsonResponse extends Response implements  IResponse{
+class JsonResponse extends Response implements  IHTTPResponse{
 
     /* @var $data the data (we keep the property public for DataFilters) */
     public $data;
@@ -14,7 +14,7 @@ class JsonResponse extends Response implements  IResponse{
     /**
      * @var Integer|int
      */
-    private $_statusCode;
+    private $_statusCode=-1;
 
     /**
      * JsonResponse constructor.

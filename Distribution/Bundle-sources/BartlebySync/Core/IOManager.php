@@ -53,7 +53,7 @@ interface  IOManager extends IOManagerPersistency{
 	 * @param string $relativePath
 	 * @return string|NULL
 	 */
-	public function absolutePath($treeId, $relativePath);
+	public function absoluteUrl($treeId, $relativePath);
 
 	/**
 	 *  Returns the current public uri for a given resource
@@ -152,7 +152,7 @@ abstract class IOManagerAbstract  {
 	}
 
 
-	public function absolutePath($treeId, $relativePath) {
+	public function absoluteUrl($treeId, $relativePath) {
 		$currentId=$this->_currentPublicId($treeId);
 		if($currentId!=NULL){
 			return $this->repositoryAbsolutePath () . $this->_currentPublicId($currentId). DIRECTORY_SEPARATOR . $relativePath;
@@ -163,9 +163,9 @@ abstract class IOManagerAbstract  {
 
 	public function uriFor($treeId, $relativePath) {
 		$currentId = $this->_currentPublicId ( $treeId );
-		$absolutePath = $this->absolutePath ( $treeId, $relativePath );
+		$absoluteUrl = $this->absoluteUrl ( $treeId, $relativePath );
 		if ($currentId != NULL) {
-			if ($this->exists ( $absolutePath )) {
+			if ($this->exists ( $absoluteUrl )) {
 				$uri = REPOSITORY_HOST . $currentId . DIRECTORY_SEPARATOR . $relativePath;
 				$uri= str_replace(" ","%20",$uri );
 					// @todo 401 if not authorized;
@@ -280,7 +280,7 @@ abstract class IOManagerAbstract  {
 
 
 	public function saveHashMap($treeId, $finalHashMap) {
-		$destination = $this->absolutePath ( $treeId, METADATA_FOLDER .DIRECTORY_SEPARATOR. HASHMAP_FILENAME );
+		$destination = $this->absoluteUrl ( $treeId, METADATA_FOLDER .DIRECTORY_SEPARATOR. HASHMAP_FILENAME );
 		return $this->put_contents($destination,$finalHashMap);
 	}
 

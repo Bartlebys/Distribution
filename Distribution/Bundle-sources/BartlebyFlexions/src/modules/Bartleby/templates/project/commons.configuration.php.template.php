@@ -134,17 +134,17 @@ class BartlebyCommonsConfiguration extends MongoConfiguration {
 
             'NotFound->GET'=> array('level'=> PERMISSION_NO_RESTRICTION),
             'Reachable->GET'=> array('level'=> PERMISSION_NO_RESTRICTION),
-            'Reachable->verify'=> array('level'=> PERMISSION_IDENTIFIED_BY_COOKIE),
+            'Reachable->verify'=> array('level'=> PERMISSION_BY_IDENTIFICATION),
             'Auth->POST' => array('level' => PERMISSION_BY_TOKEN,TOKEN_CONTEXT=>'LoginUser#spaceUID'),// (!) do not change
             'Auth->DELETE' => array('level'  => PERMISSION_NO_RESTRICTION), // (!)
-            'SSETime->GET'=> array('level'=> PERMISSION_IDENTIFIED_BY_COOKIE),
+            'SSETime->GET'=> array('level'=> PERMISSION_BY_IDENTIFICATION),
 
             // The configuration infos endpoint
             'Infos->GET'=>array('level' => PERMISSION_NO_RESTRICTION),
 
             // USERS
 
-            'ReadUserById->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
+            'ReadUserById->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
             'CreateUser->call'=>array('level' => PERMISSION_BY_TOKEN,TOKEN_CONTEXT=>'CreateUser#spaceUID'),
 
             'UpdateUser->call'=>array(
@@ -196,7 +196,7 @@ class BartlebyCommonsConfiguration extends MongoConfiguration {
             )
             ,
             'CreateUsers->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
-            'ReadUsersByIds->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
+            'ReadUsersByIds->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
             'UpdateUsers->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
             'DeleteUsers->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
             'ReadUsersByQuery->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
@@ -211,8 +211,8 @@ class BartlebyCommonsConfiguration extends MongoConfiguration {
      			4# On successful verification the locker is returned with its cake :)
 			*/
 
-			'VerifyLocker->POST' => array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-			'CreateLocker->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
+			'VerifyLocker->POST' => array('level' => PERMISSION_BY_IDENTIFICATION),
+			'CreateLocker->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
 			'UpdateLocker->call'=>array(
 				'level' => PERMISSION_RESTRICTED_BY_QUERIES,
 				ARRAY_OF_QUERIES =>array(
@@ -250,12 +250,12 @@ class BartlebyCommonsConfiguration extends MongoConfiguration {
 
             // GROUPS
 
-            'ReadGroupById->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
+            'ReadGroupById->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
             'CreateGroup->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
             'UpdateGroup->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
             'DeleteGroup->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
             'CreateGroups->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
-            'ReadGroupsByIds->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
+            'ReadGroupsByIds->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
             'UpdateGroups->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
             'DeleteGroups->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
             'ReadGroupsByQuery->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
@@ -300,19 +300,12 @@ class BartlebyCommonsConfiguration extends MongoConfiguration {
             'ReadPermissionsByQuery->call'=>array('level' => PERMISSION_BY_TOKEN,TOKEN_CONTEXT=>'ReadPermissionsByQuery#spaceUID'),
 
 
-            // Nobody can update a trigger.
+            // Nobody can delete triggers.
 
-            'CreateTrigger->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-            'UpdateTrigger->call'=>array('level' => PERMISSION_IS_BLOCKED),
-            'DeleteTrigger->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
-            'CreateTriggers->call'=>array('level' => PERMISSION_IS_BLOCKED),
-            'ReadTriggersByIds->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE),
-            'UpdateTriggers->call'=>array('level' => PERMISSION_IS_BLOCKED),
-            'DeleteTriggers->call'=>array('level' => PERMISSION_IS_BLOCKED),
-            'ReadTriggersByQuery->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE)
-
-
-
+            'SSETriggers->GET'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+            'TriggerAfterIndex->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+            'TriggerForIndexes->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
+            'TriggersByIds->call'=>array('level' => PERMISSION_BY_IDENTIFICATION)
 
 
 <?php
@@ -349,7 +342,7 @@ while ($d->iterateOnActions() ) {
 
 
     //$string= "'".$classNameWithoutPrefix."->call'=>array('level' => PERMISSION_BY_TOKEN,TOKEN_CONTEXT=>'$classNameWithoutPrefix#rUID')";
-    $string= "'".$classNameWithoutPrefix."->call'=>array('level' => PERMISSION_IDENTIFIED_BY_COOKIE)";
+    $string= "'".$classNameWithoutPrefix."->call'=>array('level' => PERMISSION_BY_IDENTIFICATION)";
 
     if(!$d->lastAction()){
         $string.=',';
@@ -373,7 +366,8 @@ echoIndentCR("*/",2);
             'POST:/user/logout' => array('Auth','DELETE'), // Will call explicitly DELETE (equivalent to explicit call of DELETE login)
             'GET:/verify/credentials' => array('Reachable','verify'),
             'POST:/locker/verify' => array('VerifyLocker','POST'),
-
+            'GET:/{spaceUID}/triggers/after/{lastIndex}' => array('TriggerAfterIndex','call'),// Multi route test
+            'GET:/triggers/after/{lastIndex}' => array('TriggerAfterIndex','call'),
 <?php
 $history=array();
 /* @var $d ProjectRepresentation */
@@ -416,6 +410,5 @@ while ($d->iterateOnActions() ) {
         );
         return new RoutesAliases($mapping);
     }
-
 }
 <?php echo '?>'?><?php /*<- END OF TEMPLATE */?>

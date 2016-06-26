@@ -559,7 +559,7 @@ foreach ($d->entities as $entity ) {
 
     $genericQueryGetPathBlock = '
         "/' . lcfirst($pluralizedName) . 'ByQuery" : {
-            "post" : {
+            "get" : {
                 "tags" : [
                     "' . $pluralizedName . '"
                 ],

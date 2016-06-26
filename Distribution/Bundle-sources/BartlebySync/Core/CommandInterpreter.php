@@ -142,7 +142,7 @@ class CommandInterpreter {
 
             // Save the hashMap.
 
-			$this->ioManager->mkdir ( $this->ioManager->absolutePath ( $treeId, METADATA_FOLDER.'/' ) );
+			$this->ioManager->mkdir ( $this->ioManager->absoluteUrl ( $treeId, METADATA_FOLDER.'/' ) );
 			if ($this->ioManager->saveHashMap ( $treeId, $finalHashMap )) {
 				return NULL;
 			} else {
@@ -184,9 +184,9 @@ class CommandInterpreter {
 		foreach ( $this->listOfFiles as $file ) {
 			if (substr ( $file, - 1 ) != "/") {
 				$relativePath = dirname ( $file ) . DIRECTORY_SEPARATOR . $syncIdentifier . basename ( $file );
-				$protectedPath = $this->ioManager->absolutePath ( $treeId, $relativePath );
+				$protectedPath = $this->ioManager->absoluteUrl ( $treeId, $relativePath );
 				if ($this->ioManager->exists ( $protectedPath )) {
-					$this->ioManager->rename ( $protectedPath, $this->ioManager->absolutePath ( $treeId, $file ) );
+					$this->ioManager->rename ( $protectedPath, $this->ioManager->absoluteUrl ( $treeId, $file ) );
 				} else {
 					$failures [] = 'Unexisting path : ' . $protectedPath . ' -> ' . $treeId . ' (' . $relativePath . ') ';
 				}
@@ -209,8 +209,8 @@ class CommandInterpreter {
 		if (count ( $cmd )> 1 ) {
 			$command = $cmd [0];
 			// Absolute paths
-			$destination = $this->ioManager->absolutePath ( $treeId, $cmd [BDestination] );
-			$source = $this->ioManager->absolutePath ( $treeId, $cmd [BSource] );
+			$destination = $this->ioManager->absoluteUrl ( $treeId, $cmd [BDestination] );
+			$source = $this->ioManager->absoluteUrl ( $treeId, $cmd [BSource] );
             $sourceExistsString=($this->ioManager->exists($source))?"Yes":"No";
             $destinationExistsString=($this->ioManager->exists($destination))?"Yes":"No";
 

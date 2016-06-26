@@ -59,7 +59,7 @@ abstract class MongoPage extends MongoController {
      * @param $relativePath
      */
     protected  function importJSFile($relativePath){
-        $this->_BOTTOM_SCRIPTS[]='<script src="'.$this->absolutePath($relativePath).'"></script>';
+        $this->_BOTTOM_SCRIPTS[]='<script src="'.$this->absoluteUrl($relativePath).'"></script>';
     }
     
     /***
@@ -112,7 +112,7 @@ abstract class MongoPage extends MongoController {
 
     //
 
-    public function absolutePath($relativePath){
+    public function absoluteUrl($relativePath){
         return $this->_configuration->HOST().ltrim($relativePath,'/');
     }
 

@@ -14,39 +14,43 @@ $prefix = "";// No prefix
 
 $modelsShouldConformToNSCoding = true; // (!) you can opt for NSCoding support (the model will not be pure swift models)
 
-$excludeEntitiesWith = array("AbstractContext"); //
+$excludeEntitiesWith = ["AbstractContext"]; //
 
-$xOSIncludeCollectionControllerForEntityNamed = array("Operation","TasksGroup","Task");
+$xOSIncludeCollectionControllerForEntityNamed = [
+    "Operation",
+    "TasksGroup",
+    "Task"
+];
 
-$excludeActionsWith = array(    "TaskArguments",// Base name for any task arguments.
-                                "JString","JDictionary","JData", // Primitive Wrapper
-                                "Trigger",
-                                "Operation",
-                                "TasksGroup",
-                                "Task",
-                                "Abstract", // Any abstract entity should be ignored
-                                "ExternalReference",   
-                                "Progression",
-                                "Completion",
-                                "BaseObject",
-                                "Tag",
-                                "CollectionMetadatum",
-                                "HTTPResponse",
-                                "RegistryMetadata",
-                                "CollectionMetadata",
-                                "CollectionMetadatum"//
+$excludeActionsWith = ["TaskArguments",// Base name for any task arguments.
+    "JString", "JDictionary", "JData", // Primitive Wrapper
+    "Trigger",
+    "Operation",
+    "TasksGroup",
+    "Task",
+    "Abstract", // Any abstract entity should be ignored
+    "ExternalReference",
+    "Progression",
+    "Completion",
+    "BaseObject",
+    "Tag",
+    "CollectionMetadatum",
+    "HTTPResponse",
+    "RegistryMetadata",
+    "CollectionMetadata",
+    "CollectionMetadatum"//
 
-                            );//We will generate only the entity ( On client and server side)
-$excludeFromServerActionsWith = array("");
+];//We will generate only the entity ( On client and server side)
+$excludeFromServerActionsWith = [""];
 
-$unDeletableEntitiesWith = array();
-$unModifiableEntitiesWith = array();
-$doNotGenerate = array();
+$unDeletableEntitiesWith = [];
+$unModifiableEntitiesWith = [];
+$doNotGenerate = [];
 
 if (isset ($f)) {
-    $f->company = "Chaosmos | https://chaosmos.fr";
+    $f->company = "Bartleby's | https://bartlebys.org";
     $f->prefix = $prefix;
-    $f->author = "benoit@pereira-da-silva.com";
+    $f->author = "b@bartlebys.org";
     $f->projectName = "Bartleby";
     //$f->license = FLEXIONS_MODULES_DIR."Licenses/LGPL.template.php";
 }

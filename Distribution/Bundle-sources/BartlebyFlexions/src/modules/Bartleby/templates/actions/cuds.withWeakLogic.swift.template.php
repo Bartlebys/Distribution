@@ -346,14 +346,14 @@ if( $modelsShouldConformToNSCoding ) {
 
     func commit(){
         let context=Context(code:<?php echo crc32($baseClassName.'.commit') ?>, caller: "<?php echo$baseClassName ?>.commit")
-        if let registry = Bartleby.sharedInstance.getRegistryByUID(self._spaceUID) {
+        if let document = Bartleby.sharedInstance.getDocumentByUID(self._spaceUID) {
 
                 // Prepare the operation serialization
                 self.defineUID()
                 self._operation.defineUID()
                 self._operation.counter=0
                 self._operation.status=Operation.Status.Pending
-                self._operation.baseUrl=registry.registryMetadata.collaborationServerURL
+                self._operation.baseUrl=document.registryMetadata.collaborationServerURL
                 self._operation.creationDate=NSDate()
                 self._operation.spaceUID=self._spaceUID
 <?php
@@ -374,15 +374,15 @@ if ($httpMethod=="DELETE"){
 }
 ?>
 
-                if let currentUser=registry.registryMetadata.currentUser{
+                if let currentUser=document.registryMetadata.currentUser{
                     self._operation.creatorUID=currentUser.UID
                     self.creatorUID=currentUser.UID
                 }
 
                 // Provision the operation.
                 do{
-                    let ic:OperationsCollectionController = try registry.getCollection()
-                    ic.add(self._operation)
+                    let ic:OperationsCollectionController = try document.getCollection()
+                    ic.add(self._operation, commit:false)
                 }catch{
                     Bartleby.sharedInstance.dispatchAdaptiveMessage(context,
                     title: "Structural Error",
@@ -405,7 +405,7 @@ if ($httpMethod=="DELETE"){
             }
         ?>
         }else{
-            // This registry is not available there is nothing to do.
+            // This document is not available there is nothing to do.
             let m=NSLocalizedString("Registry is missing", comment: "Registry is missing")
             Bartleby.sharedInstance.dispatchAdaptiveMessage(context,
                     title: NSLocalizedString("Structural error", comment: "Structural error"),
@@ -418,7 +418,7 @@ if ($httpMethod=="DELETE"){
 
     public func push(sucessHandler success:(context:JHTTPResponse)->(),
         failureHandler failure:(context:JHTTPResponse)->()){
-        if let <?php if($httpMethod=="POST"){echo("registry");}else{echo("_");} ?> = Bartleby.sharedInstance.getRegistryByUID(self._spaceUID) {
+        if let <?php if($httpMethod=="POST"){echo("document");}else{echo("_");} ?> = Bartleby.sharedInstance.getDocumentByUID(self._spaceUID) {
             // The unitary operation are not always idempotent
             // so we do not want to push multiple times unintensionnaly.
             if  self._operation.status==Operation.Status.Pending ||
@@ -429,7 +429,7 @@ if ($httpMethod=="DELETE"){
                     $dataSpaceSyntagm:self._spaceUID,".cr() ?>
                     sucessHandler: { (context: JHTTPResponse) -> () in
                         <?php if ($httpMethod=="POST") {
-                            echo("registry.markAsDistributed(&self._$firstParameterName)".cr());
+                            echo("document.markAsDistributed(&self._$firstParameterName)".cr());
                         } else {
                             echo(cr());
                         }
@@ -449,7 +449,7 @@ if ($httpMethod=="DELETE"){
                     }
                 )
             }else{
-                // This registry is not available there is nothing to do.
+                // This document is not available there is nothing to do.
                 let context=Context(code:<?php echo crc32($baseClassName.'.push') ?>, caller: "<?php echo$baseClassName ?>.push")
                 Bartleby.sharedInstance.dispatchAdaptiveMessage(context,
                     title: NSLocalizedString("Push error", comment: "Push error"),
@@ -468,7 +468,7 @@ if ($httpMethod=="DELETE"){
                 let pathURL=baseURL.URLByAppendingPathComponent("<?php echo$varName ?>")<?php echo $executeArgumentSerializationBlock?>
                 let urlRequest=HTTPManager.mutableRequestWithToken(inDataSpace:spaceUID,withActionName:"<?php echo$baseClassName ?>" ,forMethod:"<?php echo$httpMethod?>", and: pathURL)
                 let r:Request=request(ParameterEncoding.JSON.encode(urlRequest, parameters: parameters).0)
-                r.responseString{ response in
+                r.responseJSON{ response in
 
                     // Store the response
                     let request=response.request
@@ -495,13 +495,25 @@ if ($httpMethod=="DELETE"){
                             title: NSLocalizedString("Unsuccessfull attempt result.isFailure is true",
                             comment: "Unsuccessfull attempt"),
                             body:"\(m) \n \(response)" ,
-                            trigger:{ (selectedIndex) -> () in
+                            transmit:{ (selectedIndex) -> () in
                         })
                         reactions.append(failureReaction)
                         failure(context:context)
                     }else{
                         if let statusCode=response?.statusCode {
                             if 200...299 ~= statusCode {
+                                // Acknowledge the trigger and log QA issue
+                                if let dictionary = result.value as? Dictionary< String,AnyObject > {
+                                    if let index=dictionary["triggerIndex"] as? NSNumber{
+                                        if let document=Bartleby.sharedInstance.getDocumentByUID(spaceUID){
+                                            document.acknowledgeOwnedTriggerIndex(index.integerValue)
+                                        }
+                                    }else{
+                                        bprint("QA Trigger index is missing \(context)", file: #file, function: #function, line: #line, category:bprintCategoryFor(Trigger))
+                                    }
+                                }else{
+                                    bprint("QA Trigger index dictionary is missing \(context)", file: #file, function: #function, line: #line, category:bprintCategoryFor(Trigger))
+                                }
                                 success(context:context)
                             }else{
                                 // Bartlby does not currenlty discriminate status codes 100 & 101
@@ -515,7 +527,7 @@ if ($httpMethod=="DELETE"){
                                     title: NSLocalizedString("Unsuccessfull attempt",
                                     comment: "Unsuccessfull attempt"),
                                     body: "\(m) \n \(response)",
-                                    trigger:{ (selectedIndex) -> () in
+                                    transmit:{ (selectedIndex) -> () in
                                     })
                                 reactions.append(failureReaction)
                                 failure(context:context)

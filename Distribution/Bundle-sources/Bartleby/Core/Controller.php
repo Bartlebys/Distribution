@@ -66,7 +66,7 @@ class Controller {
         if(isset($this->_userID)){
             return $this->_userID;
         }
-       $this->_userID=$this->_configuration->getUserIDFromCookie($spaceUID);
+       $this->_userID=$this->_configuration->getUserID($spaceUID);
         return $this->_userID;
     }
 
@@ -89,6 +89,28 @@ class Controller {
         }
         throw new \Exception("Undefined space UID");
     }
+
+
+
+    /**
+     * Grabs the runUID or throws and Exception
+     * @return mixed|string the dataSpace UID.
+     * @throws \Exception
+     */
+    public function getRunUID(){
+        $runUID=NULL;
+        $headers=getallheaders();
+        if(is_array($headers)){
+            if(array_key_exists(RUN_UID_KEY,$headers)==true){
+                $runUID=$headers[RUN_UID_KEY];
+            }
+        }
+        if (isset($runUID)){
+            return $runUID;
+        }
+        throw new \Exception("Undefined runUID");
+    }
+
 
 
 
@@ -130,18 +152,37 @@ class Controller {
         //sem_release ( $semaphoreIdentifier);
     }
 
+
     /**
      * Inserts a trigger into the triggers collection to be relayed via SSE.
      *
      * @param string $spaceUID
      * @param string $senderUID
+     *  @param string $collectionName the collection name
+     * @param string $origin the action that has created the trigger
      * @param string $homologousAction  e.g: `CreateUser would trigger homologous action `ReadUser`
      * @param mixed $reference can be a collection or a single instance.
+     * @return  int  -1 if an error has occured and the trigger index on success.
+     * @throws \Exception
      */
-    public function relayTrigger($spaceUID,$senderUID,$homologousAction,$reference){
+    public function relayTrigger($spaceUID,$senderUID,$collectionName,$origin,$homologousAction,$reference){
 
-        // LOCK todo verify concurrency behaviour
+        // LOCK todo verify concurrency behaviour ?
         $sID=$this->lock(__FILE__);
+
+
+        // Determine if the trigger should be ephemeral
+        $ephemeral=NULL;
+        $runUID="NO_UID";
+        $allHEADER=getallheaders();
+        if ($allHEADER!=false){
+            if (array_key_exists('ephemeral',$allHEADER)){
+                $ephemeral='1';
+            }
+            if(array_key_exists('runUID',$allHEADER)){
+                $runUID=$allHEADER['runUID'];
+            }
+        }
 
 
 
@@ -149,8 +190,8 @@ class Controller {
             $UIDS=$this->_extractUIDS($reference);
 
             if(!isset($senderUID) || $senderUID==""){
-                if($homologousAction=="ReadUser" && count($UIDS)==1){
-                    // It should be an Auto-creation.
+                if((strpos($homologousAction,"ReadUser")!==false) && count($UIDS)==1){
+                    // It is an Auto-creation.
                     $senderUID=$UIDS[0];
                 }else{
                     $senderUID='?('.count($UIDS).')';
@@ -169,7 +210,10 @@ class Controller {
                 $trigger=new Trigger();
                 $trigger->spaceUID=$spaceUID;
                 $trigger->senderUID=$senderUID;
+                $trigger->runUID=$runUID;
                 $trigger->index=$collection->count();
+                $trigger->origin=$origin;
+                $trigger->collectionName=$collectionName;
                 $trigger->action=$homologousAction;
                 $trigger->UIDS=join(',',$UIDS);
 
@@ -181,27 +225,38 @@ class Controller {
 
                 //Todo - how to encode trigger correctly before insertion?
                 // We should have 
-                
-                $array=array(
+
+                $date=new \DateTime();
+                $iso8601=$date->format(DATE_ISO8601);
+                $q=array(
                                 "spaceUID"=>$trigger->spaceUID,
                                 "senderUID"=>$trigger->senderUID,
+                                "runUID"=>$trigger->runUID,
                                 "index"=>$trigger->index,
+                                "origin"=>$trigger->origin,
                                 "action"=>$trigger->action,
-                                "UIDS"=>$trigger->UIDS
+                                "collectionName"=>$trigger->collectionName,
+                                "UIDS"=>$trigger->UIDS,
+                                "creationDate"=>$iso8601
                 );
 
-                $r = $collection->insert( $array,$options );
+                if (isset($ephemeral)){
+                    // To consistent with current JOBject encodings in MongoDB.
+                    // We use '1' and not true
+                    $q['ephemeral']='1';
+                }
+                $r = $collection->insert( $q,$options );
 
                 /////////////
                 // UNLOCK !
                 /////////////
+
                 $this->unlock($sID);
 
                 if ($r['ok']==1) {
-
-                    return new JsonResponse(VOID_RESPONSE,201);
+                    return $trigger->index;
                 } else {
-                    return new JsonResponse($r,412);
+                    return -1;
                 }
 
 
@@ -219,8 +274,24 @@ class Controller {
             $this->unlock($sID);
             throw new \Exception("Inconsitent trigger $spaceUID $senderUID $homologousAction $reference",0);
         }
+    }
+
+
+    /**
+     * Returns a json encoded string
+     * @param $index with the triggerIndex and and optionnal message
+     * @param $optionnalMessage
+     * @return string
+     */
+    public function responseStringWithTriggerIndex($index,$optionnalMessage){
+       if (isset($message)){
+           return array("triggerIndex"=>$index,"message"=>$optionnalMessage);
+       }else{
+           return array("triggerIndex"=>$index);
+       }
 
     }
+
 
     /**
      * Extracts the UIDS from a given reference.

@@ -39,7 +39,8 @@ class Bundler {
     const BUNDLER_RELATIVE_PATH_KEY = 'relativePath';
 
     static private $VERBOSE = true;
-    static private $USE_ZIP = false;
+    static private $USE_ZIP = true;// Creates a zipped version of the Bundle.package file
+    static private $PRESERVE_UNZIPPED_BUNDLE=true; // Preserves the Bundle.package file
     static private $ENCODE_METADATA_TAGS = false;
 
     /**
@@ -325,8 +326,9 @@ class Bundler {
             };
             $zip->addFile($outputPath, basename($outputPath));
             $zip->close();
-            unlink($outputPath);
-
+            if (!Bundler::$PRESERVE_UNZIPPED_BUNDLE){
+                unlink($outputPath);
+            }
         }
     }
 

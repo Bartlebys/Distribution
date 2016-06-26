@@ -73,17 +73,22 @@ logMessage("Recreating the collections");
 // Collection creation
 
 // Bartleby's commons
-logMessage("Creating the users collection");
+logMessage("Creating the 'users' collection");
 $users=$db->createCollection("users");
-logMessage("Creating the groups collection");
+logMessage("Creating 'ephemeral' Index for 'users'");
+$users->createIndex(array("ephemeral" => 1));
+logMessage("Creating the 'groups' collection");
 $groups=$db->createCollection("groups");
-logMessage("Creating the permissions collection");
+logMessage("Creating 'ephemeral' Index for 'groups'");
+$groups->createIndex(array("ephemeral" => 1));
+logMessage("Creating the 'permissions' collection");
 $permissions=$db->createCollection("permissions");
-logMessage("Creating the aliases collection");
-$aliases=$db->createCollection("aliases");
-logMessage("Creating the triggers collection");
+logMessage("Creating 'ephemeral' Index for 'permissions'");
+$permissions->createIndex(array("ephemeral" => 1));
+logMessage("Creating the 'triggers' collection");
 $triggers=$db->createCollection("triggers");
-
+logMessage("Creating 'ephemeral' Index for 'triggers'");
+$triggers->createIndex(array("ephemeral" => 1));
 
 <?php
 /* @var $d ProjectRepresentation */
@@ -93,17 +98,37 @@ foreach ($d->entities as $entity ) {
     if(isset($prefix)){
         $name=str_replace($prefix,'',$name);
     }
-    if (isset($excludeActionsWith) && in_array($name,$excludeActionsWith)){
+    $shouldBeExlcuded=false;
+    if (isset($excludeActionsWith)) {
+        foreach ($excludeActionsWith as $actionTobeExcluded ) {
+            if (strpos(strtolower($name), strtolower($actionTobeExcluded)) !== false) {
+                $shouldBeExlcuded = true;
+            }
+        }
+    }
+
+    if ($shouldBeExlcuded==true){
         continue;
     }
+
     $pluralized=lcfirst(Pluralization::pluralize($name));
-    echoIndentCR('logMessage("Creating the '.$pluralized.' collection");',0);
+    echoIndentCR('logMessage("Creating the \''.$pluralized.'\' collection");',0);
     echoIndentCR('$'.$pluralized.'=$db->createCollection("'.$pluralized.'");',0);
+    echoIndentCR('logMessage("Creating \'ephemeral\' Index for \''.$pluralized.'\'");',0);
+    echoIndentCR('$'.$pluralized.'->createIndex(array("ephemeral" => 1));',0);
+
 }
 ?>
 
 logMessage("");
 logMessage("**********************************************************************");
 logMessage("Please set  Configuration::ALLOW_DESTRUCTIVE_INSTALLER const to FALSE!");
+
+
+
+require_once BARTLEBY_PUBLIC_FOLDER.'Protected/PostInstaller.php';
+use Bartleby\PostInstaller;
+$postInstaller=new PostInstaller();
+$postInstaller->run($configuration);
 
 <?php /*<- END OF TEMPLATE */?>

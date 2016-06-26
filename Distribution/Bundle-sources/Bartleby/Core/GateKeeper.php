@@ -5,10 +5,13 @@ namespace Bartleby\Core;
 require_once __DIR__ . '/IAuthentified.php';
 require_once __DIR__ . '/KeyPath.php';
 require_once __DIR__ . '/Configuration.php';
+require_once BARTLEBY_ROOT_FOLDER . '/Commons/EndPoints/Auth.php';
 
 use Bartleby\Core\KeyPath;
 
 //TODO Split and create MongoGateKeeper
+use Bartleby\EndPoints\Auth;
+use Bartleby\EndPoints\AuthCallData;
 use \MongoClient;
 use \MongoCollection;
 use \MongoCursorException;
@@ -20,7 +23,7 @@ use \MongoId;
  * The GateKeeper implements the security layer of Bartleby's framework.
  */
 
-class GateKeeper implements IAuthentified{
+class GateKeeper implements IAuthentified {
 
 
     /* @var  \Bartleby\Configuration */
@@ -42,15 +45,15 @@ class GateKeeper implements IAuthentified{
     private $_currentUserToken;
 
     /*@var string */
-    private $_currentUsedSpaceUID;
+    private $_currentUserUID;
 
     private $_spaceUID = DEFAULT_SPACE_UID;
 
-    // an Array with All the headers merged with the parameters.
+    /* @var  array an Array with All the headers merged with the parameters. */
     private $_all;
 
     /* @var string */
-    public $explanation="";
+    public $explanation = "";
 
     /**
      * @param Configuration $configuration
@@ -59,7 +62,7 @@ class GateKeeper implements IAuthentified{
      */
     public function __construct(Configuration $configuration, $className, $methodName) {
         $this->_configuration = $configuration;
-        $components = explode('\\',$className);
+        $components = explode('\\', $className);
         $this->_className = end($components);
         $this->_methodName = $methodName;
         $this->_all = getallheaders();
@@ -97,7 +100,7 @@ class GateKeeper implements IAuthentified{
         if (array_key_exists($key, $rules)) {
             $currentRuleValue = $rules[$key];
             $level = $this->_levelOfRule($currentRuleValue);
-            $this->explanation.='Applicable rule level = '.$level.'. ';
+            $this->explanation .= 'Applicable rule level = ' . $level . '. ';
             if ($level == PERMISSION_IS_BLOCKED) {
                 // We block even the SuperAdmins
                 return false;
@@ -106,8 +109,8 @@ class GateKeeper implements IAuthentified{
             if ($allowed) {
                 return true;
             }
-        }else{
-            $this->explanation.="Unexisting permission rule key! ".$key;
+        } else {
+            $this->explanation .= "Unexisting permission rule key! " . $key;
         }
 
         // By default if the permission is not blocked
@@ -149,8 +152,8 @@ class GateKeeper implements IAuthentified{
                         case PERMISSION_PRESENCE_OF_A_COOKIE:
                             return PERMISSION_PRESENCE_OF_A_COOKIE;
 
-                        case PERMISSION_IDENTIFIED_BY_COOKIE:
-                            return PERMISSION_IDENTIFIED_BY_COOKIE;
+                        case PERMISSION_BY_IDENTIFICATION:
+                            return PERMISSION_BY_IDENTIFICATION;
 
                         case PERMISSION_RESTRICTED_TO_ENUMERATED_USERS:
                             if ($hasValidIdsList == true) {
@@ -198,19 +201,19 @@ class GateKeeper implements IAuthentified{
             case PERMISSION_PRESENCE_OF_A_COOKIE:
                 return $this->_configuration->hasUserAuthCookie($this->_spaceUID);
 
-            case PERMISSION_IDENTIFIED_BY_COOKIE:
-                return $this->_cookieIsValid($this->_spaceUID);
+            case PERMISSION_BY_IDENTIFICATION:
+                return $this->_identityIsValid($this->_spaceUID);
 
             case PERMISSION_RESTRICTED_TO_ENUMERATED_USERS:
 
-                if (!$this->_resultOfRule(PERMISSION_IDENTIFIED_BY_COOKIE,$key,$rule)){
+                if (!$this->_resultOfRule(PERMISSION_BY_IDENTIFICATION, $key, $rule)) {
                     return false;
                 }
 
                 if (array_key_exists(IDS_KEY, $rule)) {
                     $ids = $rule[IDS_KEY];
                     if (is_array($ids)) {
-                        $isEnumerated = in_array($this->_getCurrentUsedID(), $ids);
+                        $isEnumerated = in_array($this->_getCurrentUserUID(), $ids);
                         return $isEnumerated;
                     } else {
                         return false;
@@ -221,16 +224,16 @@ class GateKeeper implements IAuthentified{
 
             case PERMISSION_RESTRICTED_BY_QUERIES:
 
-                if (!$this->_resultOfRule(PERMISSION_IDENTIFIED_BY_COOKIE,$key,$rule)){
+                if (!$this->_resultOfRule(PERMISSION_BY_IDENTIFICATION, $key, $rule)) {
                     return false;
                 }
 
                 if (array_key_exists(ARRAY_OF_QUERIES, $rule)) {
-                    $queries=$rule[ARRAY_OF_QUERIES];
+                    $queries = $rule[ARRAY_OF_QUERIES];
 
-                    if( is_array($queries) && count($queries)>0){
+                    if (is_array($queries) && count($queries) > 0) {
 
-                        $userID = $this->_getCurrentUsedID();
+                        $userID = $this->_getCurrentUserUID();
                         if (isset($userID)) {
                             $this->_getCurrentUser($userID);
                             if (isset($this->_user)) {
@@ -251,7 +254,7 @@ class GateKeeper implements IAuthentified{
                                 */
 
 
-                                foreach ($queries as $query){
+                                foreach ($queries as $query) {
                                     if (
 
                                         array_key_exists(SELECT_COLLECTION_NAME, $query) &&
@@ -300,7 +303,7 @@ class GateKeeper implements IAuthentified{
                                                     $result = false;
                                                     $toBeEvaluated = '$result=("' . $operand1 . '"' . $operator . '"' . $operand2 . '");';
                                                     eval($toBeEvaluated);
-                                                    if($result==true){
+                                                    if ($result == true) {
                                                         return $result;
                                                     }
 
@@ -320,7 +323,7 @@ class GateKeeper implements IAuthentified{
 
             case PERMISSION_RESTRICTED_TO_GROUP_MEMBERS:
 
-                if (!$this->_resultOfRule(PERMISSION_IDENTIFIED_BY_COOKIE,$key,$rule)){
+                if (!$this->_resultOfRule(PERMISSION_BY_IDENTIFICATION, $key, $rule)) {
                     return false;
                 }
 
@@ -357,10 +360,10 @@ class GateKeeper implements IAuthentified{
      * @return bool
      */
     private function _isSuperAdmin() {
-        $currentUID = $this->_getCurrentUsedID();
+        $currentUID = $this->_getCurrentUserUID();
         $ids = $this->_configuration->getSuperAdminUIDS();
         if (is_array($ids)) {
-            if (in_array($currentUID, $ids) && $this->_cookieIsValid($this->_spaceUID)) {
+            if (in_array($currentUID, $ids)) {
                 return true;
             }
         }
@@ -380,17 +383,17 @@ class GateKeeper implements IAuthentified{
     private function _tokenIsValid($rule, $spaceUID) {
         if ($this->_configuration->BY_PASS_SALTED_TOKENS()) {
             return true;
-        } else if (array_key_exists(TOKEN_CONTEXT_KEY, $rule)){
+        } else if (array_key_exists(TOKEN_CONTEXT_KEY, $rule)) {
             $context = $rule[TOKEN_CONTEXT_KEY];
             $tokenHeaderkey = str_replace("#" . SPACE_UID_KEY, "#" . $spaceUID, $context);
             $saltedTokenHeaderkey = $this->_configuration->saltWithSharedKey($tokenHeaderkey);
             $expectedValue = $this->_configuration->saltWithSharedKey($saltedTokenHeaderkey);
             if (array_key_exists($saltedTokenHeaderkey, $this->_all)) {
                 $matches = ($this->_all[$saltedTokenHeaderkey] == $expectedValue);
-                $this->explanation.="Token is exists, ".( $matches ? "and its value matches! ":" but its value is not matching! ");
+                $this->explanation .= "Token is exists, " . ($matches ? "and its value matches! " : " but its value is not matching! ");
                 return $matches;
-            }else{
-                $this->explanation.='Unexisting token key! ';
+            } else {
+                $this->explanation .= 'Unexisting token key! ';
             }
         }
 
@@ -399,43 +402,48 @@ class GateKeeper implements IAuthentified{
 
 
     /**
-     * The cookies are crypted.
-     * Returns true if the crypted user id exists.
+     * Returns true if we have found a valid user for this spaceUID
      * @return bool
      */
-    private function _cookieIsValid($rRUID) {
-        $userID = $this->_configuration->getUserIDFromCookie($rRUID);
-        $this->explanation.='Configuration.issues:('.implode(' ',$this->_configuration->issues).') ';
+    private function _identityIsValid($spaceUID) {
+        // The user is extracted via "kvid" httpheader value or via a Cookie.
+        $userID = $this->_getCurrentUserUID();
+        $this->explanation .= 'Configuration.issues:(' . implode(' ', $this->_configuration->issues) . ') ';
         if (isset($userID)) {
-            $this->explanation.="User has been extracted from cookie! ";
+            $this->explanation .= "User has been extracted";
             $user = $this->_getCurrentUser($userID);
             if (isset($user)) {
                 return true;
-            }else{
-                $this->explanation.="User not found! ";
+            } else {
+                $this->explanation .= "User not found! ";
             }
-        }else{
-            $this->explanation.="User cannot be extracted from cookie! ";
+        } else {
+            $this->explanation .= "User cannot be extracted from cookie! ";
         }
+
         return false;
     }
+
 
     /**
      * Returns the dynamic permission for a given key
      * @param $key
      * @return array
      */
-    private function  _getDynamicPermissionForKey($key) {
+    private function _getDynamicPermissionForKey($key) {
         // Todo implement a fully dynamic approach if necessary
         // The dynamic features may be deprecated.
-        return array ();
+        return array();
     }
 
 
     /**
-     * @return array
+     * @return array|null the user or null
      */
     private function _getCurrentUser($userID) {
+        if (strlen($userID)<24){
+            return NULL;
+        }
         if (isset($this->_user)) {
             return $this->_user;
         }
@@ -450,12 +458,13 @@ class GateKeeper implements IAuthentified{
             }
         } catch (\Exception $e) {
             // Silent
+            return NULL;
         }
         return $this->_user;
     }
 
 
-    private function _searchEntity($collectionName,$entityKey,$searchValue) {
+    private function _searchEntity($collectionName, $entityKey, $searchValue) {
         try {
             $db = $this->getDB();
             /* @var \MongoCollection */
@@ -476,12 +485,12 @@ class GateKeeper implements IAuthentified{
      * Returns the current usedID form the cookie
      * @return string
      */
-    private function _getCurrentUsedID() {
-        if (isset($this->_currentUsedSpaceUID)) {
-            return $this->_currentUsedSpaceUID;
+    private function _getCurrentUserUID() {
+        if (isset($this->_currentUserUID)) {
+            return $this->_currentUserUID;
         }
-        $this->_currentUsedSpaceUID = $this->_configuration->getUserIDFromCookie($this->_spaceUID);
-        return $this->_currentUsedSpaceUID;
+        $this->_currentUserUID = $this->_configuration->getUserID($this->_spaceUID);
+        return $this->_currentUserUID;
     }
 
 
@@ -489,7 +498,7 @@ class GateKeeper implements IAuthentified{
      * @return boolean
      */
     private function _isInGroup($ids) {
-        $usedID = $this->_getCurrentUsedID();
+        $usedID = $this->_getCurrentUserUID();
         // TODO implement
         return false;
     }
@@ -527,7 +536,7 @@ class GateKeeper implements IAuthentified{
         return $this->_mongoClient;
     }
 
-    
+
     ////////////////////
     // IAuthentified
     ////////////////////
@@ -546,6 +555,5 @@ class GateKeeper implements IAuthentified{
         // For security purposes we prefer not to alter the $current_user
         /// $this->_user = $current_user;
     }
-
-
+    
 }
