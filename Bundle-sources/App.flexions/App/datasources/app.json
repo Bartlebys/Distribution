@@ -1,0 +1,146 @@
+{
+    "swagger": "2.0 ++ Bartleby Metadata",
+    "info": {
+        "description": "... [https://www.bartleby.org/](https://www.bartleby.org/) ",
+        "version": "0.9.beta1",
+        "title": "Bartleby",
+        "termsOfService": "https://www.bartleby.org/terms/",
+        "contact": {
+            "email": "nobody@bartleby.org"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0"
+        }
+    },
+    "host": "https://www.bartleby.org/",
+    "basePath": "/api/v1",
+    "tags": [],
+    "schemes": [
+        "https"
+    ],
+    "definitions": {
+        "Message": {
+            "description": "A message is a small piece of text associated to a communication context",
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "creationDate": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "title": {
+                            "type": "String"
+                        },
+                        "body": {
+                            "type": "String"
+                        },
+                        "parent": {
+                            "$ref": "#/definitions/ExternalReference"
+                        },
+                        "childrens": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "",
+                                    "explicitType": "ExternalReference<Message>",
+                                    "default": "ExternalReference<Message>()"
+                                }
+                            }
+                        },
+                        "tags": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "The tags",
+                                    "explicitType": "ExternalReference<Tag>",
+                                    "default": "ExternalReference<Tag>()"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "metadata": {
+                "urdMode": false,
+
+
+            }
+        },
+        "AbstractContext": {
+            "description": "A bunch of properties shared between multiple Entities used (DO NOT use allOF there is a Bug on Composition of Composition in SwaggerToFlexions)",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "String"
+                },
+                "informativeString": {
+                    "type": "String"
+                },
+                "creationDate": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "tags": {
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "description": "The tags ExternalReferencees",
+                            "explicitType": "ExternalReference<Tag>",
+                            "default": "[ExternalReference<Tag>]()"
+                        }
+                    }
+                }
+            },
+            "metadata": {
+                "urdMode": false
+            }
+        },
+        "Sample": {
+            "description": "An Sample",
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "firstName": {
+                            "type": "string"
+                        },
+                        "lastName": {
+                            "type": "string"
+                        },
+                        "status": {
+                            "type": "string",
+                            "description": "User Status",
+                            "enum": [
+                                "active",
+                                "suspended"
+                            ]
+                        },
+                        "tags": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "The tags of the user",
+                                    "explicitType": "ExternalReference<Tag>",
+                                    "default": "[ExternalReference<Tag>]()"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "metadata": {
+                "urdMode": false,
+
+
+            }
+        }
+    },
+    "paths":{},
+    "securityDefinitions": [],
+    "externalDocs": {
+        "description": "Find out more about Bartleby",
+        "url": "https://www.bartleby.org/"
+    }
+}

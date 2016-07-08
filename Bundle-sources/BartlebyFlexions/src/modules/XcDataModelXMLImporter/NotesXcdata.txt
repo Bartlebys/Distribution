@@ -1,0 +1,45 @@
+Modeling tool constraint :
+--------------------------------
+
+"1-N relationship" will generate intermediary collection entity.
+"1-1 relationship" will reference to an entity
+
+You can reference an external relationship directly by using #2
+
+NOT SUPPORTED :  automation of relationship reciprocity 
+You need to manage manually reciprocity (future extension may generate setters to deal with reciprocity)
+
+
+Modeling tool extensions
+--------------------------------------
+
+
+// Entities
+
+#4 If an entity has in its userInfos  a key == "generate" and a value =="collection"
+It will generate an independent collection class for this object.
+(Normally collection are generated using to 1-n relationships);
+
+#5 If an entity has in its userInfos  a key == "parent" and a value =="MyParent"
+1- the entity prefix will not apply !!
+2- this directive overrides the "parentEntity"
+
+// Attributes or Properties 
+
+#1 If a property has in its userInfos dictionary a key=="type" : 
+"type:array" this directive will cast to the native type NSArray
+"type:rect" this directive will cast to the native type CGrect 
+Any of the ObjectiveCHelper->getSupportedNativeTypes() types should work.
+
+#2 You can generate a relationship attribute adding to the property key == "relationship" value="ClassName"
+This is used in WTMShelf to reference Watt classes (users=WattCollectionOfUser,...)
+
+#3  If a property has in its userInfos dictionary a key=="extractible" : 
+"extractible:NO" when the subgraph is copyied (extracted) the related entity is not copyed (it is null) 
+
+// Attributes for relationship 
+#6 "extractible:no" when the subgraph is copyied (extracted) the related entity is not copyed (it is null) 
+
+NOTE  : 
+For entities, properties (and relationship that are converted to properties)
+We store any metadata (key values stored in userInfo) in an associative array for specific extension.
