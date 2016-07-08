@@ -12,7 +12,7 @@ WORKING_FOLDER="/Users/bpds/Documents/Entrepot/Git/Clients/LyLo.TV/YouDubAPI"
 BARTLEBYS_CORE="$WORKING_FOLDER/Bartleby"
 BARTLEBYS_FLEXIONS="$WORKING_FOLDER/BartlebyFlexions"
 BARTLEBYS_SYNC_MODULE="$WORKING_FOLDER/BartlebySync"
-BARTLEBYS_APP_PROTOTYPE="$WORKING_FOLDER/App.prototype"
+BARTLEBYS_APP_PROTOTYPE="Resources/App.prototype"
 
 BUNDLE_SOURCES="../Distribution/Bundle-sources/"
 
@@ -86,6 +86,7 @@ if [ -d "$BARTLEBYS_CORE" ]; then
          echo "Unable to find $BARTLEBYS_SYNC_MODULE"
     fi
 
+    # Call php pack
     php -f pack.php
 
 else
