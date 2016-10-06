@@ -33,22 +33,21 @@ if (!isset($blockRepresentation)){
 
     required public init?(coder decoder: NSCoder) {
         super.init(coder: decoder)
-        self.lockAutoCommitObserver()
-<?php GenerativeHelperForSwift::echoBodyOfInitWithCoder($blockRepresentation, 2);
-if (isset($blockEndContent)){
-    echoIndentCR($blockEndContent, 2);
-}
-?>
-        self.unlockAutoCommitObserver()
+        self.silentGroupedChanges {
+<?php GenerativeHelperForSwift::echoBodyOfInitWithCoder($blockRepresentation, 3);
+    if (isset($blockEndContent)){
+        echoIndentCR($blockEndContent, 3);
+    }
+    ?>
+        }
     }
 
-    override public func encodeWithCoder(coder: NSCoder) {
-        super.encodeWithCoder(coder)
+    override open func encode(with coder: NSCoder) {
+        super.encode(with:coder)
 <?php GenerativeHelperForSwift::echoBodyOfEncodeWithCoder($blockRepresentation, 2);?>
     }
 
-
-    override public class func supportsSecureCoding() -> Bool{
+    override open class var supportsSecureCoding:Bool{
         return true
     }
 

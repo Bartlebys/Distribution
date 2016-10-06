@@ -1,12 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bpds
- * Date: 08/07/2016
- * Time: 09:31
- */
 
-namespace Bartleby\Commons\EndPoints;
+
+namespace Bartleby\EndPoints;
 
 require_once BARTLEBY_ROOT_FOLDER . 'Mongo/MongoEndPoint.php';
 require_once BARTLEBY_ROOT_FOLDER . 'Mongo/MongoCallDataRawWrapper.php';

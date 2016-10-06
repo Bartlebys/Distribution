@@ -26,147 +26,147 @@ along with Flexions  If not, see <http://www.gnu.org/Licenses/>
 class EntityRepresentation {
 
 
-	/**
-	 * @var string  Documentation  of the Entity
-	 */
-	public $description;
+    /**
+     * @var string  Documentation  of the Entity
+     */
+    public $description;
 
-	/**
-	 * @var string Name of the object
-	 */
-	public $name;
-	
-	/**
-	 * @var array of PropertyRepresentation of the object
-	 */
-	public $properties=array();
+    /**
+     * @var string Name of the object
+     */
+    public $name;
 
-
-	/**
-	 * @var  string When the type is an object, you can specify the class that the object must implement
-	*/
-	public $instanceOf;
-	
-	/**
-	 * @var array of interface names
-	 */
-	public $implements=array();
-
-	/**
-	 * Will be DEPRECATED but still used by XCDDataXMLToFlexionsRepresentation
-	 * @var bool
-	 */
-	public $generateCollectionClass=DEFAULT_GENERATE_COLLECTION_CLASSES;
+    /**
+     * @var array of PropertyRepresentation of the object
+     */
+    public $properties=array();
 
 
+    /**
+     * @var  string When the type is an object, you can specify the class that the object must implement
+     */
+    public $instanceOf;
 
-	//////////////////
-	// METADATA
-	//////////////////
+    /**
+     * @var array of interface names
+     */
+    public $implements=array();
 
-	/**
-	 * @var array an associative array to pass specific metadata
-	 */
-	public $metadata=array();
-
-
-	/**** Collection & distribution ****/
+    /**
+     * Will be DEPRECATED but still used by XCDDataXMLToFlexionsRepresentation
+     * @var bool
+     */
+    public $generateCollectionClass=DEFAULT_GENERATE_COLLECTION_CLASSES;
 
 
 
-	/**
-	 * if set to true Actions could be URD ( Upsert Read Delete)
-	 * instead of CRUD (Create Read Update Delete)
-	 * @return bool
-	 */
-	public function usesUrdMode() {
-		return array_key_exists(METADATA_KEY_FOR_USE_URD_MODE, $this->metadata ) ? $this->metadata[METADATA_KEY_FOR_USE_URD_MODE] : DEFAULT_USE_URD_MODE ;
-	}
+    //////////////////
+    // METADATA
+    //////////////////
 
-	/**
-	 * Can be used by undo managers
-	 * @return bool
-	 */
-	public function isUndoable(){
-		return array_key_exists(METADATA_KEY_FOR_IS_UNDOABLE, $this->metadata ) ? $this->metadata[METADATA_KEY_FOR_IS_UNDOABLE] : DEFAULT_IS_UNDOABLE ;
-	}
+    /**
+     * @var array an associative array to pass specific metadata
+     */
+    public $metadata=array();
 
-	/**
-	 * @return bool
-	 */
-	public function shouldPersistsLocallyOnlyInMemory() {
-		return array_key_exists(METADATA_KEY_FOR_PERSISTS_LOCALLY_ONLY_IN_MEMORY, $this->metadata ) ? $this->metadata[METADATA_KEY_FOR_PERSISTS_LOCALLY_ONLY_IN_MEMORY] : DEFAULT_PERSISTS_LOCALLY_ONLY_IN_MEMORY ;
-	}
 
-	/**
-	 * 
-	 * @return bool
-	 */
-	public function groupedOnCommit() {
-		return array_key_exists(METADATA_KEY_FOR_CAN_BE_GROUPED_ON_COMMIT, $this->metadata ) ? $this->metadata[METADATA_KEY_FOR_CAN_BE_GROUPED_ON_COMMIT] : DEFAULT_PERSISTS_LOCALLY_ONLY_IN_MEMORY ;
-	}
+    /**** Collection & distribution ****/
 
 
 
-	public function isDistantPersistencyOfCollectionAllowed() {
-		return array_key_exists(METADATA_KEY_FOR_DISTANT_PERSISTENCY_IS_ALLOWED, $this->metadata ) ? $this->metadata[METADATA_KEY_FOR_DISTANT_PERSISTENCY_IS_ALLOWED] : DEFAULT_DISTANT_PERSISTENCY_IS_ALLOWED ;
-	}
+    /**
+     * if set to true Actions could be URD ( Upsert Read Delete)
+     * instead of CRUD (Create Read Update Delete)
+     * @return bool
+     */
+    public function usesUrdMode() {
+        return array_key_exists(METADATA_KEY_FOR_USE_URD_MODE, $this->metadata ) ? $this->metadata[METADATA_KEY_FOR_USE_URD_MODE] : DEFAULT_USE_URD_MODE ;
+    }
 
-	//////////////////
-	// ITERATORS
-	//////////////////
+    /**
+     * Can be used by undo managers
+     * @return bool
+     */
+    public function isUndoable(){
+        return array_key_exists(METADATA_KEY_FOR_IS_UNDOABLE, $this->metadata ) ? $this->metadata[METADATA_KEY_FOR_IS_UNDOABLE] : DEFAULT_IS_UNDOABLE ;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldPersistsLocallyOnlyInMemory() {
+        return array_key_exists(METADATA_KEY_FOR_PERSISTS_LOCALLY_ONLY_IN_MEMORY, $this->metadata ) ? $this->metadata[METADATA_KEY_FOR_PERSISTS_LOCALLY_ONLY_IN_MEMORY] : DEFAULT_PERSISTS_LOCALLY_ONLY_IN_MEMORY ;
+    }
+
+    /**
+     *
+     * @return bool
+     */
+    public function groupedOnCommit() {
+        return array_key_exists(METADATA_KEY_FOR_CAN_BE_GROUPED_ON_COMMIT, $this->metadata ) ? $this->metadata[METADATA_KEY_FOR_CAN_BE_GROUPED_ON_COMMIT] : DEFAULT_CAN_BE_GROUPED_ON_COMMIT ;
+    }
 
 
-	/**
-	 * Current iteration property
-	 * @var int
-	 */
-	protected  $_propertyIndex=-1;
-	
-	
-	/**
-	 * Return true while there is a property
-	 * @return boolean
-	 */
-	public function iterateOnProperties(){
-		$this->_propertyIndex++;
-		if($this->_propertyIndex< count($this->properties)){
-			return true;
-		}else{
-			// Reinitialise
-			$this->_propertyIndex=-1;
-			return  false;
-		}
-	}
-	
-	/**
-	 * Returns the current iterated property
-	 * @return PropertyRepresentation
-	 */
-	public function getProperty(){
-		$nb=count($this->properties);
-		if($this->_propertyIndex<$nb && $nb>0 ){
-			$keys  = array_keys( $this->properties);
-			return $this->properties[$keys[$this->_propertyIndex]];
-		}
-		return null;
-	}
-	
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public function firstProperty(){
-		return( $this->_propertyIndex==0);
-	}
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public function lastProperty(){
-		return ( $this->_propertyIndex== count($this->properties)-1);
-	}
-	
+
+    public function isDistantPersistencyOfCollectionAllowed() {
+        return array_key_exists(METADATA_KEY_FOR_DISTANT_PERSISTENCY_IS_ALLOWED, $this->metadata ) ? $this->metadata[METADATA_KEY_FOR_DISTANT_PERSISTENCY_IS_ALLOWED] : DEFAULT_DISTANT_PERSISTENCY_IS_ALLOWED ;
+    }
+
+    //////////////////
+    // ITERATORS
+    //////////////////
+
+
+    /**
+     * Current iteration property
+     * @var int
+     */
+    protected  $_propertyIndex=-1;
+
+
+    /**
+     * Return true while there is a property
+     * @return boolean
+     */
+    public function iterateOnProperties(){
+        $this->_propertyIndex++;
+        if($this->_propertyIndex< count($this->properties)){
+            return true;
+        }else{
+            // Reinitialise
+            $this->_propertyIndex=-1;
+            return  false;
+        }
+    }
+
+    /**
+     * Returns the current iterated property
+     * @return PropertyRepresentation
+     */
+    public function getProperty(){
+        $nb=count($this->properties);
+        if($this->_propertyIndex<$nb && $nb>0 ){
+            $keys  = array_keys( $this->properties);
+            return $this->properties[$keys[$this->_propertyIndex]];
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function firstProperty(){
+        return( $this->_propertyIndex==0);
+    }
+    /**
+     *
+     * @return boolean
+     */
+    public function lastProperty(){
+        return ( $this->_propertyIndex== count($this->properties)-1);
+    }
+
 }
 
 ?>

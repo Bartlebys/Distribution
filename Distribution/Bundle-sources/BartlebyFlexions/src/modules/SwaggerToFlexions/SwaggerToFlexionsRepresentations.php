@@ -42,7 +42,7 @@ if (!defined('SWAGGER_VERSION')) {
     define('EXTENDED_INSTANCE_OF','instanceOf');
     define('EXTENDED_IS_DYNAMIC','dynamic');
     define('EXTENDED_SERIALIZABLE','serializable');
-    define('EXTENDED_OBSERVABLE','observable');
+    define('EXTENDED_SUPERVISABLE','supervisable');
     define('EXTENDED_CRYPTABLE','cryptable');// Crypted on serialization
     define('EXTENDED_ENUM_PRECISE_TYPE','emumPreciseType');
     define('EXTENDED_EXPLICIT_TYPE','explicitType'); // used to pass an explicit type that has not been generated
@@ -497,8 +497,8 @@ class SwaggerToFlexionsRepresentations {
         }
 
         // DISCREET OBSERVABLE SUPPORT
-        if (array_key_exists(EXTENDED_OBSERVABLE, $dictionary)) {
-            $propertyR->isObservable = $dictionary[EXTENDED_OBSERVABLE];
+        if (array_key_exists(EXTENDED_SUPERVISABLE, $dictionary)) {
+            $propertyR->isSupervisable = $dictionary[EXTENDED_SUPERVISABLE];
         }
 
         // DISCREET CRYPTABLE SUPPORT

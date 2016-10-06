@@ -473,7 +473,7 @@ class GateKeeper {
      * @return boolean
      */
     private function _isInGroup($ids) {
-        $usedID = $this->_context->getCurrentUserUID();
+        $userUID = $this->_context->getCurrentUserUID();
         // TODO implement
         return false;
     }

@@ -69,7 +69,7 @@ final class BartlebySyncUploadFileTo extends BartlebySyncAbstractEndPoint {
                     ////////////////
 
                     if (isset ($_FILES ['source'])) {
-                        // NSURLSession do not set $_FILES
+                        // URLSession do not set $_FILES
                         // But if a client populates  $_FILES it can be a relevant approach.
                         if ($this->ioManager->move_uploaded($_FILES ['source'] ['tmp_name'], $destinationPath)) {
                             return $this->_reponse($destinationPath);

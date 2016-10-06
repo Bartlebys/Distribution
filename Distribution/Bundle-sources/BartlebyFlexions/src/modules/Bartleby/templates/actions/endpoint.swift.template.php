@@ -57,11 +57,9 @@ if ($d->containsParametersOutOfPath()) {
     // Universal type support
     echoIndentCR('');
     echoIndentCR('// Universal type support',1);
-    echoIndentCR('override public class func typeName() -> String {',1);
+    echoIndentCR('override open class func typeName() -> String {',1);
         echoIndentCR(' return "'.$d->class . 'Parameters"',2);
     echoIndentCR('}',1);
-
-
     while ($d->iterateOnParameters() === true) {
         $parameter = $d->getParameter();
         $name = $parameter->name;
@@ -120,10 +118,10 @@ if ($d->containsParametersOutOfPath()) {
 /// START OF END POINT EXEC CLASS
 //////////////////////////////////
 ?>
-@objc(<?php echo $d->class; ?>) public class <?php echo $d->class; ?> : <?php echo GenerativeHelperForSwift::getBaseClass($f,$d) ?>{
+@objc(<?php echo $d->class; ?>) open class <?php echo $d->class; ?> : <?php echo GenerativeHelperForSwift::getBaseClass($f,$d) ?>{
 
     // Universal type support
-    override public class func typeName() -> String {
+    override open class func typeName() -> String {
            return "<?php echo $d->class; ?>"
     }
 
@@ -132,22 +130,21 @@ if ($d->containsParametersOutOfPath()) {
 // We want to inject the path variable into the
 $pathVariables=GenerativeHelper::variablesFromPath($d->path);
 $pathVCounter=0;
-$hasdID= in_array('spaceUID',$pathVariables);
-if (!$hasdID){
-    echoIndentCR('fromDataSpace spaceUID:String,',$pathVCounter>0);
+$hasRegistryUID= in_array('registryUID',$pathVariables);
+if (!$hasRegistryUID){
+    echoIndentCR('fromRegistryWithUID registryUID:String,',$pathVCounter>0);
 }
 
 if(count($pathVariables)>0){
     foreach ($pathVariables as $pathVariable ) {
-        if ($pathVariable=='spaceUID'){
-            $hasdID=true;
+        if ($pathVariable=='registryUID'){
+            $hasRegistryUID=true;
         }
         // Suspended
         echoIndentCR($pathVariable.':String,',6);
         $pathVCounter++;
     }
 }
-
 
 ?>
 <?php
@@ -159,7 +156,7 @@ if ($successP->type == FlexionsTypes::COLLECTION) {
 } else if ($successP->type == FlexionsTypes::OBJECT) {
     $successTypeString = ucfirst($successP->instanceOf);
 } else if ($successP->type == FlexionsTypes::DICTIONARY) {
-    $successTypeString = 'Dictionary<String, AnyObject>';
+    $successTypeString = 'Dictionary<String, Any>';
 }else {
     $nativeType = FlexionsSwiftLang::nativeTypeFor($successP->type);
     if($nativeType==FlexionsTypes::NOT_SUPPORTED){
@@ -184,9 +181,9 @@ if($resultSuccessIsACollection){
 $resultSuccessTypeString=$successTypeString!=''?$successParameterName.':'.$successTypeString:'';
 if ($d->containsParametersOutOfPath()) {
     echoIndentCR('parameters:' . $d->class . 'Parameters,' , 6);
-    echoIndentCR('sucessHandler success:(' . $resultSuccessTypeString . ')->(),', 6);
+    echoIndentCR('sucessHandler success:@escaping(_ ' . $resultSuccessTypeString . ')->(),', 6);
 } else {
-    echoIndentCR('sucessHandler success:(' . $resultSuccessTypeString . ')->(),', 6);
+    echoIndentCR('sucessHandler success:@escaping(_ ' . $resultSuccessTypeString . ')->(),', 6);
 }
 
 // We want to inject the path variable
@@ -197,7 +194,7 @@ if(count($pathVariables)>0){
         $path=str_ireplace('{'.$pathVariable.'}','\('.$pathVariable.')',$path);
     }
 }
-echoIndentCR('failureHandler failure:(context:JHTTPResponse)->()){', 6);
+echoIndentCR('failureHandler failure:@escaping(_ context:JHTTPResponse)->()){', 6);
 echoIndentCR('');
     $parametersString='';
     if ($d->containsParametersOutOfPath()) {
@@ -235,24 +232,42 @@ foreach ($d->responses as $rank=>$responsePropertyRepresentation ) {
             if($responsePropertyRepresentation->isGeneratedType) {
                 // We wanna cast the result if there is one specified
                 $successMicroBlock = stringIndent(
-''.(($resultSuccessIsACollection)?
-    'if let instance = Mapper <' . $successP->instanceOf . '>().mapArray(result.value){
-    '
-    :'if let instance = Mapper <' . $successTypeString . '>().map(result.value){
-    ')
-.'
-    success(' . $successParameterName . ': instance)
-  }else{
-   let failureReaction =  Bartleby.Reaction.DispatchAdaptiveMessage(
-        context: context,
-        title: NSLocalizedString("Deserialization issue",
-            comment: "Deserialization issue"),
-        body:"(result.value)",
-        transmit:{ (selectedIndex) -> () in
-    })
-   reactions.append(failureReaction)
-   failure(context:context)
-}',5);
+''.(
+
+    ($resultSuccessIsACollection)?
+'
+                            if let string=result.value{
+                                if let instance = Mapper <' . $successP->instanceOf . '>().mapArray(JSONString:string){'
+                            :
+        '
+                            if let string=result.value{
+                                if let instance = Mapper <' . $successTypeString . '>().map(JSONString:string){'
+)
+                                    .'
+                                    success(instance)
+                                }else{
+                                    let failureReaction =  Bartleby.Reaction.dispatchAdaptiveMessage(
+                                        context: context,
+                                        title: NSLocalizedString("Deserialization issue",
+                                        comment: "Deserialization issue"),
+                                        body:"(result.value)",
+                                        transmit:{ (selectedIndex) -> () in
+                                    })
+                                    reactions.append(failureReaction)
+                                    failure(context)
+                                }
+                            }else{
+                                let failureReaction =  Bartleby.Reaction.dispatchAdaptiveMessage(
+                                    context: context,
+                                    title: NSLocalizedString("No String Deserialization issue",
+                                                             comment: "No String Deserialization issue"),
+                                    body:"(result.value)",
+                                    transmit: { (selectedIndex) -> () in
+                                })
+                                reactions.append(failureReaction)
+                                failure(context)
+                            }');
+
             }
         }
     }
@@ -262,15 +277,14 @@ if( !isset($successMicroBlock)){
 
     if($successTypeString==''){
         // there is no return type
-        $successMicroBlock =stringIndentCR('success()',4);
+        $successMicroBlock = 'success()';
     }else{
-        $successMicroBlock =stringIndent(
-            '
-if let r=result.value as? ' . $successTypeString . '{
+        $successMicroBlock ='
 
-    success(' . $successParameterName . ':r)
+if let r=result.value as? ' . $successTypeString . '{
+    success(r)
  }else{
-    let failureReaction =  Bartleby.Reaction.DispatchAdaptiveMessage(
+    let failureReaction =  Bartleby.Reaction.dispatchAdaptiveMessage(
         context: context,
         title: NSLocalizedString("Deserialization issue",
             comment: "Deserialization issue"),
@@ -278,8 +292,8 @@ if let r=result.value as? ' . $successTypeString . '{
         transmit:{ (selectedIndex) -> () in
     })
    reactions.append(failureReaction)
-   failure(context:context)
-}',2);
+   failure(context)
+}';
     }
 
 
@@ -289,69 +303,86 @@ $parameterEncodingString='JSON';
 if($d->httpMethod=='GET'){
     $parameterEncodingString='URL';
 }
-    echoIndentCR(
-'
-    let baseURL=Bartleby.sharedInstance.getCollaborationURLForSpaceUID(spaceUID)
-    let pathURL=baseURL.URLByAppendingPathComponent("'.$path.'")
-    '.(($d->containsParametersOutOfPath()?'let dictionary:Dictionary<String, AnyObject>?=Mapper().toJSON(parameters)':'let dictionary:Dictionary<String, AnyObject>=[:]')).'
-    let urlRequest=HTTPManager.mutableRequestWithToken(inDataSpace:spaceUID,withActionName:"'.$d->class.'" ,forMethod:"'.$d->httpMethod.'", and: pathURL)
-    let r:Request=request(ParameterEncoding.'.$parameterEncodingString.'.encode(urlRequest, parameters: dictionary).0)
-    r.'.(($successTypeString=='')?'responseJSON':'responseJSON').'{ response in
-
-	    let request=response.request
-        let result=response.result
-        let response=response.response
-
-
-        // Bartleby consignation
-
-        let context = JHTTPResponse( code: '.crc32($d->class).',
-            caller: "'.$d->class.'.execute",
-            relatedURL:request?.URL,
-            httpStatusCode: response?.statusCode ?? 0,
-            response: response,
-            result:result.value)
-
-        // React according to the situation
-        var reactions = Array<Bartleby.Reaction> ()
-        reactions.append(Bartleby.Reaction.Track(result: result.value, context: context)) // Tracking
-
-        if result.isFailure {
-           let failureReaction =  Bartleby.Reaction.DispatchAdaptiveMessage(
-                context: context,
-                title: NSLocalizedString("Unsuccessfull attempt",comment: "Unsuccessfull attempt"),
-                body:NSLocalizedString("Explicit Failure",comment: "Explicit Failure"),
-                transmit:{ (selectedIndex) -> () in
+echo('
+        if let document = Bartleby.sharedInstance.getDocumentByUID(registryUID) {
+            let pathURL=document.baseURL.appendingPathComponent("'.$path.'")
+            '.(($d->containsParametersOutOfPath()?'let dictionary:Dictionary<String, Any>?=Mapper().toJSON(parameters)':'let dictionary:Dictionary<String, Any>=Dictionary<String, Any>()')).'
+            let urlRequest=HTTPManager.requestWithToken(inRegistryWithUID:document.UID,withActionName:"'.$d->class.'" ,forMethod:"'.$d->httpMethod.'", and: pathURL)
+            
+            do {
+                let r=try '.($parameterEncodingString=='JSON' ? 'JSONEncoding()' : 'URLEncoding()').'.encode(urlRequest,with:dictionary)
+                request(r).responseString(completionHandler: { (response) in
+                  
+                    let request=response.request
+                    let result=response.result
+                    let response=response.response
+            
+                    // Bartleby consignation
+            
+                    let context = JHTTPResponse( code: '.crc32($d->class).',
+                        caller: "'.$d->class.'.execute",
+                        relatedURL:request?.url,
+                        httpStatusCode: response?.statusCode ?? 0,
+                        response: response,
+                        result:result.value)
+            
+                    // React according to the situation
+                    var reactions = Array<Bartleby.Reaction> ()
+                    reactions.append(Bartleby.Reaction.track(result: result.value, context: context)) // Tracking
+            
+                    if result.isFailure {
+                       let failureReaction =  Bartleby.Reaction.dispatchAdaptiveMessage(
+                            context: context,
+                            title: NSLocalizedString("Unsuccessfull attempt",comment: "Unsuccessfull attempt"),
+                            body:NSLocalizedString("Explicit Failure",comment: "Explicit Failure"),
+                            transmit:{ (selectedIndex) -> () in
+                        })
+                        reactions.append(failureReaction)
+                        failure(context)
+            
+                    }else{
+                        if let statusCode=response?.statusCode {
+                              if 200...299 ~= statusCode {
+'.
+    $successMicroBlock
+.
+'                         }else{
+                                // Bartlby does not currenlty discriminate status codes 100 & 101
+                                // and treats any status code >= 300 the same way
+                                // because we consider that failures differentiations could be done by the caller.
+                                let failureReaction =  Bartleby.Reaction.dispatchAdaptiveMessage(
+                                    context: context,
+                                    title: NSLocalizedString("Unsuccessfull attempt",comment: "Unsuccessfull attempt"),
+                                    body:NSLocalizedString("Implicit Failure",comment: "Implicit Failure"),
+                                    transmit:{ (selectedIndex) -> () in
+                                })
+                               reactions.append(failureReaction)
+                               failure(context)
+                            }
+                        }
+                 }
+                 //Let s react according to the context.
+                 Bartleby.sharedInstance.perform(reactions, forContext: context)
             })
-            reactions.append(failureReaction)
-            failure(context:context)
-
-        }else{
-            if let statusCode=response?.statusCode {
-                if 200...299 ~= statusCode {
-'.$successMicroBlock.'
-            }else{
-                // Bartlby does not currenlty discriminate status codes 100 & 101
-                // and treats any status code >= 300 the same way
-                // because we consider that failures differentiations could be done by the caller.
-                let failureReaction =  Bartleby.Reaction.DispatchAdaptiveMessage(
-                    context: context,
-                    title: NSLocalizedString("Unsuccessfull attempt",comment: "Unsuccessfull attempt"),
-                    body:NSLocalizedString("Implicit Failure",comment: "Implicit Failure"),
-                    transmit:{ (selectedIndex) -> () in
-                })
-               reactions.append(failureReaction)
-               failure(context:context)
-            }
+        }catch{
+                let context = JHTTPResponse( code:2 ,
+                caller: "<?php echo$baseClassName ?>.execute",
+                relatedURL:nil,
+                httpStatusCode:500,
+                response:nil,
+                result:"{\"message\":\"\(error)}")
+                failure(context)
         }
-     }
-
-     //Let s react according to the context.
-     Bartleby.sharedInstance.perform(reactions, forContext: context)
-
-  }
+      }else{
+         let context = JHTTPResponse( code: 1,
+                caller: "'.$d->class.'.execute",
+                relatedURL:nil,
+                httpStatusCode: 417,
+                response: nil,
+                result:"{\"message\":\"Unexisting document with registryUID \(registryUID)\"}")
+         failure(context)
+       }
+    }
 }
-',4);
-
-echoIndentCR('}',0)
+');
 ?><?php /*<- END OF TEMPLATE */ ?>

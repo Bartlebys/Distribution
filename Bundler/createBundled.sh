@@ -2,17 +2,23 @@
 #
 # Author : benoit@pereira-da-silva.com
 # Date : 24/01/2016
+# Updated on : 06/09/2016
 #
 # This script extracts a bundle from the current version.
 # And prepare a bundle to be used by bartleby cli.
 
 # BARTLEBY IS IN PROGRESS
 # THIS HARDCODED WORKING FOLDER PATH WILL BE REPLACED BY A BUNDLER MAP
+
+PREVIOUS_DIR=$(PWD)
+cd "$(dirname "$0")"
+BUNDLER_FOLDER=$(PWD)
+
 WORKING_FOLDER="/Users/bpds/Documents/Entrepot/Git/Clients/LyLo.TV/YouDubAPI"
 BARTLEBYS_CORE="$WORKING_FOLDER/Bartleby"
 BARTLEBYS_FLEXIONS="$WORKING_FOLDER/BartlebyFlexions"
 BARTLEBYS_SYNC_MODULE="$WORKING_FOLDER/BartlebySync"
-BARTLEBYS_APP_PROTOTYPE="Resources/App.prototype"
+BARTLEBYS_APP_PROTOTYPE="$BUNDLER_FOLDER/../Resources/App.prototype"
 
 BUNDLE_SOURCES="../Distribution/Bundle-sources/"
 
@@ -92,3 +98,5 @@ if [ -d "$BARTLEBYS_CORE" ]; then
 else
  echo "Unable to find $BARTLEBYS_CORE";
 fi
+
+cd "$PREVIOUS_DIR"

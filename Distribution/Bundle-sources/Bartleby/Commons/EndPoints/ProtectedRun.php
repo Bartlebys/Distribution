@@ -25,8 +25,8 @@ final class ProtectedRunCallData extends MongoCallDataRawWrapper {
 
 /**
  * Allow to run a script located in the protected Section
- * eg: http://yd.local/api/v1/run?fileToRun=echo.php
- * http://yd.local/api/v1/run?fileToRun=maintenance_ephemeralRemover.php
+ * eg: http://localhost/api/v1/run?fileToRun=echo.php
+ * http://localhost/api/v1/run?fileToRun=maintenance_ephemeralRemover.php
  */
 final class ProtectedRun extends MongoEndPoint {
 

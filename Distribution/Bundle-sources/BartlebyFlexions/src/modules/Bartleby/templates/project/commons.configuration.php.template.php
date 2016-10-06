@@ -150,6 +150,7 @@ class BartlebyCommonsConfiguration extends MongoConfiguration {
             'ProtectedRun->GET'=>array('level' => PERMISSION_BY_IDENTIFICATION),
             // The configuration infos endpoint
             'Infos->GET'=>array('level' => PERMISSION_NO_RESTRICTION),
+            'EntityExistsById->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
 
             // USERS
 
@@ -256,59 +257,6 @@ class BartlebyCommonsConfiguration extends MongoConfiguration {
 			'DeleteLockers->call'=>array('level' => PERMISSION_IS_BLOCKED),
 			'ReadLockersByQuery->call'=>array('level' => PERMISSION_IS_BLOCKED),
 
-
-            // GROUPS
-
-            'ReadGroupById->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
-            'CreateGroup->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
-            'UpdateGroup->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
-            'DeleteGroup->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
-            'CreateGroups->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
-            'ReadGroupsByIds->call'=>array('level' => PERMISSION_BY_IDENTIFICATION),
-            'UpdateGroups->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
-            'DeleteGroups->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
-            'ReadGroupsByQuery->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
-
-            // DYNAMIC PERMISSIONS
-
-            'ReadPermissionById->call'=>array('level' => PERMISSION_BY_TOKEN,TOKEN_CONTEXT=>'ReadPermissionById#spaceUID'),
-            'CreatePermission->call'=>array('level' => PERMISSION_BY_TOKEN,TOKEN_CONTEXT=>'CreatePermission#spaceUID'),
-
-            'UpdatePermission->call'=>array(
-                'level' => PERMISSION_RESTRICTED_BY_QUERIES,
-                ARRAY_OF_QUERIES =>array(
-                    "hasBeenCreatedByCurrentUser"=>array(
-                        SELECT_COLLECTION_NAME=>'users',
-                        WHERE_VALUE_OF_ENTITY_KEY=>'_id',
-                        EQUALS_VALUE_OF_PARAMETERS_KEY_PATH=>'userId',
-
-                        COMPARE_WITH_OPERATOR=>'==',
-                        RESULT_ENTITY_KEY=>'creatorUID',
-                        AND_CURRENT_USERID=>true
-					)
-                )
-			),
-			'DeletePermission->call'=>array(
-                        'level' => PERMISSION_RESTRICTED_BY_QUERIES,
-                        ARRAY_OF_QUERIES =>array(
-                        "hasBeenCreatedByCurrentUser"=>array(
-                        SELECT_COLLECTION_NAME=>'users',
-                        WHERE_VALUE_OF_ENTITY_KEY=>'_id',
-                        EQUALS_VALUE_OF_PARAMETERS_KEY_PATH=>'userId',
-
-                        COMPARE_WITH_OPERATOR=>'==',
-                        RESULT_ENTITY_KEY=>'creatorUID',
-                        AND_CURRENT_USERID=>true
-                    )
-                )
-            ),
-            'CreatePermissions->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
-            'ReadPermissionsByIds->call'=>array('level' => PERMISSION_BY_TOKEN,TOKEN_CONTEXT=>'ReadPermissionsByIds#spaceUID'),
-            'UpdatePermissions->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
-            'DeletePermissions->call'=>array('level' => PERMISSION_IS_GRANTED_TO_SUPER_ADMIN_ONLY),
-            'ReadPermissionsByQuery->call'=>array('level' => PERMISSION_BY_TOKEN,TOKEN_CONTEXT=>'ReadPermissionsByQuery#spaceUID'),
-
-
             // Nobody can delete triggers.
 
             'SSETriggers->GET'=>array('level' => PERMISSION_BY_IDENTIFICATION),
@@ -386,6 +334,9 @@ echoIndentCR("*/",2);
             'POST:/locker/verify' => array('VerifyLocker','POST'),
             'GET:/{spaceUID}/triggers/after/{lastIndex}' => array('TriggerAfterIndex','call'),// Multi route test
             'GET:/triggers/after/{lastIndex}' => array('TriggerAfterIndex','call'),
+            'GET:/triggers/'=> array('TriggerForIndexes','call'), // Triggers for indexes
+            'GET:/export' => array('Export','GET'),
+            'GET:/exists/{id}' => array('EntityExistsById','call'),
 <?php
 $history=array();
 /* @var $d ProjectRepresentation */
@@ -435,7 +386,8 @@ while ($d->iterateOnActions() ) {
     * @return array
     */
     public function getCollectionsNameList(){
-        $list=super::getCollectionsNameList();
+        $list=parent::getCollectionsNameList();
+        $list [] = "triggers";
 <?php while ($d->iterateOnEntities() ) {
     $entity=$d->getEntity();
     $name=$entity->name;
@@ -453,7 +405,7 @@ while ($d->iterateOnActions() ) {
     if (!isset($name) || $name=="" ||$shouldBeExcluded==true){
         continue;
     }else{
-        echoIndentCR(' $list [] = "'.strtolower(Pluralization::pluralize($name)).'";',2);
+        echoIndentCR('$list [] = "'.strtolower(Pluralization::pluralize($name)).'";',2);
     }
 }
 ?>

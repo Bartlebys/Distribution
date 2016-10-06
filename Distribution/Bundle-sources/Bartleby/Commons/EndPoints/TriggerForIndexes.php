@@ -12,11 +12,10 @@ use \MongoCollection;
 use Bartleby\Configuration;
 
 class  TriggerForIndexesCallData extends MongoCallDataRawWrapper {
-    const indexes='ids';
-    const ignoreHoles='ignoreHoles';
+    const indexes='indexes';
 }
 
-class  TriggerAfterIndex extends MongoEndPoint {
+class  TriggerForIndexes extends MongoEndPoint {
 
     function call() {
         /* @var TriggerForIndexesCallData */
@@ -25,9 +24,6 @@ class  TriggerAfterIndex extends MongoEndPoint {
         /* @var \MongoCollection */
         $collection = $db->triggers;
         $indexes=$parameters->getValueForKey(TriggerForIndexesCallData::indexes);
-        $ignoreHoles=$parameters->getValueForKey(TriggerForIndexesCallData::ignoreHoles);
-
-        // TODO support ignoreHoles
 
         if(isset ($indexes) && is_array($indexes) && count($indexes)){
 
@@ -46,7 +42,7 @@ class  TriggerAfterIndex extends MongoEndPoint {
             }
 
             try {
-                // Restrict to this spaceUID
+                // Restrict to this observationUID
                 $q[OBSERVATION_UID_KEY] = $this->getObservationUID(false);
             } catch (\Exception $e) {
                 return new JsonResponse("observationUID is undefined", 412);

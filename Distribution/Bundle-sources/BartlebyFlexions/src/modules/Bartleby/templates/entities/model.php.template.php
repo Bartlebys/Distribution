@@ -60,7 +60,9 @@ while ($d->iterateOnProperties()){
             if (in_array($className,$notGenerated)){
                 echoIndentCR('require_once BARTLEBY_ROOT_FOLDER.\'/Commons/Models/'.$className.'.php\';',0);
             }else{
-                echoIndentCR('require_once __DIR__.\'/'.$className.'.php\';',0);
+                if ($className!=='Dictionary'){
+                    echoIndentCR('require_once __DIR__.\'/'.$className.'.php\';',0);
+                }
             }
             echoIndentCR('use Bartleby\Models\\'.$className.';//'.$genericRes,0);
             $hasBeenImported[]=$className;

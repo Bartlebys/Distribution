@@ -17,17 +17,13 @@ $modelsShouldConformToNSCoding = true; // (!) you can opt for NSCoding support (
 $excludeEntitiesWith = ["AbstractContext"]; //
 
 $xOSIncludeCollectionControllerForEntityNamed = [
-    "Operation",
-    "TasksGroup",
-    "Task"
+    "Operation"
 ];
 
-$excludeActionsWith = ["TaskArguments",// Base name for any task arguments.
+$excludeActionsWith = [
     "JString", "JDictionary", "JData", // Primitive Wrapper
     "Trigger",
     "Operation",
-    "TasksGroup",
-    "Task",
     "Abstract", // Any abstract entity should be ignored
     "ExternalReference",
     "Progression",

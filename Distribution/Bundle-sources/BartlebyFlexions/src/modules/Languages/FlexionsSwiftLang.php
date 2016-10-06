@@ -5,11 +5,12 @@ require_once FLEXIONS_ROOT_DIR . 'flexions/representations/flexions/FlexionsType
 
 class FlexionsSwiftLang implements IFlexionsLanguageMapping {
 
+
     /**
      * @param  $flexionsType
      * @return String the native type
      */
-    static function nativeTypeFor($flexionsType){
+    static function nativeTypeFor($flexionsType) {
         switch ($flexionsType) {
             case FlexionsTypes::STRING:
                 return 'String';
@@ -24,7 +25,7 @@ class FlexionsSwiftLang implements IFlexionsLanguageMapping {
             case FlexionsTypes::ENUM:
                 return 'Emum';//Pseudo type (the instanceOf type will apply)
             case FlexionsTypes::FILE:
-                return 'NSURL';
+                return 'URL';
             case FlexionsTypes::FLOAT:
                 return 'Float';
             case FlexionsTypes::DOUBLE:
@@ -32,14 +33,15 @@ class FlexionsSwiftLang implements IFlexionsLanguageMapping {
             case FlexionsTypes::BYTE:
                 return 'UInt8';
             case FlexionsTypes::DATETIME:
-                return 'NSDate';
+                return 'Date';
             case FlexionsTypes::URL:
-                return 'NSURL';
+                return 'URL';
             case FlexionsTypes::DICTIONARY:
-                return '[String:AnyObject]';
+                return '[String:Any]';
             case FlexionsTypes::DATA:
-                return 'NSData';
+                return 'Data';
         }
         return FlexionsTypes::NOT_SUPPORTED;
     }
+
 }

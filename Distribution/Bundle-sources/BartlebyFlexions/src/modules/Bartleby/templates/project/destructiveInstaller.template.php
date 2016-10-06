@@ -20,7 +20,7 @@ if (isset ( $f )) {
 **/
 require_once dirname(__DIR__).'/Configuration.php';
 
-
+use \MongoClient;
 use Bartleby\Core\Stages;
 use Bartleby\Configuration;
 
@@ -32,6 +32,16 @@ $configuration=new Configuration(dirname(__DIR__),BARTLEBY_ROOT_FOLDER);
 function logMessage($message=""){
     echo ($message."<br>\n");
 }
+
+function createCollection($collectionName,$db){
+    logMessage('Creating the \''.$collectionName.'\' collection');
+    $collection=$db->createCollection($collectionName);
+    logMessage('Creating the indexes for \''.$collectionName.'\' (ephemeral, OBSERVATION_UID_KEY,SPACE_UID_KEY) ');
+    $collection->createIndex(array("ephemeral" => 1));
+    $collection->createIndex(array(SPACE_UID_KEY => 1));
+    $collection->createIndex(array(OBSERVATION_UID_KEY => 1));
+}
+
 
 $today = date("Ymd-H:m:s");
 logMessage ("Running installer on ".$today);
@@ -70,24 +80,12 @@ logMessage("Recreating the collections");
 // Collection creation
 
 // Bartleby's commons
-logMessage("Creating the 'users' collection");
-$users=$db->createCollection("users");
-logMessage("Creating 'ephemeral' Index for 'users'");
-$users->createIndex(array("ephemeral" => 1));
-logMessage("Creating the 'groups' collection");
-$groups=$db->createCollection("groups");
-logMessage("Creating 'ephemeral' Index for 'groups'");
-$groups->createIndex(array("ephemeral" => 1));
-logMessage("Creating the 'permissions' collection");
-$permissions=$db->createCollection("permissions");
-logMessage("Creating 'ephemeral' Index for 'permissions'");
-$permissions->createIndex(array("ephemeral" => 1));
-logMessage("Creating the 'triggers' collection");
-$triggers=$db->createCollection("triggers");
-logMessage("Creating 'ephemeral' Index for 'triggers'");
-$triggers->createIndex(array("ephemeral" => 1));
 
-<?php
+createCollection("users",$db);
+createCollection("locker",$db);
+createCollection("triggers",$db);
+
+<?php 
 /* @var $d ProjectRepresentation */
 /* @var $entity EntityRepresentation */
 foreach ($d->entities as $entity ) {
@@ -109,11 +107,7 @@ foreach ($d->entities as $entity ) {
     }
 
     $pluralized=lcfirst(Pluralization::pluralize($name));
-    echoIndentCR('logMessage("Creating the \''.$pluralized.'\' collection");',0);
-    echoIndentCR('$'.$pluralized.'=$db->createCollection("'.$pluralized.'");',0);
-    echoIndentCR('logMessage("Creating \'ephemeral\' Index for \''.$pluralized.'\'");',0);
-    echoIndentCR('$'.$pluralized.'->createIndex(array("ephemeral" => 1));',0);
-
+    echoIndentCR('createCollection("'.$pluralized.'",$db);',0);
 }
 ?>
 

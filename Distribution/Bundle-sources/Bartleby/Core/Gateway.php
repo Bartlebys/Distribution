@@ -143,7 +143,7 @@ class Gateway {
                     // Filter IN
                     $filteredParameters = $this->_context->getVariables();
                     $this->_filterKey = $this->_context->controllerClassName . '->' . $methodName;
-                    if ($this->_configuration->hasFilterIN($this->_filterKey)) {
+                    if ($this->_configuration->hasFilterIN($this->_filterKey) && $this->_configuration->DISABLE_DATA_FILTERS() == false) {
                         $filteredParameters = $this->_configuration->runFilterIN($this->_filterKey, $this->_context->getVariables());
                     }
 
@@ -200,7 +200,7 @@ class Gateway {
             }
             if (isset($this->_response->data)) {
                 // Run Filter OUT
-                if ($this->_configuration->hasFilterOUT($this->_filterKey)) {
+                if ($this->_configuration->hasFilterOUT($this->_filterKey) && $this->_configuration->DISABLE_DATA_FILTERS() == false) {
                     $this->_response->data = $this->_configuration->runFilterOUT($this->_filterKey, $this->_response->data);
                 }
             }

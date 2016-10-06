@@ -30,10 +30,10 @@ class RoutesAliases {
      *
      *  For PAGES explicit mapping is required :
      *
-     *  yd.local and yd.local/ will point to the Start.php page.
+     *  localhost and localhost/ will point to the Start.php page.
      *  ''=>'Start'
      *
-     *  yd.local/time
+     *  localhost/time
      *  'time'=>'Time',
      *
      * You can specify a not found mapping

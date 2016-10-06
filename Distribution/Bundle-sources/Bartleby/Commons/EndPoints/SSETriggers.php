@@ -118,15 +118,34 @@ final class SSETriggers extends MongoEndPoint {
                     $runUID = $trigger[RUN_UID_KEY];
                     $origin = $trigger['origin'];
                     $action = $trigger['action'];
+                    $payloads = "";
+                    if (array_key_exists('payloads',$trigger)){
+                        $payloads = $trigger['payloads'];
+                    }
                     $uids = $trigger['UIDS'];
                     $collectionName = $trigger['targetCollectionName'];
                     $observationUID = $trigger[OBSERVATION_UID_KEY];
                     if ($this->_showDetails == false) {
-                        // Used by clients
-                        $sse->sendMsg($serverTime, 'relay', '{"i":' . $this->_lastIndex . ',"o":"' . $observationUID . '","r":"' . $runUID . '","c":"' . $collectionName . '","a":"' . $action . '","u":"' . $uids . '"}');
+                        // Used by clients includes the payloads
+                        $sse->sendMsg($serverTime, 'relay', '{"i":' . $this->_lastIndex .
+                            ',"o":"' . $observationUID .
+                            '","r":"' . $runUID .
+                            '","c":"' . $collectionName .
+                            '","a":"' . $action .
+                            '","u":"' . $uids .
+                            '","p":'.json_encode($payloads).'}');
                     } else {
                         // Used to display the trigger
-                        $sse->sendMsg($serverTime, 'relay', '{"i":' . $this->_lastIndex . ',"o":"' . $observationUID . '","r":"' . $runUID . '","c":"' . $collectionName . '","s":"' . $sender . '","n":"' . $origin . '","a":"' . $action . '","u":"' . $uids . '"}');
+                        $sse->sendMsg($serverTime, 'relay', '{"i":' . $this->_lastIndex .
+                            ',"o":"' . $observationUID .
+                            '","r":"' . $runUID .
+                            '","c":"' . $collectionName .
+                            '","s":"' . $sender .
+                            '","n":"' . $origin .
+                            '","a":"' . $action .
+                            '","u":"' . $uids .
+                            '","p":'.json_encode($payloads)
+                            .'}');
                     }
                 }
 

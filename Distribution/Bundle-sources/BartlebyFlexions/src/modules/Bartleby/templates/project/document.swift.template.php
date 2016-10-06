@@ -60,6 +60,10 @@ import AppKit
 import UIKit
 #endif
 
+#if !USE_EMBEDDED_MODULES
+import ObjectMapper
+#endif
+
 <?php
 if ($isIncludeInBartlebysCommons==false) {
     echoIndentCR('#if !USE_EMBEDDED_MODULES', 0);
@@ -69,17 +73,36 @@ if ($isIncludeInBartlebysCommons==false) {
 ?>
 
 
-public class <?php echo($configurator->getClassName())?> : <?php
+@objc(<?php echo($configurator->getClassName())?>) open class <?php echo($configurator->getClassName())?> : <?php
     if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
-        echo('JDocument');
+        echo('Registry');
     }else{
         echo('BartlebyDocument');
     }
 ?> {
 
-    // MARK - Universal Type Support
+    #if os(OSX)
 
-    override public class func declareTypes() {
+    required public init() {
+        super.init()
+        <?php echo($configurator->getClassName())?>.declareTypes()
+    }
+
+    #else
+
+    private var _fileURL: URL
+
+    override public init(fileURL url: URL) {
+        self._fileURL = url
+        super.init(fileURL: url)
+        <?php echo($configurator->getClassName())?>.declareTypes()
+    }
+    #endif
+
+
+    // MARK  Universal Type Support
+
+    override open class func declareTypes() {
         super.declareTypes()
 <?php
 // ENTITIES
@@ -106,9 +129,11 @@ if ($declareAllCollectibileType==true) {
 ?>
     }
 
-    private var _KVOContext: Int = 0
 
-    // Collection Controller
+    // MARK: - Collection Controllers
+
+    fileprivate var _KVOContext: Int = 0
+
     // The initial instances are proxies
     // On document deserialization the collection are populated.
 
@@ -118,12 +143,17 @@ foreach ($project->entities as $entity) {
         $pluralizedEntity=Pluralization::pluralize($entity->name);
         $collectionControllerClassName=ucfirst($pluralizedEntity).'CollectionController';
         $collectionControllerVariableName=lcfirst($pluralizedEntity).'CollectionController';
-        echoIndentCR('public var '.lcfirst($pluralizedEntity).'='.$collectionControllerClassName.'()',1);
+        echoIndentCR('open dynamic var '.lcfirst($pluralizedEntity).'='.$collectionControllerClassName.'(){',1);
+        echoIndentCR('willSet{',2);
+        echoIndentCR(lcfirst($pluralizedEntity).'.document=self',3);
+        echoIndentCR('}',2);
+        echoIndentCR('}',1);
+        echoIndentCR('',1);
     }
 }
 ?>
 
-    // MARK: - OSX
+    // MARK: - Array Controllers and automation (OSX)
  #if os(OSX) && !USE_EMBEDDED_MODULES
 
 
@@ -140,7 +170,7 @@ foreach ($project->entities as $entity) {
         $arrayControllerVariableName=lcfirst($pluralizedEntity).'ArrayController';
         echoIndentCR('
 
-    public var '.$arrayControllerVariableName.': NSArrayController?{
+    open var '.$arrayControllerVariableName.': NSArrayController?{
 
         willSet{
             // Remove observer on previous array Controller
@@ -150,12 +180,11 @@ foreach ($project->entities as $entity) {
             // Setup the Array Controller in the CollectionController
             self.'.lcfirst($pluralizedEntity).'.arrayController='.lcfirst($arrayControllerVariableName).'
             // Add observer
-            '.lcfirst($arrayControllerVariableName).'?.addObserver(self, forKeyPath: "selectionIndexes", options: .New, context: &self._KVOContext)
-            if let index=self.registryMetadata.stateDictionary['.$configurator->getClassName().'.kSelected'.ucfirst($entity->name).'IndexKey] as? Int{
-               if self.'.lcfirst($pluralizedEntity).'.items.count > index{
-                   let selection=self.'.lcfirst($pluralizedEntity).'.items[index]
-                   self.'.lcfirst($arrayControllerVariableName).'?.setSelectedObjects([selection])
-                }
+            '.lcfirst($arrayControllerVariableName).'?.addObserver(self, forKeyPath: "selectionIndexes", options: .new, context: &self._KVOContext)
+            if let indexes=self.registryMetadata.stateDictionary['.$configurator->getClassName().'.kSelected'.ucfirst($pluralizedEntity).'IndexesKey] as? [Int]{
+                let indexesSet = NSMutableIndexSet()
+                indexes.forEach{ indexesSet.add($0) }
+                self.'.lcfirst($arrayControllerVariableName).'?.setSelectionIndexes(indexesSet as IndexSet)
              }
         }
     }
@@ -167,7 +196,7 @@ foreach ($project->entities as $entity) {
 
 #endif
 
-//Focus indexes persistency
+    // indexes persistency
 
 <?php
 foreach ($project->entities as $entity) {
@@ -176,20 +205,22 @@ foreach ($project->entities as $entity) {
         $arrayControllerClassName=ucfirst($pluralizedEntity).'ArrayController';
         $arrayControllerVariableName=lcfirst($pluralizedEntity).'ArrayController';
         echoIndentCR('
-
-    static public let kSelected'.ucfirst($entity->name).'IndexKey="selected'.ucfirst($entity->name).'IndexKey"
-    static public let '.strtoupper($entity->name).'_SELECTED_INDEX_CHANGED_NOTIFICATION="'.strtoupper($entity->name).'_SELECTED_INDEX_CHANGED_NOTIFICATION"
-    dynamic public var selected'.ucfirst($entity->name).':'.ucfirst($entity->name).'?{
+    
+    static open let kSelected'.ucfirst($pluralizedEntity).'IndexesKey="selected'.ucfirst($pluralizedEntity).'IndexesKey"
+    static open let '.strtoupper($pluralizedEntity).'_SELECTED_INDEXES_CHANGED_NOTIFICATION="'.strtoupper($pluralizedEntity).'_SELECTED_INDEXES_CHANGED_NOTIFICATION"
+    dynamic open var selected'.ucfirst($pluralizedEntity).':['.ucfirst($entity->name).']?{
         didSet{
-            if let '.lcfirst($entity->name).' = selected'.ucfirst($entity->name).' {
-                if let index='.lcfirst($pluralizedEntity).'.items.indexOf('.lcfirst($entity->name).'){
-                    self.registryMetadata.stateDictionary['.$configurator->getClassName().'.kSelected'.ucfirst($entity->name).'IndexKey]=index
-                     NSNotificationCenter.defaultCenter().postNotificationName('.$configurator->getClassName().'.'.strtoupper($entity->name).'_SELECTED_INDEX_CHANGED_NOTIFICATION, object: nil)
-
-                }
+            if let '.lcfirst($pluralizedEntity).' = selected'.ucfirst($pluralizedEntity).' {
+                 let indexes:[Int]='.lcfirst($pluralizedEntity).'.map({ ('.lcfirst($entity->name).') -> Int in
+                    return self.'.lcfirst($pluralizedEntity).'.index(where:{ return $0.UID == '.lcfirst($entity->name).'.UID })!
+                })
+                self.registryMetadata.stateDictionary['.$configurator->getClassName().'.kSelected'.ucfirst($pluralizedEntity).'IndexesKey]=indexes
+                NotificationCenter.default.post(name:NSNotification.Name(rawValue:'.$configurator->getClassName().'.'.strtoupper($pluralizedEntity).'_SELECTED_INDEXES_CHANGED_NOTIFICATION), object: nil)
             }
         }
     }
+    var firstSelected'.ucfirst($entity->name).':'.ucfirst($entity->name).'? { return self.selected'.ucfirst($pluralizedEntity).'?.first }
+        
         ',0);
     }
 }
@@ -197,7 +228,7 @@ foreach ($project->entities as $entity) {
 
 
 
-    // MARK: - DATA life cycle
+    // MARK: - Schemas
 
     /**
 
@@ -207,7 +238,7 @@ foreach ($project->entities as $entity) {
     #2  Register the collections
 
     */
-    override public func configureSchema(){
+    override open func configureSchema(){
 
         // #1  Defines the Schema
         super.configureSchema()
@@ -225,8 +256,7 @@ foreach ($project->entities as $entity) {
         '.$entityDefinition.'.proxy = self.'.lcfirst($pluralizedEntity).'
         // By default we group the observation via the rootObjectUID
         '.$entityDefinition.'.collectionName = '.$entity->name.'.collectionName
-        '.$entityDefinition.'.observableViaUID = self.registryMetadata.rootObjectUID
-        '.$entityDefinition.'.storage = CollectionMetadatum.Storage.MonolithicFileStorage
+        '.$entityDefinition.'.storage = CollectionMetadatum.Storage.monolithicFileStorage
         '.$entityDefinition.'.allowDistantPersistency = '. (($entity->isDistantPersistencyOfCollectionAllowed())? 'true':'false').'
         '.$entityDefinition.'.inMemory = '. (($entity->shouldPersistsLocallyOnlyInMemory())? 'true':'false').'
         ',0);
@@ -249,7 +279,7 @@ foreach ($project->entities as $entity) {
 }
 ?>
 
-        }catch RegistryError.DuplicatedCollectionName(let collectionName){
+        }catch RegistryError.duplicatedCollectionName(let collectionName){
             bprint("Multiple Attempt to add the Collection named \(collectionName)",file:#file,function:#function,line:#line)
         }catch {
             bprint("\(error)",file:#file,function:#function,line:#line)
@@ -268,16 +298,16 @@ foreach ($project->entities as $entity) {
 
     // MARK: KVO
 
-    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+
+    override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         guard context == &_KVOContext else {
             // If the context does not match, this message
             // must be intended for our superclass.
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
             return
         }
-
         // We prefer to centralize the KVO for selection indexes at the top level
-        if let keyPath = keyPath, object = object {
+        if let keyPath = keyPath, let object = object {
 
         <?php
         foreach ($project->entities as $entity) {
@@ -288,10 +318,15 @@ foreach ($project->entities as $entity) {
                 echoIndentCR('
             
             if keyPath=="selectionIndexes" && self.'.$arrayControllerVariableName.' == object as? NSArrayController {
-                if let '.lcfirst($entity->name).'=self.'.$arrayControllerVariableName.'?.selectedObjects.first as? '.ucfirst($entity->name).'{
-                    self.selected'.ucfirst($entity->name).'='.lcfirst($entity->name).'
-                    return
+                if let '.lcfirst($pluralizedEntity).' = self.'.$arrayControllerVariableName.'?.selectedObjects as? ['.ucfirst($entity->name).'] {
+                     if let selected'.ucfirst($entity->name).' = self.selected'.ucfirst($pluralizedEntity).'{
+                        if selected'.ucfirst($entity->name).' == '.lcfirst($pluralizedEntity).'{
+                            return // No changes
+                        }
+                     }
+                    self.selected'.ucfirst($pluralizedEntity).'='.lcfirst($pluralizedEntity).'
                 }
+                return
             }
             ',0);
             }
@@ -309,10 +344,12 @@ foreach ($project->entities as $entity) {
             $entityName=ucfirst($entity->name);
             $pluralizedEntity=lcfirst(Pluralization::pluralize($entity->name));
             echoIndentCR('
-    public func deleteSelected'.$entityName.'() {
+    open func deleteSelected'.ucfirst($pluralizedEntity).'() {
         // you should override this method if you want to cascade the deletion(s)
-        if let selected=self.selected'.$entityName.'{
-            self.'.$pluralizedEntity.'.removeObject(selected, commit:true)
+        if let selected=self.selected'.ucfirst($pluralizedEntity).'{
+            for item in selected{
+                 self.'.$pluralizedEntity.'.removeObject(item, commit:true)
+            }
         }
     }
         ',0);
@@ -324,41 +361,222 @@ foreach ($project->entities as $entity) {
 
 
     #endif
-    
-    #if os(OSX)
-
-    required public init() {
-        super.init()
-        <?php echo($configurator->getClassName().'.declareTypes()'); ?>
-    }
-    #else
-
-    public required init(fileURL url: NSURL) {
-        super.init(fileURL: url)
-        <?php echo($configurator->getClassName().'.declareTypes()'); ?>
-    }
-
-    #endif
 
     <?php
     if ($isIncludeInBartlebysCommons){
         echo('
+   
     // MARK : new User facility 
     
-    public func newUser() -> User {
+    /**
+    * Creates a new user
+    * 
+    * you should override this method to customize default (name, email, ...)
+    * and call before returning :
+    *   if(user.creatorUID != user.UID){
+    *       // We don\'t want to add the current user to user list
+    *       self.users.add(user, commit:true)
+    *   }
+    */
+    open func newUser() -> User {
         let user=User()
-        if let creator=self.registryMetadata.currentUser {
-            user.creatorUID = creator.UID
-            user.spaceUID = creator.spaceUID
+        user.silentGroupedChanges {
+            if let creator=self.registryMetadata.currentUser {
+                user.creatorUID = creator.UID
+            }else{
+                // Autopoiesis.
+                user.creatorUID = user.UID
+            }
+            user.spaceUID = self.registryMetadata.spaceUID
+            user.document = self // Very important for the  document registry metadata current User
         }
-        self.users.add(user, commit:true)
         return user
     }
-        
-      
-        ');
+     
+    // MARK: - Synchronization
+
+    // SSE server sent event source
+    internal var _sse:EventSource?
+
+    // The EventSource URL for Server Sent Events
+    open dynamic lazy var sseURL:URL=URL(string: self.baseURL.absoluteString+"/SSETriggers?spaceUID=\(self.spaceUID)&observationUID=\(self.UID)&lastIndex=\(self.registryMetadata.lastIntegratedTriggerIndex)&runUID=\(Bartleby.runUID)&showDetails=false")!
+    
+    open var synchronizationHandlers:Handlers=Handlers.withoutCompletion()
+
+    internal var _timer:Timer?
+
+    // MARK: - Local Persistency
+
+    #if os(OSX)
+
+
+    // MARK:  NSDocument
+
+    // MARK: Serialization
+     override open func fileWrapper(ofType typeName: String) throws -> FileWrapper {
+
+        self.registryWillSave()
+        let fileWrapper=FileWrapper(directoryWithFileWrappers:[:])
+        if var fileWrappers=fileWrapper.fileWrappers {
+
+            // ##############
+            // #1 Metadata
+            // ##############
+
+            // Try to store a preferred filename
+            self.registryMetadata.preferredFileName=self.fileURL?.lastPathComponent
+            var metadataData=self.registryMetadata.serialize()
+
+            metadataData = try Bartleby.cryptoDelegate.encryptData(metadataData)
+
+            // Remove the previous metadata
+            if let wrapper=fileWrappers[self._metadataFileName] {
+                fileWrapper.removeFileWrapper(wrapper)
+            }
+            let metadataFileWrapper=FileWrapper(regularFileWithContents: metadataData)
+            metadataFileWrapper.preferredFilename=self._metadataFileName
+            fileWrapper.addFileWrapper(metadataFileWrapper)
+
+            // ##############
+            // #2 Collections
+            // ##############
+
+            for metadatum: CollectionMetadatum in self.registryMetadata.collectionsMetadata {
+
+                if !metadatum.inMemory {
+                    let collectionfileName=self._collectionFileNames(metadatum).crypted
+                    // MONOLITHIC STORAGE
+                    if metadatum.storage == CollectionMetadatum.Storage.monolithicFileStorage {
+
+                        if let collection = self.collectionByName(metadatum.collectionName) as? CollectibleCollection {
+
+                            // We use multiple files
+
+                            var collectionData = collection.serialize()
+                            collectionData = try Bartleby.cryptoDelegate.encryptData(collectionData)
+
+                            // Remove the previous data
+                            if let wrapper=fileWrappers[collectionfileName] {
+                                fileWrapper.removeFileWrapper(wrapper)
+                            }
+
+                            let collectionFileWrapper=FileWrapper(regularFileWithContents: collectionData)
+                            collectionFileWrapper.preferredFilename=collectionfileName
+                            fileWrapper.addFileWrapper(collectionFileWrapper)
+                        } else {
+                            // NO COLLECTION
+                        }
+                    } else {
+                        // SQLITE
+                    }
+
+                }
+            }
+        }
+        return fileWrapper
     }
-    ?>
+
+    // MARK: Deserialization
 
 
+    /**
+     Standard Bundles loading
+
+     - parameter fileWrapper: the file wrapper
+     - parameter typeName:    the type name
+
+     - throws: misc exceptions
+     */
+    override open func read(from fileWrapper: FileWrapper, ofType typeName: String) throws {
+        if let fileWrappers=fileWrapper.fileWrappers {
+
+            // ##############
+            // #1 Metadata
+            // ##############
+
+            if let wrapper=fileWrappers[_metadataFileName] {
+                if var metadataData=wrapper.regularFileContents {
+                    metadataData = try Bartleby.cryptoDelegate.decryptData(metadataData)
+                    let r = try Bartleby.defaultSerializer.deserialize(metadataData)
+                    if let registryMetadata=r as? RegistryMetadata {
+                        self.registryMetadata=registryMetadata
+                    } else {
+                        // There is an error
+                        bprint("ERROR \(r)", file: #file, function: #function, line: #line)
+                        return
+                    }
+                    let registryUID=self.registryMetadata.rootObjectUID
+                    Bartleby.sharedInstance.replaceRegistryUID(Default.NO_UID, by: registryUID)
+                    self.registryMetadata.currentUser?.document=self
+                }
+            } else {
+                // ERROR
+            }
+
+
+            // ##############
+            // #2 Collections
+            // ##############
+
+            for metadatum in self.registryMetadata.collectionsMetadata {
+                // MONOLITHIC STORAGE
+                if metadatum.storage == CollectionMetadatum.Storage.monolithicFileStorage {
+                    let names=self._collectionFileNames(metadatum)
+                    if let wrapper=fileWrappers[names.crypted] ?? fileWrappers[names.notCrypted] {
+                        let filename=wrapper.filename
+                        if var collectionData=wrapper.regularFileContents {
+                            if let proxy=self.collectionByName(metadatum.collectionName) {
+                                if let path=filename {
+                                    if let ext=path.components(separatedBy: ".").last {
+                                        let pathExtension="."+ext
+                                        if  pathExtension == Registry.DATA_EXTENSION {
+                                            collectionData = try Bartleby.cryptoDelegate.decryptData(collectionData)
+                                        }
+                                    }
+                                  let _ = try proxy.updateData(collectionData,provisionChanges: false)
+                                }
+                            } else {
+                                throw RegistryError.attemptToLoadAnNonSupportedCollection(collectionName:metadatum.d_collectionName)
+                            }
+                        }
+                    } else {
+                        // ERROR
+                    }
+                } else {
+                    // SQLite
+                }
+            }
+            do {
+                try self._refreshProxies()
+            } catch {
+                bprint("Proxies refreshing failure \(error)", file: #file, function: #function, line: #line)
+            }
+           
+            DispatchQueue.main.async(execute: {
+                self.registryDidLoad()
+            })
+        }
+    }
+    
+    #else
+    
+    // MARK: iOS UIDocument serialization / deserialization
+    
+    // TODO: @bpds(#IOS) UIDocument support
+    
+    // SAVE content
+    override open func contents(forType typeName: String) throws -> Any {
+        return ""
+    }
+
+    // READ content
+    open override func load(fromContents contents: Any, ofType typeName: String?) throws {
+
+    }
+    
+    #endif  
+ 
+');
+}
+?>
 }

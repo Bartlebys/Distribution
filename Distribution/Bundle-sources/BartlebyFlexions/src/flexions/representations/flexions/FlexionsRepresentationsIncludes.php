@@ -30,7 +30,6 @@ if (!defined('DEFAULT_USE_URD_MODE')) {
     define('METADATA_KEY_FOR_PERSISTS_LOCALLY_ONLY_IN_MEMORY','persistsLocallyOnlyInMemory');
     define('METADATA_KEY_FOR_DISTANT_PERSISTENCY_IS_ALLOWED','allowDistantPersistency');
     define('METADATA_KEY_FOR_CAN_BE_GROUPED_ON_COMMIT','groupable');
-
     
     // Default Values
     define('DEFAULT_USE_URD_MODE',false);

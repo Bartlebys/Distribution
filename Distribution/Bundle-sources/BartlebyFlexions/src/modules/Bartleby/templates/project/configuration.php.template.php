@@ -159,7 +159,7 @@ while ($d->iterateOnActions() ) {
     * @return array
     */
     public function getCollectionsNameList(){
-        $list=super::getCollectionsNameList();
+        $list=parent::getCollectionsNameList();
 <?php while ($d->iterateOnEntities() ) {
     $entity=$d->getEntity();
     $name=$entity->name;

@@ -14,8 +14,6 @@ namespace Bartleby\Core;
  */
 class CallDataRawWrapper {
 
-    const dID=SPACE_UID_KEY;
-
     private $_storage;
 
     private $_isArray=true;

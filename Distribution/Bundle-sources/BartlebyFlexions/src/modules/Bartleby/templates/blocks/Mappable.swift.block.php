@@ -32,13 +32,13 @@ if (!isset($blockRepresentation)){
 
     // MARK: Mappable
 
-    required public init?(_ map: Map) {
-        super.init(map)
+    required public init?(map: Map) {
+        super.init(map:map)
     }
 
-    override public func mapping(map: Map) {
-        super.mapping(map)
-        self.lockAutoCommitObserver()
+    override open func mapping(map: Map) {
+        super.mapping(map: map)
+        self.silentGroupedChanges {
 <?php
 
 // We use includes so we need to declare the functions once
@@ -53,32 +53,32 @@ if (!defined('MAPPABLE_BLOCK')){
         if (!isset($property->customSerializationMapping)){
             // STANDARD MAPPING
             if ($property->type == FlexionsTypes::DATETIME){
-                echoIndentCR('self.'.$name . ' <- ( map["' . $name . '"], ISO8601DateTransform() )', 2);
+                echoIndentCR('self.'.$name . ' <- ( map["' . $name . '"], ISO8601DateTransform() )', 3);
             } else if ($property->type == FlexionsTypes::URL) {
-                echoIndentCR('self.'.$name . ' <- ( map["' . $name . '"], URLTransform() )', 2);
+                echoIndentCR('self.'.$name . ' <- ( map["' . $name . '"], URLTransform() )', 3);
             }else if($property->type == FlexionsTypes::STRING ){
                 if ($property->isCryptable){
-                    echoIndentCR('self.'.$name . ' <- ( map["' . $name . '"], CryptedStringTransform() )', 2);
+                    echoIndentCR('self.'.$name . ' <- ( map["' . $name . '"], CryptedStringTransform() )', 3);
                 }else{
-                    echoIndentCR('self.'.$name . ' <- ( map["' . $name . '"] )', 2);
+                    echoIndentCR('self.'.$name . ' <- ( map["' . $name . '"] )', 3);
                 }
             }else if($property->type == FlexionsTypes::DATA) {
                 if ($property->isCryptable) {
-                    echoIndentCR('self.' . $name . ' <- ( map["' . $name . '"], CryptedDataTransform() )', 2);
+                    echoIndentCR('self.' . $name . ' <- ( map["' . $name . '"], CryptedDataTransform() )', 3);
                 } else {
-                    echoIndentCR('self.' . $name . ' <- ( map["' . $name . '"], Base64DataTransform() )', 2);
+                    echoIndentCR('self.' . $name . ' <- ( map["' . $name . '"], DataTransform() )', 3);
                 }
             }else if ($property->isGeneratedType){
                 if ($property->isCryptable){
-                    echoIndentCR('self.' . $name . ' <- ( map["' . $name . '"], CryptedSerializableTransform() )', 2);
+                    echoIndentCR('self.' . $name . ' <- ( map["' . $name . '"], CryptedSerializableTransform() )', 3);
                 }else {
-                    echoIndentCR('self.' . $name . ' <- ( map["' . $name . '"] )', 2);
+                    echoIndentCR('self.' . $name . ' <- ( map["' . $name . '"] )', 3);
                 }
             }else{
                 if ($property->isCryptable){
-                    echoIndentCR('self.' . $name . ' <- ( map["' . $name . '"] )// @todo marked generatively as Cryptable Should be crypted!', 2);
+                    echoIndentCR('self.' . $name . ' <- ( map["' . $name . '"] )// @todo marked generatively as Cryptable Should be crypted!', 3);
                 }else {
-                    echoIndentCR('self.' . $name . ' <- ( map["' . $name . '"] )', 2);
+                    echoIndentCR('self.' . $name . ' <- ( map["' . $name . '"] )', 3);
                 }
 
             }
@@ -102,10 +102,16 @@ while ($isEntity?$blockRepresentation->iterateOnProperties():$blockRepresentatio
 }
 
 if (isset($blockEndContent)){
-    echoIndentCR($blockEndContent, 2);
+    echoIndentCR($blockEndContent, 3);
+}
+if (strpos($blockRepresentation->name,"CollectionController")!==false){
+    echo('          if map.mappingType == .fromJSON {
+                forEach { $0.collection=self }
+            }
+');
 }
 ?>
-        self.unlockAutoCommitObserver()
+        }
     }
 
 <?php // End of Block ?>

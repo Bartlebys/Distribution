@@ -9,8 +9,6 @@ require_once FLEXIONS_MODULES_DIR . 'Languages/FlexionsSwiftLang.php';
 
 
 if (isset( $f,$d,$h)) {
-
-
     // We use explicit name (!)
     // And reserve $f , $d , $h possibly for blocks
 
@@ -26,13 +24,12 @@ if (isset( $f,$d,$h)) {
     $f->fileName = ucfirst(Pluralization::pluralize($d->name)) . 'CollectionController.swift';
     // And its package.
     $f->package = 'xOS/collectionControllers/';
-    
+
 }else{
     return NULL;
 }
 
-
-
+$usesUrdMode=$d->usesUrdMode()==true;
 
 // Exclusion -
 
@@ -90,29 +87,70 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
 
 // This controller implements data automation features.
 
-@objc(<?php echo $collectionControllerClass ?>) public class <?php echo $collectionControllerClass ?> : <?php echo GenerativeHelperForSwift::getBaseClass($f,$entityRepresentation); ?>,IterableCollectibleCollection{
+@objc(<?php echo $collectionControllerClass ?>) open class <?php echo $collectionControllerClass ?> : <?php echo GenerativeHelperForSwift::getBaseClass($f,$entityRepresentation); ?>,IterableCollectibleCollection{
 
     // Universal type support
-    override public class func typeName() -> String {
+    override open class func typeName() -> String {
         return "<?php echo $collectionControllerClass ?>"
     }
 
-    weak public var undoManager:NSUndoManager?
+    open var spaceUID:String {
+        get{
+            return self.document?.spaceUID ?? Default.NO_UID
+        }
+    }
 
-    public var spaceUID:String=Default.NO_UID
+    open var registryUID:String{
+        get{
+            return self.document?.UID ?? Default.NO_UID
+        }
+    }
+
+    /// Init with prefetched content
+    ///
+    /// - parameter items: itels
+    ///
+    /// - returns: the instance
+    required public init(items:[<?php echo ucfirst($entityRepresentation->name)?>]) {
+        super.init()
+        self.items=items
+    }
+
+    required public init() {
+        super.init()
+    }
+
+    weak open var undoManager:UndoManager?
 
     #if os(OSX) && !USE_EMBEDDED_MODULES
 
-    public weak var arrayController:NSArrayController?
+    // We auto configure most of the array controller.
+    open weak var arrayController:NSArrayController? {
+        didSet{
+            self.document?.setValue(self, forKey: "<?php echo lcfirst(Pluralization::pluralize($entityRepresentation->name)); ?>")
+            arrayController?.objectClass=<?php echo ucfirst($entityRepresentation->name)?>.self
+            arrayController?.entityName=<?php echo ucfirst($entityRepresentation->name)?>.className()
+            arrayController?.bind("content", to: self, withKeyPath: "items", options: nil)
+        }
+    }
 
     #endif
 
-    weak public var tableView: BXTableView?
+    weak open var tableView: BXTableView?
 
-    public func generate() -> AnyGenerator<<?php echo ucfirst($entityRepresentation->name)?>> {
+    // The underling items storage
+    fileprivate dynamic var items:[<?php echo ucfirst($entityRepresentation->name)?>]=[<?php echo ucfirst($entityRepresentation->name)?>](){
+        didSet {
+            if items != oldValue {
+                self.provisionChanges(forKey: "items",oldValue: oldValue,newValue: items)
+            }
+        }
+    }
+
+    open func generate() -> AnyIterator<<?php echo ucfirst($entityRepresentation->name)?>> {
         var nextIndex = -1
         let limit=self.items.count-1
-        return AnyGenerator {
+        return AnyIterator {
             nextIndex += 1
             if (nextIndex > limit) {
                 return nil
@@ -121,16 +159,79 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
         }
     }
 
+
+    open subscript(index: Int) -> <?php echo ucfirst($entityRepresentation->name)?> {
+        return self.items[index]
+    }
+
+    open var startIndex:Int {
+        return 0
+    }
+
+    open var endIndex:Int {
+        return self.items.count
+    }
+
+    /// Returns the position immediately after the given index.
+    ///
+    /// - Parameter i: A valid index of the collection. `i` must be less than
+    ///   `endIndex`.
+    /// - Returns: The index value immediately after `i`.
+    open func index(after i: Int) -> Int {
+        return i+1
+    }
+
+
+    open var count:Int {
+        return self.items.count
+    }
+
+    open func indexOf(element:@escaping(<?php echo ucfirst($entityRepresentation->name)?>) throws -> Bool) rethrows -> Int?{
+        return self._getIndexOf(element as! Collectible)
+    }
+
+    open func item(at index:Int)->Collectible?{
+        return self[index]
+    }
+
+
+    fileprivate func _getIndexOf(_ item:Collectible)->Int?{
+        if item.collectedIndex >= 0 {
+            return item.collectedIndex
+        }else{
+            if let idx=items.index(where:{return $0.UID == item.UID}){
+                self[idx].collectedIndex=idx
+                return idx
+            }
+        }
+        return nil
+    }
+
+    fileprivate func _incrementIndexes(greaterThan lowerIndex:Int){
+        let count=items.count
+        if count > lowerIndex{
+            for i in lowerIndex...count-1{
+                self[i].collectedIndex += 1
+            }
+        }
+    }
+
+    fileprivate func _decrementIndexes(greaterThan lowerIndex:Int){
+        let count=items.count
+        if count > lowerIndex{
+            for i in lowerIndex...count-1{
+                self[i].collectedIndex -= 1
+            }
+        }
+    }
     /**
     An iterator that permit dynamic approaches.
-    The Registry ignore the real types.
-    Currently we do not use SequenceType, Subscript, ...
-
+    The Registry ignores the real types.
     - parameter on: the closure
     */
-    public func superIterate(@noescape on:(element: Collectible)->()){
+    open func superIterate(_ on:@escaping(_ element: Collectible)->()){
         for item in self.items {
-            on(element:item)
+            on(item)
         }
     }
 
@@ -142,14 +243,17 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
     Commit all the changes in one bunch
     Marking commit on each item will toggle hasChanged flag.
     */
-    public func commitChanges() -> [String] {
+    open func commitChanges() -> [String] {
         var UIDS=[String]()
-        let changedItems=self.items.filter { $0.toBeCommitted == true }
-        bprint("\(changedItems.count) \( changedItems.count>1 ? "'.lcfirst(Pluralization::pluralize($entityRepresentation->name)).'" : "'.lcfirst($entityRepresentation->name).'" )  has changed in '.$collectionControllerClass.'",file:#file,function:#function,line:#line,category: Default.BPRINT_CATEGORY)
-        if  changedItems.count > 0 {
-            UIDS.append(changed.UID)
-            Update' . ucfirst(Pluralization::pluralize($entityRepresentation->name)) . '.commit(changedItems, inDataSpace:self.spaceUID)
-        }
+        if self.toBeCommitted{ // When one member has to be committed its collection _shouldBeCommited flag is turned to true
+            let changedItems=self.items.filter { $0.toBeCommitted == true }
+            bprint("\(changedItems.count) \( changedItems.count>1 ? "'.lcfirst(Pluralization::pluralize($entityRepresentation->name)).'" : "'.lcfirst($entityRepresentation->name).'" )  has changed in '.$collectionControllerClass.'",file:#file,function:#function,line:#line,category: Default.BPRINT_CATEGORY)
+            if  changedItems.count > 0 {
+                UIDS=changedItems.map({$0.UID})
+               '.($usesUrdMode?'Upsert':'Update'). ucfirst(Pluralization::pluralize($entityRepresentation->name)) . '.commit(changedItems,inRegistryWithUID:self.registryUID)
+            }
+            self.committed=true
+         }
         return UIDS
     }
 ');
@@ -159,13 +263,16 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
     Commit all the changes in one bunch
     Marking commit on each item will toggle hasChanged flag.
     */
-    public func commitChanges() -> [String] {
+    open func commitChanges() -> [String] {
         var UIDS=[String]()
-        let changedItems=self.items.filter { $0.toBeCommitted == true }
-        bprint("\(changedItems.count) \( changedItems.count>1 ? "'.lcfirst(Pluralization::pluralize($entityRepresentation->name)).'" : "'.lcfirst($entityRepresentation->name).'" )  has changed in '.$collectionControllerClass.'",file:#file,function:#function,line:#line,category: Default.BPRINT_CATEGORY)
-        for changed in changedItems{
-            UIDS.append(changed.UID)
-            Update' . ucfirst($entityRepresentation->name) . '.commit(changed, inDataSpace:self.spaceUID)
+        if self.toBeCommitted{ // When one member has to be committed its collection _shouldBeCommited flag is turned to true
+            let changedItems=self.items.filter { $0.toBeCommitted == true }
+            bprint("\(changedItems.count) \( changedItems.count>1 ? "'.lcfirst(Pluralization::pluralize($entityRepresentation->name)).'" : "'.lcfirst($entityRepresentation->name).'" )  has changed in '.$collectionControllerClass.'",file:#file,function:#function,line:#line,category: Default.BPRINT_CATEGORY)
+            for changed in changedItems{
+                UIDS.append(changed.UID)
+                '.($usesUrdMode?'Upsert':'Update'). ucfirst($entityRepresentation->name) . '.commit(changed, inRegistryWithUID:self.registryUID)
+            }
+            self.committed=true
         }
         return UIDS
     }
@@ -182,7 +289,7 @@ echo('
      Commit is ignored because
      Distant persistency is not allowed for '.$entityRepresentation->name.'
     */
-    public func commitChanges() ->[String] { 
+    open func commitChanges() ->[String] {
         return [String]()
     }
     
@@ -190,24 +297,13 @@ echo('
 }
 ?>
 
-    required public init() {
-        super.init()
-    }
-
-
-    dynamic public var items:[<?php echo ucfirst($entityRepresentation->name)?>]=[<?php echo ucfirst($entityRepresentation->name)?>]()
-
-    public func getCollectibleItems()->[Collectible]{
-        return items
-    }
-
     // MARK: Identifiable
 
-    override public class var collectionName:String{
+    override open class var collectionName:String{
         return <?php echo ucfirst($entityRepresentation->name)?>.collectionName
     }
 
-    override public var d_collectionName:String{
+    override open var d_collectionName:String{
         return <?php echo ucfirst($entityRepresentation->name)?>.collectionName
     }
 
@@ -216,6 +312,7 @@ echo('
 
     // We just want to inject an item property Items
     $virtualEntity=new EntityRepresentation();
+    $virtualEntity->name=$collectionControllerClass;
     $itemsProperty=new PropertyRepresentation();
     $itemsProperty->name="items";
     $itemsProperty->type=FlexionsTypes::COLLECTION;
@@ -238,9 +335,9 @@ if( $modelsShouldConformToNSCoding ) {
 
     // MARK: Upsert
 
-    public func upsert(item: Collectible, commit:Bool){
+    open func upsert(_ item: Collectible, commit:Bool){
 
-        if let idx=items.indexOf({return $0.UID == item.UID}){
+        if let idx=items.index(where:{return $0.UID == item.UID}){
             // it is an update
             // we must patch it
             let currentInstance=items[idx]
@@ -249,13 +346,13 @@ if( $modelsShouldConformToNSCoding ) {
                 // We do not want to produce Larsen effect on data.
                 // So we lock the auto commit observer before applying the patch
                 // And we unlock the autoCommit Observer after the patch.
-                currentInstance.lockAutoCommitObserver()
+                currentInstance.disableAutoCommit()
             }
 
             let dictionary=item.dictionaryRepresentation()
             currentInstance.patchFrom(dictionary)
             if commit==false{
-                currentInstance.unlockAutoCommitObserver()
+                currentInstance.enableAutoCommit()
             }
         }else{
             // It is a creation
@@ -265,22 +362,26 @@ if( $modelsShouldConformToNSCoding ) {
 
     // MARK: Add
 
-    public func add(item:Collectible, commit:Bool){
-        #if os(OSX) && !USE_EMBEDDED_MODULES
-        if let arrayController = self.arrayController{
-            self.insertObject(item, inItemsAtIndex: arrayController.arrangedObjects.count, commit:commit)
-        }else{
-            self.insertObject(item, inItemsAtIndex: items.count, commit:commit)
-        }
-        #else
+
+    open func add(_ item:Collectible, commit:Bool){
         self.insertObject(item, inItemsAtIndex: items.count, commit:commit)
-        #endif
     }
 
     // MARK: Insert
 
-    public func insertObject(item: Collectible, inItemsAtIndex index: Int, commit:Bool) {
+    /**
+    Inserts an object at a given index into the collection.
+
+    - parameter item:   the item
+    - parameter index:  the index in the collection (not the ArrayController arranged object)
+    - parameter commit: should we commit the insertion?
+    */
+    open func insertObject(_ item: Collectible, inItemsAtIndex index: Int, commit:Bool) {
         if let item=item as? <?php echo ucfirst($entityRepresentation->name)?>{
+
+            item.collection = self // Reference the collection
+            item.collectedIndex = index // Update the index
+            self._incrementIndexes(greaterThan:index)
 
 <?php if ($entityRepresentation->isUndoable()) {
     echo('
@@ -295,46 +396,40 @@ if( $modelsShouldConformToNSCoding ) {
             }
 
             // Add the inverse of this invocation to the undo stack
-            if let undoManager: NSUndoManager = undoManager {
-                undoManager.prepareWithInvocationTarget(self).removeObjectFromItemsAtIndex(index, commit:commit)
-                if !undoManager.undoing {
+            if let undoManager: UndoManager = undoManager {
+                (undoManager.prepare(withInvocationTarget: self) as AnyObject).removeObjectFromItemsAtIndex(index, commit:commit)
+                if !undoManager.isUndoing {
                     undoManager.setActionName(NSLocalizedString("Add' . ucfirst($entityRepresentation->name) . '", comment: "Add' . ucfirst($entityRepresentation->name) . ' undo action"))
                 }
             }
             ');
 }
 ?>
-
+            // Insert the item
+            self.items.insert(item, at: index)
             #if os(OSX) && !USE_EMBEDDED_MODULES
             if let arrayController = self.arrayController{
-                // Add it to the array controller's content array
-                arrayController.insertObject(item, atArrangedObjectIndex:index)
 
-                // Re-sort (in case the use has sorted a column)
+                // Re-arrange (in case the user has sorted a column)
                 arrayController.rearrangeObjects()
 
-                // Get the sorted array
-                let sorted = arrayController.arrangedObjects as! [<?php echo ucfirst($entityRepresentation->name)?>]
-
                 if let tableView = self.tableView{
-                    // Find the object just added
-                    let row = sorted.indexOf(item)!
-                    // Begin the edit in the first column
-                    tableView.editColumn(0, row: row, withEvent: nil, select: true)
-                 }
-
-            }else{
-                // Add directly to the collection
-                self.items.insert(item, atIndex: index)
+                    DispatchQueue.main.async(execute: {
+                        let sorted=self.arrayController?.arrangedObjects as! [<?php echo ucfirst($entityRepresentation->name)?>]
+                        // Find the object just added
+                        if let row=sorted.index(where:{ $0.UID==item.UID }){
+                            // Start editing
+                            tableView.editColumn(0, row: row, with: nil, select: true)
+                        }
+                    })
+                }
             }
-            #else
-                self.items.insert(item, atIndex: index)
             #endif
 
 <?php if ($entityRepresentation->isDistantPersistencyOfCollectionAllowed()){
     echo("
             if item.committed==false && commit==true{
-               Create$entityRepresentation->name.commit(item, inDataSpace:self.spaceUID)
+               ".($usesUrdMode?'Upsert':'Create').$entityRepresentation->name.".commit(item, inRegistryWithUID:self.registryUID)
             }".cr());
 }else{
         echo('
@@ -345,7 +440,7 @@ if( $modelsShouldConformToNSCoding ) {
 ?>
 
         }else{
-           
+
         }
     }
 
@@ -354,83 +449,82 @@ if( $modelsShouldConformToNSCoding ) {
 
     // MARK: Remove
 
-    public func removeObjectFromItemsAtIndex(index: Int, commit:Bool) {
-        if let item : <?php echo ucfirst($entityRepresentation->name)?> = items[index] {
+    /**
+    Removes an object at a given index from the collection.
+
+    - parameter index:  the index in the collection (not the ArrayController arranged object)
+    - parameter commit: should we commit the removal?
+    */
+    open func removeObjectFromItemsAtIndex(_ index: Int, commit:Bool) {
+       let item : <?php echo ucfirst($entityRepresentation->name)?> =  self[index]
+        self._decrementIndexes(greaterThan:index)
 <?php if ($entityRepresentation->isUndoable()) {
-    echo(
+echo(
 '
-            // Add the inverse of this invocation to the undo stack
-            if let undoManager: NSUndoManager = undoManager {
-                // We don\'t want to introduce a retain cycle
-                // But with the objc magic casting undoManager.prepareWithInvocationTarget(self) as? UsersCollectionController fails
-                // That\'s why we have added an registerUndo extension on NSUndoManager
-                undoManager.registerUndo({ () -> Void in
-                   self.insertObject(item, inItemsAtIndex: index, commit:commit)
-                })
-                if !undoManager.undoing {
-                    undoManager.setActionName(NSLocalizedString("Remove' . ucfirst($entityRepresentation->name) . '", comment: "Remove ' . ucfirst($entityRepresentation->name) . ' undo action"))
-                }
+        // Add the inverse of this invocation to the undo stack
+        if let undoManager: UndoManager = undoManager {
+            // We don\'t want to introduce a retain cycle
+            // But with the objc magic casting undoManager.prepareWithInvocationTarget(self) as? UsersCollectionController fails
+            // That\'s why we have added an registerUndo extension on UndoManager
+            undoManager.registerUndo({ () -> Void in
+               self.insertObject(item, inItemsAtIndex: index, commit:commit)
+            })
+            if !undoManager.isUndoing {
+                undoManager.setActionName(NSLocalizedString("Remove' . ucfirst($entityRepresentation->name) . '", comment: "Remove ' . ucfirst($entityRepresentation->name) . ' undo action"))
             }
-            ');
+        }
+        ');
 }
 ?>
 
-            // Unregister the item
-            Registry.unRegister(item)
+        // Unregister the item
+        Registry.unRegister(item)
 
-            //Update the commit flag
-            item.committed=false
-            #if os(OSX) && !USE_EMBEDDED_MODULES
-            // Remove the item from the array
-            if let arrayController = self.arrayController{
-                arrayController.removeObjectAtArrangedObjectIndex(index)
-            }else{
-                items.removeAtIndex(index)
-            }
-            #else
-            items.removeAtIndex(index)
-            #endif
+        //Update the commit flag
+        item.committed=false
 
-        <?php if ($entityRepresentation->isDistantPersistencyOfCollectionAllowed()) {
-            echo('
-            if commit==true{
-                Delete'.$entityRepresentation->name.'.commit(item.UID,fromDataSpace:self.spaceUID) 
-            }'.cr());
-        }else{
-            echo('
-            // Commit is ignored because
-            // Distant persistency is not allowed for '.$entityRepresentation->name.'
-            ');
-        }
-        ?>
+        // Remove the item from the collection
+        self.items.remove(at:index)
+
+    <?php if ($entityRepresentation->isDistantPersistencyOfCollectionAllowed()) {
+        echo('
+        if commit==true{
+            Delete'.$entityRepresentation->name.'.commit(item.UID,fromRegistryWithUID:self.registryUID) 
+        }'.cr());
+    }else{
+        echo('
+        // Commit is ignored because
+        // Distant persistency is not allowed for '.$entityRepresentation->name.'
+        ');
+    }
+    ?>
+    }
 
 
+    open func removeObjects(_ items: [Collectible],commit:Bool){
+        for item in self.items{
+            self.removeObject(item,commit:commit)
         }
     }
 
-    public func removeObject(item: Collectible, commit:Bool)->Bool{
-        var index=0
-        for storedItem in items{
-            if item.UID==storedItem.UID{
-                self.removeObjectFromItemsAtIndex(index, commit:commit)
-                return true
+    open func removeObject(_ item: Collectible, commit:Bool){
+        if let instance=item as? <?php echo(ucfirst($entityRepresentation->name))?>{
+            if let idx=self._getIndexOf(instance){
+                self.removeObjectFromItemsAtIndex(idx, commit:commit)
             }
-            index += 1
         }
-        return false
     }
 
-    public func removeObjectWithID(id:String, commit:Bool)->Bool{
-        var index=0
-        for storedItem in items{
-            if id==storedItem.UID{
-                self.removeObjectFromItemsAtIndex(index, commit:commit)
-                return true
-            }
-            index += 1
+    open func removeObjectWithIDS(_ ids: [String],commit:Bool){
+        for uid in ids{
+            self.removeObjectWithID(uid,commit:commit)
         }
-        return false
     }
 
-    
+    open func removeObjectWithID(_ id:String, commit:Bool){
+        if let idx=self.index(where:{ return $0.UID==id } ){
+            self.removeObjectFromItemsAtIndex(idx, commit:commit)
+        }
+    }
+
 }

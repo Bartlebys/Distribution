@@ -40,7 +40,7 @@ class  TriggersByIds extends MongoEndPoint {
             }
 
             try {
-                // Restrict to this spaceUID
+                // Restrict to this observationUID
                 $q[OBSERVATION_UID_KEY] = $this->getObservationUID(false);
             } catch (\Exception $e) {
                 return new JsonResponse("observationUID is undefined", 412);

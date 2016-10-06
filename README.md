@@ -18,8 +18,6 @@ The official distributions of Bartleby's stack to be used by [Bartleby's CLI] (h
 [Bartleby Bundler] (Bundler/README.md) is the tool we use to prepare and distribute Bundles to be used by the bartleby's Command Line Tool. It can be used as standalone tool or via a web server.
 
 
-
-
 ## License 
 
 Copyright 2O16 Benoit Pereira da Silva [Pereira-da-Silva.com](https://pereira-da-silva.com)

@@ -6,7 +6,7 @@
  * Time: 09:31
  */
 
-namespace Bartleby\Commons\EndPoints;
+namespace Bartleby\EndPoints;
 
 require_once BARTLEBY_ROOT_FOLDER . 'Mongo/MongoEndPoint.php';
 require_once BARTLEBY_ROOT_FOLDER . 'Mongo/MongoCallDataRawWrapper.php';
@@ -18,41 +18,47 @@ use Bartleby\Mongo\MongoEndPoint;
 
 final class ExportCallData extends MongoCallDataRawWrapper {
 
-    const  filterByRootObjectUID='filterByRootObjectUID';
+    const filterByObservationUID='filterByObservationUID';
+
+    const excludeTriggers='excludeTriggers';
     
 }
 
-class Export extends MongoEndPoint{
+final class Export extends MongoEndPoint{
 
     /**
      * Returns the whole data space.
      */
     function GET(){
-        $collectionsNames=$this->getConfiguration()->getCollectionNameList();
-        $dataSpace=["collections"=>[]];
+        $collectionsNames=$this->getConfiguration()->getCollectionsNameList();
+        $dataSet=["collections"=>[]];
         $spaceUID=$this->getSpaceUID(false);
 
         /* @var ExportCallData */
         $parameters=$this->getModel();
-
         $db=$this->getDB();
-        foreach ($collectionsNames as $collectionName) {
-            /* @var \MongoCollection */
-            $collection = $db->{$collectionName};
-            $q = array ('spaceUID' =>$spaceUID);
 
+        $q = [SPACE_UID_KEY =>$spaceUID];
+        $observationUID=$parameters->getValueForKey(ExportCallData::filterByObservationUID);
+        $excludeTriggers=$parameters->getValueForKey(ExportCallData::excludeTriggers);
+        $excludeTriggers=($excludeTriggers=="true");
+        if (isset($rootObjectUID)){
+            $q[OBSERVATION_UID_KEY]=$observationUID;
+        }
+
+        foreach ($collectionsNames as $collectionName) {
+            if ($collectionName=="triggers" && $excludeTriggers){
+                continue;
+            }
             try {
+                /* @var \MongoCollection */
+                $collection = $db->{$collectionName};
                 $cursor = $collection->find($q);
                 if ($cursor->count ( TRUE ) > 0) {
-                    $dataSpace["collections"][$collectionName] = [];
+                    $dataSet["collections"][$collectionName] = [];
                     foreach ( $cursor as $obj ) {
-                        $dataSpace["collections"][$collectionName] []= $obj;
+                        $dataSet["collections"][$collectionName][]= $obj;
                     }
-                }
-                if (isset($r)) {
-
-                } else {
-                    return new JsonResponse(VOID_RESPONSE,404);
                 }
             } catch ( \Exception $e ) {
                 return new JsonResponse( [  'code'=>$e->getCode(),
@@ -64,11 +70,9 @@ class Export extends MongoEndPoint{
                     417
                 );
             }
-
-
         }
 
-        return new JsonResponse($dataSpace,200);
+        return new JsonResponse($dataSet,200);
     }
 
 }

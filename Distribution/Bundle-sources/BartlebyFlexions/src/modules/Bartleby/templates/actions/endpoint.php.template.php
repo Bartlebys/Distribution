@@ -101,9 +101,9 @@ if ($successP->type == FlexionsTypes::COLLECTION) {
     $resultIsNotACollection=true;
 }
 
-$isGenericGETEndpoint=(strpos($d->class,'ByQuery')!==false);
+$isReadByQueryEndpoint = (strpos($d->class, 'ByQuery') !== false);
 $isGETByIdsEndpoint=(strpos($d->class,'ByIds')!==false);
-if($isGenericGETEndpoint==false && $isGETByIdsEndpoint==false){
+if ($isReadByQueryEndpoint == false && $isGETByIdsEndpoint == false) {
     $isGETByIdEndpoint=true;
 }else{
     $isGETByIdEndpoint=false;
@@ -136,7 +136,7 @@ if($d->httpMethod=='POST') {
           return new JsonResponse(\'Invalid void object\',406);
         }
         // Inject the rootUID and the spaceUID in any entity
-        $obj[REGISTRY_ROOT_OBJECT_UID_KEY]=$this->getObservationUID(false);
+        $obj[OBSERVATION_UID_KEY]=$this->getObservationUID(false);
         $obj[SPACE_UID_KEY]=$this->getSpaceUID(false);
             
         
@@ -160,7 +160,7 @@ if($d->httpMethod=='POST') {
                 :
                 'foreach ($arrayOfObject as $obj){
                   // Inject the rootUID and the spaceUID in any entity
-                  $obj[REGISTRY_ROOT_OBJECT_UID_KEY]=$this->getObservationUID(false);
+                  $obj[OBSERVATION_UID_KEY]=$this->getObservationUID(false);
                   $obj[SPACE_UID_KEY]=$this->getSpaceUID(false);
         
                 $q = array (MONGO_ID_KEY => $obj[MONGO_ID_KEY]);
@@ -234,7 +234,7 @@ if($d->httpMethod=='POST') {
 
                 '
             // Inject the rootUID and the spaceUID in any entity
-            $obj[REGISTRY_ROOT_OBJECT_UID_KEY]=$this->getObservationUID(false);
+            $obj[OBSERVATION_UID_KEY]=$this->getObservationUID(false);
             $obj[SPACE_UID_KEY]=$this->getSpaceUID(false);
             
             $r = $collection->insert ( $obj,$options );'
@@ -242,13 +242,14 @@ if($d->httpMethod=='POST') {
                     :
 
                     '
-             // Inject the rootUID and the spaceUID in any entity
-            foreach ($arrayOfObject as &$element) {     
-                if (is_array($element)){         
-                    $element[REGISTRY_ROOT_OBJECT_UID_KEY]=$this->getObservationUID(false);
+            // Inject the rootUID and the spaceUID in any entity
+            foreach ($arrayOfObject as &$element) {
+                if (is_array($element)){
+                    $element[OBSERVATION_UID_KEY]=$this->getObservationUID(false);
                     $element[SPACE_UID_KEY]=$this->getSpaceUID(false);
                 }
             }
+
             
             $r = $collection->batchInsert( $arrayOfObject,$options );'
 
@@ -281,7 +282,7 @@ if($d->httpMethod=='POST') {
         }
      }');
     }
-}elseif ( $d->httpMethod=='GET' || $isGenericGETEndpoint===true ){
+} elseif ($d->httpMethod == 'GET' || $isReadByQueryEndpoint === true) {
 
 
     echo('
@@ -293,7 +294,6 @@ if($d->httpMethod=='POST') {
         $collection = $db->'.$d->collectionName.';'.cr());
 
     if ($isGETByIdEndpoint===true){
-        //echo('// $isGETByIdEndpoint');
         echo(
 '         $q = array (MONGO_ID_KEY =>$parameters->getValueForKey('.$callDataClassName.'::'.$lastParameterName.'));
         if (isset($q)&& count($q)>0){
@@ -310,7 +310,7 @@ if($d->httpMethod=='POST') {
             return new JsonResponse(VOID_RESPONSE,204);
         }'
     );
-    } elseif ($isGenericGETEndpoint===true){
+    } elseif ($isReadByQueryEndpoint === true) {
         echo(
 '      $q = $parameters->getValueForKey('.$callDataClassName.'::'.$lastParameterName.');
        if(!isset($q)){
@@ -340,40 +340,72 @@ if($d->httpMethod=='POST') {
             // RESULT IS A COLLECTION
 
             '
-           $r=array();
-           if(isset($f)){
+            $r=array();
+            if(isset($f)){
                 $cursor = $collection->find( $q , $f );
-           }else{
+            }else{
                 $cursor = $collection->find($q);
-           }
-           // Sort ?
-           $s=$parameters->getCastedDictionaryForKey('.$callDataClassName.'::sort);
-           if (isset($s) && count($s)>0){
+            }
+           
+            // Sort ?
+            $s=$parameters->getCastedDictionaryForKey(' . $callDataClassName . '::sort);
+            if (isset($s) && count($s)>0){
               $cursor=$cursor->sort($s);
-           }
-           if ($cursor->count ( TRUE ) > 0) {
-			foreach ( $cursor as $obj ) {
-				$r[] = $obj;
-			}
-		   }
+            }
+            
+            if ($cursor->count ( TRUE ) > 0) {
+               foreach ( $cursor as $obj ) {
+                $r[] = $obj;
+               }
+            }
+           ' . (($isReadByQueryEndpoint === false) ?
 
-            if (count($r)>0 ) {
+                // Read by Ids
+
+                ' 
+            if (count($r)==count($ids)) {
+                //All the entity has been found.
                 return new JsonResponse($r,200);
             } else {
+                $foundIds=array();
+                $notFoundIds=array();
+                foreach ($r as $o) {
+                    if (array_key_exists(\'_id\', $r)) {
+                        $id = $o[\'_id\'];
+                        $foundIds[] = $id;
+                    }
+                }
+                foreach ($ids as $id) {
+                    if ( !in_array($id,$foundIds)){
+                        $notFoundIds=$id;
+                    }
+                }
+                $details=array(\'found\'=>$r,\'notFound\'=>$notFoundIds);
+                return new JsonResponse($details,404);
+            }
+            '
+
+                :
+                // isReadByQueryEndpoint
+                '
+            if (count($r)>0 ) {
+                 return new JsonResponse(array(\'found\'=>$r),200);
+            } else {
                 return new JsonResponse(VOID_RESPONSE,404);
-            }'
+            }')
+
     ) .'
-       } catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             return new JsonResponse( [  \'code\'=>$e->getCode(),
-                                        \'message\'=>$e->getMessage(),
-                                        \'file\'=>$e->getFile(),
-                                        \'line\'=>$e->getLine(),
-                                        \'trace\'=>$e->getTraceAsString()
-                                      ],
-                                      417
-                                    );
-        }
-     }');
+                                    \'message\'=>$e->getMessage(),
+                                    \'file\'=>$e->getFile(),
+                                    \'line\'=>$e->getLine(),
+                                    \'trace\'=>$e->getTraceAsString()
+                                  ],
+                                  417
+                                );
+            }
+    }');
 
 
 
@@ -409,41 +441,58 @@ if($d->httpMethod=='POST') {
         )
         .'
         try {
-            '.(($parameterIsNotAcollection===true)?
-            '$r = $collection->update ($q, $obj,$options );
+            '.(
+            ($parameterIsNotAcollection===true) ?
+
+            '
+            /// Inject the rootUID and the spaceUID in any entity
+            $obj[OBSERVATION_UID_KEY]=$this->getObservationUID(false);
+            $obj[SPACE_UID_KEY]=$this->getSpaceUID(false);
+            
+            $r = $collection->update ($q, $obj,$options );
             if ($r[\'ok\']==1) {
-              if(array_key_exists(\'updatedExisting\',$r)){
+                if(array_key_exists(\'updatedExisting\',$r)){
                     $existed=$r[\'updatedExisting\'];
                     if($existed==true){
-                         $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+                        $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
                         return new JsonResponse($s,200);
                     }else{
                         return new JsonResponse(VOID_RESPONSE,404);
                     }
                 }
-                 $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+                $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
                 return new JsonResponse($s,200);
             } else {
                 return new JsonResponse($r,412);
             }'
-            :
-            'foreach ($arrayOfObject as $obj){
+
+                :
+
+                '
+            foreach ($arrayOfObject as $obj){     
                 $q = array (MONGO_ID_KEY => $obj[MONGO_ID_KEY]);
+                if (is_array($obj)){
+                    // Inject the rootUID and the spaceUID in any entity
+                    $obj[OBSERVATION_UID_KEY]=$this->getObservationUID(false);
+                    $obj[SPACE_UID_KEY]=$this->getSpaceUID(false);
+                }
                 $r = $collection->update( $q, $obj,$options);
                 if ($r[\'ok\']==1) {
                     if (array_key_exists(\'updatedExisting\', $r)) {
                         $existed = $r[\'updatedExisting\'];
-                        if ($existed == false) {
-                            return new JsonResponse($q,404);
-                        }
+                         if ($existed == false) {
+                             return new JsonResponse($q,404);
+                         }
                     }
                 }else{
                     return new JsonResponse($q,412);
                 }
-             }
-              $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
+            }
+            $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),NULL);
             return new JsonResponse($s,200);'
-        ).'
+        )
+
+        .'
 
         } catch ( \Exception $e ) {
             return new JsonResponse( [  \'code\'=>$e->getCode(),
@@ -495,9 +544,11 @@ if($d->httpMethod=='POST') {
             $r = $collection->remove ( $q,$options );
              if ($r[\'ok\']==1) {
                  $hasBeenRemoved=($r[\'n\'] >= 1);
-                 if( $hasBeenRemoved || $this->getConfiguration()->IGNORE_MULTIPLE_DELETION_ATTEMPT() === true ){
+                 if( $hasBeenRemoved ){
                      $s=$this->responseStringWithTriggerIndex($this->createTrigger($parameters),$hasBeenRemoved?NULL:\'Already deleted\');
                      return new JsonResponse($s,200);
+                 }else if  ($this->getConfiguration()->IGNORE_MULTIPLE_DELETION_ATTEMPT() === true) {
+                      return new JsonResponse(\'Already deleted\',200);
                  }else{
                      return new JsonResponse(VOID_RESPONSE,404);
                  }
@@ -524,13 +575,14 @@ if($d->httpMethod=='POST') {
 //Create the trigger method
 /////////////////////////////
 
-if($d->httpMethod != 'GET' && $isGenericGETEndpoint===false){
+if ($d->httpMethod != 'GET' && $isReadByQueryEndpoint === false) {
 
     if ($d->httpMethod=='DELETE'){
         $action=$classNameWithoutPrefix;
     }else{
         $baseName=str_replace('Create','',$classNameWithoutPrefix);
         $baseName=str_replace('Update','',$baseName);
+        $baseName=str_replace('Upsert','',$baseName);
         $action='Read'.$baseName;
         if ($resultIsNotACollection){
             $action .= "ById";

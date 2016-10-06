@@ -27,13 +27,13 @@ foreach ($exclusion as $exclusionString) {
     }
 }
 
-
 if (!defined('_propertyValueString_DEFINED')){
     define("_propertyValueString_DEFINED",true);
     function _propertyValueString(PropertyRepresentation $property){
-        if ($property->isObservable===false){
+        if ($property->isSupervisable===false){
+
             ////////////////////////////
-            // Property isn't observable
+            // Property isn't supervisable
             ////////////////////////////
             if(isset($property->default)){
                 if($property->type==FlexionsTypes::STRING){
@@ -45,22 +45,22 @@ if (!defined('_propertyValueString_DEFINED')){
             return "?";
         }else{
             //////////////////////////
-            // Property is observable
+            // Property is supervisable
             //////////////////////////
         if(isset($property->default)){
             if($property->type==FlexionsTypes::STRING){
                 return " = \"$property->default\"{\n 
-    willSet { 
-       if $property->name != newValue {
-            self.provisionChanges() 
+    didSet { 
+       if $property->name != oldValue {
+            self.provisionChanges(forKey: \"$property->name\",oldValue: oldValue,newValue: $property->name) 
        } 
     }
 }";
             }else{
                 return " = $property->default  {\n 
-    willSet { 
-       if $property->name != newValue {
-            self.provisionChanges() 
+    didSet { 
+       if $property->name != oldValue {
+            self.provisionChanges(forKey: \"$property->name\",oldValue: oldValue".($property->type==FlexionsTypes::ENUM ? ".rawValue" : "" ).",newValue: $property->name".($property->type==FlexionsTypes::ENUM ? ".rawValue" : "" ).")  
        } 
     }
 }";
@@ -68,9 +68,9 @@ if (!defined('_propertyValueString_DEFINED')){
 
         }
         return "? {\n 
-    willSet { 
-       if $property->name != newValue {
-            self.provisionChanges() 
+    didSet { 
+       if $property->name != oldValue {
+            self.provisionChanges(forKey: \"$property->name\",oldValue: oldValue".($property->type==FlexionsTypes::ENUM ? "?.rawValue" : "" ).",newValue: $property->name".( $property->type==FlexionsTypes::ENUM ? "?.rawValue" : "" ) .") 
        } 
     }
 }";
@@ -98,10 +98,10 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
 
 // MARK: <?php echo $d->description?>
 
-@objc(<?php echo ucfirst($d->name)?>) public class <?php echo ucfirst($d->name)?> : <?php echo GenerativeHelperForSwift::getBaseClass($f,$d); ?>{
+@objc(<?php echo ucfirst($d->name)?>) open class <?php echo ucfirst($d->name)?> : <?php echo GenerativeHelperForSwift::getBaseClass($f,$d); ?>{
 
     // Universal type support
-    override public class func typeName() -> String {
+    override open class func typeName() -> String {
         return "<?php echo ucfirst($d->name)?>"
     }
 
@@ -119,29 +119,29 @@ while ( $d ->iterateOnProperties() === true ) {
         echoIndentCR($dynanicString.'public enum ' .$enumTypeName.':'.ucfirst(FlexionsSwiftLang::nativeTypeFor($property->instanceOf)). '{', 1);
         foreach ($property->enumerations as $element) {
             if($property->instanceOf==FlexionsTypes::STRING){
-                echoIndentCR('case ' .ucfirst($element).' = "'.$element.'"', 2);
+                echoIndentCR('case ' .lcfirst($element).' = "'.$element.'"', 2);
             }elseif ($property->instanceOf==FlexionsTypes::INTEGER){
-                echoIndentCR('case ' .ucfirst($element), 2);
+                echoIndentCR('case ' .lcfirst($element), 2);
             } else{
-                echoIndentCR('case ' .ucfirst($element).' = '.$element, 2);
+                echoIndentCR('case ' .lcfirst($element).' = '.$element, 2);
             }
         }
         echoIndentCR('}', 1);
-        echoIndentCR($dynanicString.'public var ' . $name .':'.$enumTypeName._propertyValueString($property), 1);
+        echoIndentCR($dynanicString.'open var ' . $name .':'.$enumTypeName._propertyValueString($property), 1);
     }else if($property->type==FlexionsTypes::COLLECTION){
         $instanceOf=FlexionsSwiftLang::nativeTypeFor($property->instanceOf);
         if ($instanceOf==FlexionsTypes::NOT_SUPPORTED){
             $instanceOf=$property->instanceOf;
         }
-        echoIndentCR($dynanicString.'public var ' . $name .':['.ucfirst($instanceOf). ']'._propertyValueString($property), 1);
+        echoIndentCR($dynanicString.'open var ' . $name .':['.ucfirst($instanceOf). ']'._propertyValueString($property), 1);
     }else if($property->type==FlexionsTypes::OBJECT){
-        echoIndentCR($dynanicString.'public var ' . $name .':'.ucfirst($property->instanceOf)._propertyValueString($property), 1);
+        echoIndentCR($dynanicString.'open var ' . $name .':'.ucfirst($property->instanceOf)._propertyValueString($property), 1);
     }else{
         $nativeType=FlexionsSwiftLang::nativeTypeFor($property->type);
         if(strpos($nativeType,FlexionsTypes::NOT_SUPPORTED)===false){
-            echoIndentCR($dynanicString.'public var ' . $name .':'.$nativeType._propertyValueString($property), 1);
+            echoIndentCR($dynanicString.'open var ' . $name .':'.$nativeType._propertyValueString($property), 1);
         }else{
-            echoIndentCR($dynanicString.'public var ' . $name .':Not_Supported = Not_Supported()//'. ucfirst($property->type), 1);
+            echoIndentCR($dynanicString.'open var ' . $name .':Not_Supported = Not_Supported()//'. ucfirst($property->type), 1);
         }
     }
 }
@@ -151,7 +151,6 @@ include  FLEXIONS_MODULES_DIR.'Bartleby/templates/blocks/Mappable.swift.block.ph
 if( $modelsShouldConformToNSCoding ) {
     include  FLEXIONS_MODULES_DIR.'Bartleby/templates/blocks/NSSecureCoding.swift.block.php';
 }
-
 ?>
 
     required public init() {
@@ -160,11 +159,11 @@ if( $modelsShouldConformToNSCoding ) {
 
     // MARK: Identifiable
 
-    override public class var collectionName:String{
+    override open class var collectionName:String{
         return "<?php echo lcfirst(Pluralization::pluralize($d->name)) ?>"
     }
 
-    override public var d_collectionName:String{
+    override open var d_collectionName:String{
         return <?php echo ucfirst($d->name)?>.collectionName
     }
 

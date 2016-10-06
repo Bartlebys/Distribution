@@ -45,7 +45,7 @@ class GenerativeHelperForSwift extends GenerativeHelper {
 
     static function defaultBaseClass($d){
         /* @var $d EntityRepresentation */
-         return 'JObject';
+        return 'JObject';
     }
 
 
@@ -164,67 +164,74 @@ class GenerativeHelperForSwift extends GenerativeHelper {
         switch ($flexionsType) {
             case FlexionsTypes::STRING:
                 if ($isNotOptionnal){
-                    return 'String(decoder.decodeObjectOfClass(NSString.self, forKey: "'.$keyName.'")! as NSString)';
+                    return 'String(describing: decoder.decodeObject(of: NSString.self, forKey: "'.$keyName.'")! as NSString)';
                 }else{
-                    return 'String(decoder.decodeObjectOfClass(NSString.self, forKey:"'.$keyName.'") as NSString?)';
+                    return 'String(describing: decoder.decodeObject(of: NSString.self, forKey:"'.$keyName.'") as NSString?)';
                 }
             case FlexionsTypes::INTEGER:
-                return 'decoder.decodeIntegerForKey("'.$keyName.'") ';
+                return 'decoder.decodeInteger(forKey:"'.$keyName.'") ';
             case FlexionsTypes::BOOLEAN:
-                return 'decoder.decodeBoolForKey("'.$keyName.'") ';
+                return 'decoder.decodeBool(forKey:"'.$keyName.'") ';
             case FlexionsTypes::OBJECT:
                 //return 'decodeObjectForKey("'.$keyName.'") ';
                 $instanceOf=$property->instanceOf;
-              /*
-                if (strpos($instanceOf,'Alias')!==false){
-                    $instanceOf="Alias";
-                }
-              */
-              return  'decoder.decodeObjectOfClass('.$instanceOf.'.self, forKey: "'.$keyName.'")'.($isNotOptionnal ?'! ':' ');
+                /*
+                  if (strpos($instanceOf,'Alias')!==false){
+                      $instanceOf="Alias";
+                  }
+                */
+                return  'decoder.decodeObject(of:'.$instanceOf.'.self, forKey: "'.$keyName.'")'.($isNotOptionnal ?'! ':' ');
             case FlexionsTypes::COLLECTION:
                 if ($property->instanceOf == FlexionsTypes::STRING ){
-                    return  'decoder.decodeObjectOfClasses(NSSet(array: [NSArray.classForCoder(),NSString.self]), forKey: "'.$keyName.'")'.($isNotOptionnal ?'! ':' ');
+                    return  'decoder.decodeObject(of: [NSArray.classForCoder(),NSString.self], forKey: "'.$keyName.'")'.($isNotOptionnal ?'! ':' ');
                 }else if($property->instanceOf == FlexionsTypes::INTEGER || $property->instanceOf == FlexionsTypes::DOUBLE || $property->instanceOf == FlexionsTypes::FLOAT){
-                    return  'decoder.decodeObjectOfClasses(NSSet(array: [NSArray.classForCoder(),NSNumber.self]), forKey: "'.$keyName.'")'.($isNotOptionnal ?'! ':' ');
+                    return  'decoder.decodeObject(of: [NSArray.classForCoder(),NSNumber.self], forKey: "'.$keyName.'")'.($isNotOptionnal ?'! ':' ');
+                } else if ($property->instanceOf == FlexionsTypes::DICTIONARY) {
+                    return 'decoder.decodeObject(of: [NSArray.classForCoder(),NSDictionary.classForCoder()], forKey: "' . $keyName . '")' . ($isNotOptionnal ? '! ' : ' ');
                 }else{
-                    return  'decoder.decodeObjectOfClasses(NSSet(array: [NSArray.classForCoder(),'.$property->instanceOf.'.classForCoder()]), forKey: "'.$keyName.'")'.($isNotOptionnal ?'! ':' ');
+                    return  'decoder.decodeObject(of: [NSArray.classForCoder(),'.$property->instanceOf.'.classForCoder()], forKey: "'.$keyName.'")'.($isNotOptionnal ?'! ':' ');
                 }
 
             case FlexionsTypes::ENUM:
                 // .$asString.' '. ucfirst($property->emumPreciseType)
-                // User.Status(rawValue:String(decoder.decodeObjectOfClass(NSString.self, forKey: "status")! as NSString))!
+                // User.Status(rawValue:String(describing: decoder.decodeObject(NSString.self, forKey: "status")! as NSString))!
                 return $property->emumPreciseType.'(rawValue:'.GenerativeHelperForSwift::_decodingFunctionFor($property,$keyName,$property->instanceOf).')'.($isNotOptionnal ?'! ':' ');
             case FlexionsTypes::DICTIONARY;
-                return  'decoder.decodeObjectOfClasses(NSSet(array: [NSDictionary.classForCoder(),NSString.classForCoder(),NSNumber.classForCoder(),NSObject.classForCoder(),NSSet.classForCoder()]), forKey: "'.$keyName.'")';
+                return  'decoder.decodeObject(of: [NSDictionary.classForCoder(),NSString.classForCoder(),NSNumber.classForCoder(),NSObject.classForCoder(),NSSet.classForCoder()], forKey: "'.$keyName.'")';
             case FlexionsTypes::FLOAT:
-                return 'decoder.decodeFloatForKey("'.$keyName.'") ';
+                return 'decoder.decodeFloat(forKey:"'.$keyName.'") ';
             case FlexionsTypes::DOUBLE:
-                return 'decoder.decodeDoubleForKey("'.$keyName.'") ';
+                return 'decoder.decodeDouble(forKey:"'.$keyName.'") ';
             case FlexionsTypes::BYTE:
-                return 'decoder.decodeBytesForKey("'.$keyName.'") ';
+                return 'decoder.decodeBytes-(forKey:"'.$keyName.'") ';
+
+            // NOTE NSDate, NSURL, NSData requires to use <OBJC_TYPE>.self
+            // This may change soon
+
             case FlexionsTypes::DATETIME:
                 if ($isNotOptionnal){
-                    return 'decoder.decodeObjectOfClass(NSDate.self, forKey: "'.$keyName.'")! as NSDate';
+                    return 'decoder.decodeObject(of: NSDate.self , forKey: "'.$keyName.'")! as Date';
                 }else{
-                    return 'decoder.decodeObjectOfClass(NSDate.self, forKey:"'.$keyName.'") as NSDate?';
+                    return 'decoder.decodeObject(of: NSDate.self , forKey:"'.$keyName.'") as Date?';
                 }
             case FlexionsTypes::URL :
                 if ($isNotOptionnal){
-                    return 'decoder.decodeObjectOfClass(NSURL.self, forKey: "'.$keyName.'")! as NSURL';
+                    return 'decoder.decodeObject(of: NSURL.self, forKey: "'.$keyName.'")! as URL';
                 }else{
-                    return 'decoder.decodeObjectOfClass(NSURL.self, forKey:"'.$keyName.'") as NSURL?';
+                    return 'decoder.decodeObject(of: NSURL.self, forKey:"'.$keyName.'") as URL?';
                 }
             case FlexionsTypes::FILE :
                 if ($isNotOptionnal){
-                    return 'decoder.decodeObjectOfClass(NSURL.self, forKey: "'.$keyName.'")! as NSURL';
+                    return 'decoder.decodeObject(of: NSURL.self, forKey: "'.$keyName.'")! as URL';
                 }else{
-                    return 'decoder.decodeObjectOfClass(NSURL.self, forKey:"'.$keyName.'") as NSURL?';
+                    return 'decoder.decodeObject(of: NSURL.self, forKey:"'.$keyName.'") as URL?';
                 }
             case FlexionsTypes::DATA:
                 if ($isNotOptionnal){
-                    return 'decoder.decodeObjectOfClass(NSData.self, forKey: "'.$keyName.'")! as NSData';
+                    //return '//NOT IMPLEMETED - decodeObject DATA';
+                    return 'decoder.decodeObject(of: NSData.self, forKey: "'.$keyName.'")! as Data';
                 }else{
-                    return 'decoder.decodeObjectOfClass(NSData.self, forKey:"'.$keyName.'") as NSData?';
+                    return 'decoder.decodeObject(of: NSData.self, forKey:"'.$keyName.'") as Data?';
                 }
             case FlexionsTypes::NOT_SUPPORTED:
                 return FlexionsTypes::NOT_SUPPORTED;
@@ -325,15 +332,15 @@ class GenerativeHelperForSwift extends GenerativeHelper {
     private static function _encodingFunctionFor($flexionsType,$instanceOf='UNDEFINED'){
         switch ($flexionsType) {
             case FlexionsTypes::STRING:
-                return 'encodeObject';
+                return 'encode';
             case FlexionsTypes::INTEGER:
-                return 'encodeInteger';
+                return 'encode';
             case FlexionsTypes::BOOLEAN:
-                return 'encodeBool';
+                return 'encode';
             case FlexionsTypes::OBJECT:
-                return 'encodeObject';
+                return 'encode';
             case FlexionsTypes::COLLECTION:
-                return 'encodeObject';
+                return 'encode';
             case FlexionsTypes::ENUM;
                 // We have 3 levels :
                 // When the type is an ENUM, you can specify its precise type
@@ -341,21 +348,21 @@ class GenerativeHelperForSwift extends GenerativeHelper {
                 // E.g : property status type=enum, instanceOf=string , enumPreciseType=User.status
                 return GenerativeHelperForSwift::_encodingFunctionFor($instanceOf);
             case FlexionsTypes::FILE:
-                return 'encodeObject';
+                return 'encode';
             case FlexionsTypes::DICTIONARY:
-                return 'encodeObject';
+                return 'encode';
             case FlexionsTypes::FLOAT:
-                return 'encodeFloat';
+                return 'encode';
             case FlexionsTypes::DOUBLE:
-                return 'encodeDouble';
+                return 'encode';
             case FlexionsTypes::BYTE:
-                return 'encodeBytes';
+                return 'encode';
             case FlexionsTypes::DATETIME:
-                return 'encodeObject';
+                return 'encode';
             case FlexionsTypes::URL:
-                return 'encodeObject';
+                return 'encode';
             case FlexionsTypes::DATA:
-                return 'encodeObject';
+                return 'encode';
             case FlexionsTypes::NOT_SUPPORTED:
                 return FlexionsTypes::NOT_SUPPORTED;
             default :

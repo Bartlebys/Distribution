@@ -8,7 +8,7 @@ include FLEXIONS_SOURCE_DIR.'/Shared.php';
 require_once FLEXIONS_MODULES_DIR . 'Bartleby/templates/project/SwiftDocumentConfigurator.php';
 $configurator=new SwiftDocumentConfigurator();
 $configurator->filename="BartlebyDocument.swift";
-$configurator->includeCollectionControllerForEntityContainingString=array("TasksGroup","Task","User","Group","Permission","Operation","Locker");
+$configurator->includeCollectionControllerForEntityContainingString=array("User","Group","Permission","Operation","Locker");
 $configurator->excludeCollectionControllerForEntityContainingString=array();
 
 // Invocation

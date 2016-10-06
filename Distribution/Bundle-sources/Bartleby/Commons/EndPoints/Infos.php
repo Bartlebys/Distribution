@@ -26,14 +26,14 @@ final class InfosCallData extends MongoCallDataRawWrapper {
  * You can grab :
  *
  * All the infos
- * http://yd.local/api/v1/infos
+ * http://localhost/api/v1/infos
  *
  * Unique key
- * http://yd.local/api/v1/infos?k=acl_is_disabled
+ * http://localhost/api/v1/infos?k=acl_is_disabled
  *
  * Nested key path
- * http://yd.local/api/v1/infos?k=configuration.STAGE
- * http://yd.local/api/v1/infos?k=configuration.getPagesSearchPaths.0
+ * http://localhost/api/v1/infos?k=configuration.STAGE
+ * http://localhost/api/v1/infos?k=configuration.getPagesSearchPaths.0
  *
  *
  * @package Bartleby\EndPoints

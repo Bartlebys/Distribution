@@ -29,241 +29,40 @@
                             "emumPreciseType": "CollectionMetadatum.Storage",
                             "description": "the used file storage",
                             "enum": [
-                                "MonolithicFileStorage",
-                                "SQLiteIncrementalStore"
+                                "monolithicFileStorage"
                             ],
-                            "default": ".MonolithicFileStorage",
-                            "observable": false
+                            "default": ".monolithicFileStorage",
+                            "supervisable": false
                         },
                         "collectionName": {
                             "type": "string",
                             "description": "The holding collection name",
                             "default": "\\(Default.NO_NAME)",
-                            "dynamic": false,
-                            "observable": false
+                            "supervisable": false
                         },
                         "proxy": {
                             "explicitType": "JObject",
-                            "description": "The proxy object (not serializable, not observable)",
-                            "dynamic": false,
+                            "description": "The proxy object (not serializable, not supervisable)",
                             "serializable": false,
-                            "observable": false
+                            "supervisable": false
                         },
                         "allowDistantPersistency": {
                             "type": "boolean",
                             "description": "Allow distant persistency?",
                             "default": "true",
-                            "dynamic": false,
-                            "observable": false
+                            "supervisable": false
                         },
                         "inMemory": {
                             "type": "Boolean",
                             "description": "In Memory?",
                             "default": "true",
-                            "dynamic": false,
-                            "observable": false
-                        },
-                        "observableViaUID": {
-                            "type": "string",
-                            "description": "The observable UID",
-                            "default": "\\(Default.NO_UID)",
-                            "dynamic": true,
-                            "observable": false
+                            "supervisable": false
                         }
                     }
                 }
             ],
             "metadata": {
-                "urdMode": false,
-                "groupable": true
-            }
-        },
-        "Task": {
-            "description": "Bartleby's Commons A task (abstract)",
-            "allOf": [
-                {
-                    "type": "object",
-                    "required": [],
-                    "properties": {
-                        "group": {
-                            "description": "The Task group. External reference to a TaskGroup instance",
-                            "$ref": "#/definitions/ExternalReference",
-                            "required": false,
-                            "observable": false
-                        },
-                        "status": {
-                            "type": "enum",
-                            "instanceOf": "integer",
-                            "emumPreciseType": "Task.Status",
-                            "description": "Task Status",
-                            "enum": [
-                                "runnable",
-                                "running",
-                                "completed"
-                            ],
-                            "default": ".Runnable",
-                            "observable": false
-                        },
-                        "parent": {
-                            "description": "The Task parent. ",
-                            "$ref": "#/definitions/ExternalReference",
-                            "required": false,
-                            "observable": false
-                        },
-                        "children": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "description": "A collection of children Task external references (in the same group)",
-                                    "$ref": "#/definitions/ExternalReference",
-                                    "required": false,
-                                    "default": "[ExternalReference]()",
-                                    "dynamic": false,
-                                    "observable": false
-                                }
-                            }
-                        },
-                        "progressionState": {
-                            "schema": {
-                                "description": "The progression state of the task",
-                                "$ref": "#/definitions/Progression",
-                                "observable": false
-                            }
-                        },
-                        "completionState": {
-                            "schema": {
-                                "description": "The completion state of the task",
-                                "$ref": "#/definitions/Completion",
-                                "observable": false
-                            }
-                        },
-                        "argumentsData": {
-                            "type": "data",
-                            "description": "The serialized arguments",
-                            "observable": false,
-                            "required": false,
-                            "dynamic": false
-                        },
-                        "resultData": {
-                            "type": "data",
-                            "description": "The serialized result",
-                            "required": false,
-                            "dynamic": false,
-                            "observable": false
-                        }
-                    }
-                }
-            ],
-            "metadata": {
-                "urdMode": false,
-                "persistsLocallyOnlyInMemory": false,
-                "allowDistantPersistency": false,
-                "undoable": false
-            }
-        },
-        "TasksGroup": {
-            "description": "Bartleby's TasksGroup its property are not autocommitted (not observable)",
-            "allOf": [
-                {
-                    "type": "object",
-                    "required": [],
-                    "properties": {
-                        "document": {
-                            "explicitType": "BartlebyDocument",
-                            "description": "A non serializable reference to the hosting document",
-                            "dynamic": false,
-                            "serializable": false,
-                            "observable": false
-                        },
-                        "status": {
-                            "type": "enum",
-                            "instanceOf": "integer",
-                            "emumPreciseType": "TasksGroup.Status",
-                            "description": "TasksGroup Status",
-                            "enum": [
-                                "paused",
-                                "running"
-                            ],
-                            "default": ".Paused",
-                            "observable": false
-                        },
-                        "priority": {
-                            "type": "enum",
-                            "instanceOf": "integer",
-                            "emumPreciseType": "TasksGroup.Priority",
-                            "description": "The priority is equal to the parent task.",
-                            "enum": [
-                                "Background",
-                                "Low",
-                                "Default",
-                                "High"
-                            ],
-                            "default": ".Default",
-                            "observable": false
-                        },
-                        "spaceUID": {
-                            "type": "string",
-                            "description": "The group dataspace",
-                            "required": true,
-                            "default": "\\(Default.NO_UID)",
-                            "dynamic": false,
-                            "observable": false
-                        },
-                        "tasks": {
-                            "type": "array",
-                            "items": {
-                                "description": "The root group Tasks (external references)",
-                                "$ref": "#/definitions/ExternalReference",
-                                "required": false,
-                                "default": "[ExternalReference]()",
-                                "observable": false,
-                                "dynamic": false
-                            }
-                        },
-                        "lastChainedTask": {
-                            "description": "The last chained (sequential) task external reference. ",
-                            "$ref": "#/definitions/ExternalReference",
-                            "required": false,
-                            "observable": false
-                        },
-                        "progressionState": {
-                            "schema": {
-                                "description": "The progression state of the group",
-                                "$ref": "#/definitions/Progression",
-                                "observable": false
-                            }
-                        },
-                        "completionState": {
-                            "schema": {
-                                "description": "The completion state of the group",
-                                "$ref": "#/definitions/Completion",
-                                "observable": false
-                            }
-                        },
-                        "name": {
-                            "type": "string",
-                            "description": "The group name",
-                            "required": true,
-                            "default": "\\(Default.NO_NAME)",
-                            "dynamic": false,
-                            "observable": false
-                        },
-                        "handlers": {
-                            "explicitType": "Handlers",
-                            "description": "A void handler to allow subscribers to register their own handlers",
-                            "default": "Handlers.withoutCompletion()",
-                            "dynamic": false,
-                            "serializable": false,
-                            "observable": false
-                        }
-                    }
-                }
-            ],
-            "metadata": {
-                "urdMode": false,
-                "persistsLocallyOnlyInMemory": false,
-                "allowDistantPersistency": false,
-                "undoable": false
+                "urdMode": false
             }
         },
         "Progression": {
@@ -273,39 +72,62 @@
                     "type": "object",
                     "required": [],
                     "properties": {
+                        "startTime": {
+                            "type": "double",
+                            "description": "The start time of the progression state",
+                            "required": false,
+                            "serialisable": true,
+                            "supervisable": false,
+                            "dynamic": false
+                        },
                         "currentTaskIndex": {
                             "type": "integer",
                             "description": "Index of the task",
                             "default": 0,
-                            "required": true,
-                            "dynamic": false
+                            "required": true
                         },
                         "totalTaskCount": {
                             "type": "integer",
                             "description": "Total number of tasks",
                             "default": 0,
-                            "required": true,
-                            "dynamic": false
+                            "required": true
                         },
-                        "currentTaskProgress": {
+                        "currentPercentProgress": {
                             "type": "double",
-                            "description": "0 to 1",
+                            "description": "0 to 100",
                             "default": 0,
-                            "required": true,
-                            "dynamic": true
+                            "required": true
                         },
                         "message": {
                             "type": "string",
                             "description": "The Message",
                             "default": "",
-                            "required": true,
-                            "dynamic": true
+                            "required": true
+                        },
+                        "informations": {
+                            "type": "string",
+                            "description": "The consolidated information (may include the message)",
+                            "default": "",
+                            "required": true
                         },
                         "data": {
                             "type": "data",
                             "description": "The associated data",
-                            "required": false,
-                            "dynamic": false
+                            "required": false
+                        },
+                        "category": {
+                            "type": "string",
+                            "description": "A category to discriminate bunch of progression states",
+                            "default": "",
+                            "required": true,
+                            "supervisable": false
+                        },
+                        "externalIdentifier": {
+                            "type": "string",
+                            "description": "An external identifier",
+                            "default": "",
+                            "required": true,
+                            "supervisable": false
                         }
                     }
                 }
@@ -325,28 +147,38 @@
                             "type": "boolean",
                             "description": "Success if set to true",
                             "default": "true",
-                            "required": true,
-                            "dynamic": false
+                            "required": true
                         },
                         "statusCode": {
                             "type": "integer",
                             "description": "The status",
-                            "default": "CompletionStatus.Undefined.rawValue",
-                            "required": true,
-                            "dynamic": false
+                            "default": "StatusOfCompletion.undefined.rawValue",
+                            "required": true
                         },
                         "message": {
                             "type": "string",
                             "description": "The Message",
                             "default": "",
-                            "required": true,
-                            "dynamic": false
+                            "required": true
                         },
                         "data": {
                             "type": "data",
                             "description": "completion data",
-                            "required": false,
-                            "dynamic": false
+                            "required": false
+                        },
+                        "category": {
+                            "type": "string",
+                            "description": "A category to discriminate bunch of completion states",
+                            "default": "",
+                            "required": true,
+                            "supervisable": false
+                        },
+                        "externalIdentifier": {
+                            "type": "string",
+                            "description": "An external identifier",
+                            "default": "",
+                            "required": true,
+                            "supervisable": false
                         }
                     }
                 }
@@ -356,7 +188,7 @@
             }
         },
         "RegistryMetadata": {
-            "description": "Bartleby's Core: Complete implementation in JRegistryMetadata. All its properties are not observable.",
+            "description": "Bartleby's Core: Complete implementation in JRegistryMetadata. All its properties are not supervisable.",
             "allOf": [
                 {
                     "type": "object",
@@ -366,14 +198,13 @@
                             "type": "string",
                             "description": "The data space UID can be shared between multiple registries.",
                             "default": "\\(Default.NO_UID)",
-                            "dynamic": true,
-                            "observable": false
+                            "supervisable": false
                         },
                         "currentUser": {
                             "schema": {
                                 "description": "The user currently associated to the local instance of the registry",
                                 "$ref": "#/definitions/User",
-                                "observable": false,
+                                "supervisable": false,
                                 "cryptable": false
                             }
                         },
@@ -383,30 +214,27 @@
                             "emumPreciseType": "RegistryMetadata.IdentificationMethod",
                             "description": "The identification method (By cookie or by Key - kvid)",
                             "enum": [
-                                "Key",
-                                "Cookie"
+                                "key",
+                                "cookie"
                             ],
-                            "default": ".Key",
-                            "observable": false
+                            "default": ".key",
+                            "supervisable": false
                         },
                         "identificationValue": {
                             "type": "string",
                             "description": "The current kvid identification value (injected in HTTP headers)",
-                            "dynamic": false,
-                            "observable": false
+                            "supervisable": false
                         },
                         "rootObjectUID": {
                             "type": "string",
                             "description": "The rootObject UID",
                             "default": "\\(Default.NO_UID)",
-                            "dynamic": true,
-                            "observable": false
+                            "supervisable": false
                         },
                         "collaborationServerURL": {
                             "type": "url",
                             "description": "The url of the collaboration server",
-                            "dynamic": true,
-                            "observable": false
+                            "supervisable": false
                         },
                         "collectionsMetadata": {
                             "schema": {
@@ -416,44 +244,37 @@
                                     "description": "A collection of CollectionMetadatum",
                                     "explicitType": "CollectionMetadatum",
                                     "default": "[CollectionMetadatum]()",
-                                    "dynamic": false,
-                                    "observable": false
+                                    "supervisable": false
                                 }
                             }
-                        },
-                        "online": {
-                            "type": "boolean",
-                            "description": "is the user performing Online",
-                            "dynamic": true,
-                            "default": "Bartleby.configuration.ONLINE_BY_DEFAULT",
-                            "observable": false
                         },
                         "stateDictionary": {
                             "type": "dictionary",
                             "description": "The State dictionary to insure registry persistency ",
                             "default": "[String:AnyObject]()",
-                            "dynamic": false,
-                            "observable": false
+                            "supervisable": false
                         },
                         "URLBookmarkData": {
                             "type": "dictionary",
-                            "description": "The collection of serialized Security-Scoped Bookmarks (you should store NSData)",
+                            "description": "The collection of serialized Security-Scoped Bookmarks (you should store Data)",
                             "default": "[String:AnyObject]()",
-                            "dynamic": false,
-                            "observable": false
-                        },
-                        "saveThePassword": {
-                            "type": "boolean",
-                            "description": "Save the password or not?",
-                            "default": "Bartleby.configuration.SAVE_PASSWORD_DEFAULT_VALUE",
-                            "dynamic": true,
-                            "observable": false
+                            "supervisable": false
                         },
                         "preferredFileName": {
                             "type": "string",
                             "description": "The preferred filename for this registry/document",
-                            "dynamic": false,
-                            "observable": false
+                            "supervisable": false
+                        },
+                        "triggersIndexesDebugHistory": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "used for Core Debug , stores all the indexes by order of reception.",
+                                    "instanceOf": "integer",
+                                    "default": "[Int]()",
+                                    "supervisable": false
+                                }
+                            }
                         },
                         "triggersIndexes": {
                             "schema": {
@@ -462,8 +283,7 @@
                                     "description": "A collection of trigger Indexes (used to detect data holes)",
                                     "instanceOf": "integer",
                                     "default": "[Int]()",
-                                    "dynamic": false,
-                                    "observable": false
+                                    "supervisable": false
                                 }
                             }
                         },
@@ -474,8 +294,7 @@
                                     "description": "The persistentcollection of triggers indexes owned by the current user (allows local distinctive analytics even on cloned documents)",
                                     "instanceOf": "integer",
                                     "default": "[Int]()",
-                                    "dynamic": false,
-                                    "observable": false
+                                    "supervisable": false
                                 }
                             }
                         },
@@ -484,7 +303,7 @@
                             "description": "The index of the last trigger that has been integrated",
                             "default": -1,
                             "dynamic": false,
-                            "observable": false
+                            "supervisable": false
                         },
                         "receivedTriggers": {
                             "schema": {
@@ -493,17 +312,62 @@
                                     "description": "A collection Triggers that are temporarly stored before data integration",
                                     "$ref": "#/definitions/Trigger",
                                     "default": "[Trigger]()",
-                                    "dynamic": false,
-                                    "observable": false
+                                    "supervisable": false
                                 }
                             }
                         },
-                        "triggeredDataBuffer": {
-                            "type": "data",
-                            "description": "The serialized version of loaded trigger data that are pending integration",
-                            "required": false,
+                        "operationsQuarantine": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "A collection of PushOperations in Quarantine (check DataSynchronization.md \"Faults\" section for details) ",
+                                    "$ref": "#/definitions/PushOperation",
+                                    "default": "[PushOperation]()",
+                                    "supervisable": false
+                                }
+                            }
+                        },
+                        "bunchInProgress": {
+                            "type": "boolean",
+                            "description": "Do we have operations in progress in the current bunch ?",
+                            "default": "false",
+                            "supervisable": false,
+                            "serializable": false
+                        },
+                        "totalNumberOfOperations": {
+                            "type": "integer",
+                            "description": "The highest number that we may have counted",
+                            "default": 0,
                             "dynamic": false,
-                            "observable": false
+                            "supervisable": false,
+                            "serializable": false
+                        },
+                        "pendingOperationsProgressionState": {
+                            "schema": {
+                                "description": "The consolidated progression state of all pending operations",
+                                "$ref": "#/definitions/Progression",
+                                "supervisable": false,
+                                "required": false,
+                                "serializable": false
+                            }
+                        },
+                        "online": {
+                            "type": "boolean",
+                            "description": "is the user performing Online",
+                            "default": "Bartleby.configuration.ONLINE_BY_DEFAULT",
+                            "supervisable": true
+                        },
+                        "pushOnChanges": {
+                            "type": "boolean",
+                            "description": "If set to true any object creation, update, or deletion will be pushed as soon as possible.",
+                            "default": "Bartleby.configuration.ONLINE_BY_DEFAULT",
+                            "supervisable": true
+                        },
+                        "saveThePassword": {
+                            "type": "boolean",
+                            "description": "Save the password or not?",
+                            "default": "Bartleby.configuration.SAVE_PASSWORD_DEFAULT_VALUE",
+                            "supervisable": true
                         }
                     }
                 }
@@ -523,6 +387,10 @@
                         "password"
                     ],
                     "properties": {
+                        "externalID": {
+                            "type": "string",
+                            "description": "An external unique identifier"
+                        },
                         "spaceUID": {
                             "type": "string",
                             "description": "The spaceUID. A user with the same credentials can exists within multiple Data space.",
@@ -534,11 +402,11 @@
                             "emumPreciseType": "User.VerificationMethod",
                             "description": "the verification method",
                             "enum": [
-                                "None",
-                                "ByPhoneNumber",
-                                "ByEmail"
+                                "none",
+                                "byPhoneNumber",
+                                "byEmail"
                             ],
-                            "default": ".ByPhoneNumber"
+                            "default": ".byPhoneNumber"
                         },
                         "firstname": {
                             "type": "string",
@@ -560,7 +428,7 @@
                             "description": "The hashed version of the user password",
                             "type": "string",
                             "default": "\\(Bartleby.randomStringWithLength(8,signs:Bartleby.configuration.PASSWORD_CHAR_CART))",
-                            "cryptable": false
+                            "cryptable": true
                         },
                         "activationCode": {
                             "description": "An activation code",
@@ -577,7 +445,7 @@
                                 "actived",
                                 "suspended"
                             ],
-                            "default": ".New"
+                            "default": ".new"
                         },
                         "tags": {
                             "schema": {
@@ -590,20 +458,16 @@
                                 }
                             }
                         },
-                        "groups": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "description": "The user Groups. External reference to Group instances",
-                                    "$ref": "#/definitions/ExternalReference",
-                                    "required": true,
-                                    "default": "[ExternalReference]()"
-                                }
-                            }
-                        },
                         "notes": {
                             "type": "string",
                             "description": "Notes"
+                        },
+                        "loginHasSucceed": {
+                            "type": "boolean",
+                            "description": "set to true on the first successfull login in the session (this property is not serialized)",
+                            "default": "false",
+                            "supervisable": false,
+                            "serializable": false
                         }
                     }
                 }
@@ -624,9 +488,9 @@
                         "password"
                     ],
                     "properties": {
-                        "spaceUID": {
+                        "registryUID": {
                             "type": "string",
-                            "description": "The spaceUID is the data space UID."
+                            "description": "The associated registry UID."
                         },
                         "subjectUID": {
                             "description": "The subject UID you want to lock",
@@ -644,10 +508,10 @@
                             "emumPreciseType": "Locker.Mode",
                             "description": "the locker mode",
                             "enum": [
-                                "AutoDestructive",
-                                "Persistent"
+                                "autoDestructive",
+                                "persistent"
                             ],
-                            "default": ".AutoDestructive"
+                            "default": ".autoDestructive"
                         },
                         "verificationMethod": {
                             "type": "enum",
@@ -655,10 +519,10 @@
                             "emumPreciseType": "Locker.VerificationMethod",
                             "description": "the locker mode",
                             "enum": [
-                                "Online",
-                                "Offline"
+                                "online",
+                                "offline"
                             ],
-                            "default": ".Online"
+                            "default": ".online"
                         },
                         "code": {
                             "description": "This code should be crypted / decrypted",
@@ -673,48 +537,23 @@
                         "startDate": {
                             "type": "date",
                             "definition": "the starting date. If Locker.verifyed.online The server date will be used as reference",
-                            "default": "NSDate.distantPast()"
+                            "default": "Date.distantPast"
                         },
                         "endDate": {
                             "type": "date",
                             "definition": "the ending date. If Locker.verifyed.online The server date will be used as reference",
-                            "default": "NSDate.distantFuture()"
+                            "default": "Date.distantFuture"
                         },
-                        "cake": {
-                            "description": "This cake will be return on success",
+                        "gems": {
+                            "description": "Thoses data gems will be return on success",
                             "type": "string",
-                            "default": "\\(Default.NO_CAKE)"
+                            "default": "\\(Default.NO_GEM)"
                         }
                     }
                 }
             ],
             "metadata": {
-                "urdMode": false,
-                "groupable": false
-            }
-        },
-        "Group": {
-            "description": "Bartleby's Core: a group of user",
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "creationDate": {
-                            "type": "string",
-                            "format": "date-time"
-                        },
-                        "color": {
-                            "type": "string"
-                        },
-                        "icon": {
-                            "type": "string"
-                        }
-                    }
-                }
-            ],
-            "metadata": {
-                "urdMode": false,
-                "groupable": false
+                "urdMode": false
             }
         },
         "ExternalReference": {
@@ -743,63 +582,66 @@
                 "urdMode": false
             }
         },
-        "Operation": {
-            "description": "Bartleby's Core: an object used to provision serialized operation. All its properties are not observable",
+        "PushOperation": {
+            "description": "Bartleby's Core: an object used to provision serialized operation. All its properties are not supervisable",
             "allOf": [
                 {
                     "type": "object",
                     "properties": {
+                        "commandUID": {
+                            "type": "string",
+                            "description": "The unique identifier of the related Command",
+                            "supervisable": false
+                        },
                         "toDictionary": {
                             "description": "The dictionary representation of a serialized action call",
                             "type": "dictionary",
-                            "observable": false
+                            "supervisable": false
                         },
                         "responseDictionary": {
                             "description": "The dictionary representation of the last response serialized data",
                             "type": "dictionary",
-                            "observable": false
+                            "supervisable": false,
+                            "dynamic": false
                         },
-                        "baseUrl": {
-                            "definition": "The base url is stored to support operations shifting (from a server to another, from clients, ...)",
-                            "type": "url",
-                            "observable": false
+                        "completionState": {
+                            "schema": {
+                                "description": "The completion state of the operation",
+                                "$ref": "#/definitions/Completion",
+                                "supervisable": false
+                            }
                         },
                         "status": {
                             "type": "enum",
                             "instanceOf": "string",
-                            "emumPreciseType": "Operation.Status",
-                            "description": "The invocation Status",
+                            "emumPreciseType": "PushOperation.Status",
+                            "description": "The invocation Status None: on creation, Pending: can be pushed, Provisionned: is currently in an operation bunch, InProgress: the endpoint has been called, Completed : The end point call has been completed",
                             "enum": [
                                 "none",
                                 "pending",
+                                "provisionned",
                                 "inProgress",
-                                "successful",
-                                "unsucessful"
+                                "completed"
                             ],
-                            "default": ".None",
-                            "observable": false
-                        },
-                        "spaceUID": {
-                            "type": "string",
-                            "description": "The data space UID can be shared between multiple registries.",
-                            "default": "\\(Default.NO_UID)",
-                            "dynamic": true,
-                            "observable": false
+                            "default": ".none",
+                            "supervisable": false
                         },
                         "counter": {
                             "description": "The invocation counter",
                             "type": "integer",
-                            "observable": false
+                            "supervisable": false,
+                            "default": -1,
+                            "required": true
                         },
                         "creationDate": {
                             "description": "The creationdate",
                             "type": "date",
-                            "observable": false
+                            "supervisable": false
                         },
                         "lastInvocationDate": {
                             "description": "The last invocation date",
                             "type": "date",
-                            "observable": false
+                            "supervisable": false
                         }
                     }
                 }
@@ -808,47 +650,6 @@
                 "urdMode": false,
                 "persistsLocallyOnlyInMemory": false,
                 "allowDistantPersistency": false,
-                "undoable": false
-            }
-        },
-        "Permission": {
-            "description": "Bartleby's Core: a dynamic permission (Bartleby's base ACL is static)",
-            "allOf": [
-                {
-                    "type": "object",
-                    "required": [],
-                    "properties": {
-                        "callString": {
-                            "type": "string",
-                            "description": "The call string e.g : DeleteOperation->call",
-                            "required": false,
-                            "observable": true
-                        },
-                        "level": {
-                            "type": "integer",
-                            "description": "The level of the permission (check Bartleby's doc)",
-                            "required": false,
-                            "observable": true
-                        },
-                        "rule": {
-                            "description": "The permission rule  (check Bartleby's doc)",
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string",
-                                    "default": "[String]()"
-                                }
-                            },
-                            "required": false,
-                            "observable": true
-                        }
-                    }
-                }
-            ],
-            "metadata": {
-                "urdMode": false,
-                "persistsLocallyOnlyInMemory": false,
-                "allowDistantPersistency": true,
                 "undoable": false
             }
         },
@@ -862,62 +663,72 @@
                             "description": "The index is injected server side (each dataspace-registry) has it own counter)",
                             "type": "integer",
                             "format": "int64",
-                            "observable": false,
+                            "supervisable": false,
                             "default": -1
                         },
                         "spaceUID": {
                             "description": "The dataSpace UID",
                             "type": "string",
-                            "observable": false
+                            "supervisable": false
                         },
                         "observationUID": {
                             "description": "The observation UID for a given document correspond  to the Registry.rootObjectUID",
                             "type": "string",
                             "required": false,
-                            "observable": false
+                            "supervisable": false
                         },
                         "senderUID": {
                             "description": "The user.UID of the sender",
                             "type": "string",
-                            "observable": false
+                            "supervisable": false
                         },
                         "runUID": {
                             "description": "The UID of the instance of Bartleby client that has created the trigger.",
                             "type": "string",
-                            "observable": false
+                            "supervisable": false
                         },
                         "origin": {
                             "description": "The action that has initiated the trigger",
                             "type": "string",
                             "required": false,
-                            "observable": false
+                            "supervisable": false
                         },
                         "targetCollectionName": {
                             "description": "The targetted collection name",
                             "type": "string",
                             "required": true,
                             "default": "",
-                            "observable": false
+                            "supervisable": false
                         },
                         "creationDate": {
                             "description": "The server side creation date ( informative, use index for ranking)",
                             "type": "date",
                             "required": false,
-                            "observable": false
+                            "supervisable": false
                         },
                         "action": {
                             "description": "The action name",
                             "type": "string",
                             "required": true,
                             "default": "",
-                            "observable": false
+                            "supervisable": false
                         },
                         "UIDS": {
                             "description": "A coma separated UIDS list",
                             "type": "string",
                             "required": true,
                             "default": "",
-                            "observable": false
+                            "supervisable": false
+                        },
+                        "payloads": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "A collection of JSON payload",
+                                    "explicitType": "dictionary",
+                                    "supervisable": false
+                                }
+                            }
                         }
                     }
                 }
@@ -926,8 +737,7 @@
                 "urdMode": false,
                 "persistsLocallyOnlyInMemory": false,
                 "allowDistantPersistency": false,
-                "undoable": false,
-                "groupable": false
+                "undoable": false
             }
         },
         "Tag": {
@@ -954,7 +764,7 @@
             }
         },
         "JString": {
-            "description": "Bartleby's Core: String Primitive Wrapper. (Used for example to pass task Arguments)",
+            "description": "Bartleby's Core: String Primitive Wrapper.",
             "allOf": [
                 {
                     "type": "object",
@@ -971,7 +781,7 @@
             }
         },
         "JData": {
-            "description": "Bartleby's Core: Data Primitive Wrapper. (Used for example to pass task Arguments)",
+            "description": "Bartleby's Core: Data Primitive Wrapper.",
             "allOf": [
                 {
                     "type": "object",
@@ -1336,708 +1146,6 @@
                     },
                     "404": {
                         "description": "CollectionMetadata not found"
-                    }
-                }
-            }
-        },
-        "/task/{taskId}": {
-            "get": {
-                "tags": [
-                    "tasks"
-                ],
-                "summary": "Find Task by ID",
-                "description": "Returns a single Task",
-                "operationId": "readTaskById",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "taskId",
-                        "in": "path",
-                        "description": "The unique identifier the the of Task",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/Task"
-                        }
-                    },
-                    "404": {
-                        "description": "Task not found"
-                    }
-                }
-            }
-        },
-        "/task": {
-            "post": {
-                "tags": [
-                    "tasks"
-                ],
-                "summary": "Creates a new Task to the system",
-                "description": "",
-                "operationId": "createTask",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "task",
-                        "description": "The instance ofTask that needs to be added",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/Task"
-                        }
-                    }
-                ],
-                "responses": {
-                    "405": {
-                        "description": "Invalid input"
-                    }
-                },
-                "metadata": {
-                    "urdMode": false
-                }
-            },
-            "put": {
-                "tags": [
-                    "tasks"
-                ],
-                "summary": "Update an existing Task",
-                "description": "",
-                "operationId": "updateTask",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "task",
-                        "description": "The Task instance to update",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/Task"
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid ID supplied"
-                    },
-                    "404": {
-                        "description": "Task not found"
-                    },
-                    "405": {
-                        "description": "Validation exception"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "tasks"
-                ],
-                "summary": "Deletes a Task",
-                "description": "",
-                "operationId": "deleteTask",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "taskId",
-                        "in": "path",
-                        "description": "The identifier of the Task to be deleted",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid Task value"
-                    }
-                }
-            }
-        },
-        "/tasks": {
-            "post": {
-                "tags": [
-                    "tasks"
-                ],
-                "summary": "Create tasks to the system",
-                "description": "",
-                "operationId": "createTasks",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "tasks",
-                        "description": "Collection of Task that needs to be added",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Task"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "405": {
-                        "description": "Invalid input"
-                    }
-                },
-                "metadata": {
-                    "urdMode": false
-                }
-            },
-            "get": {
-                "tags": [
-                    "tasks"
-                ],
-                "summary": "Find tasks by ID",
-                "description": "Returns a collection of Task",
-                "operationId": "readTasksByIds",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "ids",
-                        "in": "path",
-                        "description": "The IDS of the tasks to return",
-                        "required": true,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "in": "body",
-                        "name": "result_fields",
-                        "description": "the result fields (MONGO DB)",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    {
-                        "in": "body",
-                        "name": "sort",
-                        "description": "the sort (MONGO DB)",
-                        "required": false,
-                        "type": "dictionary"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Task"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid IDS supplied"
-                    },
-                    "404": {
-                        "description": "Tasks not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "tasks"
-                ],
-                "summary": "Update an existing Task",
-                "description": "",
-                "operationId": "updateTasks",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "tasks",
-                        "description": "Collection of Task to update",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Task"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid IDS supplied"
-                    },
-                    "404": {
-                        "description": "Tasks not found"
-                    },
-                    "405": {
-                        "description": "Validation exception"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "tasks"
-                ],
-                "summary": "Deletes some tasks",
-                "description": "",
-                "operationId": "deleteTasks",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "ids",
-                        "in": "path",
-                        "description": "The ids of tasks to delete",
-                        "required": true,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid tasks value"
-                    }
-                }
-            }
-        },
-        "/tasksByQuery": {
-            "get": {
-                "tags": [
-                    "tasks"
-                ],
-                "summary": "Find tasks by query (check $q, $s, $f in Bartleby's MongoCallDataRawWrapper)",
-                "description": "Returns a collection of Task",
-                "operationId": "readTasksByQuery",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "result_fields",
-                        "description": "the result fields (MONGO DB)",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    {
-                        "in": "body",
-                        "name": "sort",
-                        "description": "the sort (MONGO DB)",
-                        "required": false,
-                        "type": "dictionary"
-                    },
-                    {
-                        "in": "body",
-                        "name": "query",
-                        "description": "the query (MONGO DB)",
-                        "required": false,
-                        "type": "dictionary"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Task"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid IDS supplied"
-                    },
-                    "404": {
-                        "description": "Tasks not found"
-                    }
-                }
-            }
-        },
-        "/tasksGroup/{tasksGroupId}": {
-            "get": {
-                "tags": [
-                    "tasksGroups"
-                ],
-                "summary": "Find TasksGroup by ID",
-                "description": "Returns a single TasksGroup",
-                "operationId": "readTasksGroupById",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "tasksGroupId",
-                        "in": "path",
-                        "description": "The unique identifier the the of TasksGroup",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/TasksGroup"
-                        }
-                    },
-                    "404": {
-                        "description": "TasksGroup not found"
-                    }
-                }
-            }
-        },
-        "/tasksGroup": {
-            "post": {
-                "tags": [
-                    "tasksGroups"
-                ],
-                "summary": "Creates a new TasksGroup to the system",
-                "description": "",
-                "operationId": "createTasksGroup",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "tasksGroup",
-                        "description": "The instance ofTasksGroup that needs to be added",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/TasksGroup"
-                        }
-                    }
-                ],
-                "responses": {
-                    "405": {
-                        "description": "Invalid input"
-                    }
-                },
-                "metadata": {
-                    "urdMode": false
-                }
-            },
-            "put": {
-                "tags": [
-                    "tasksGroups"
-                ],
-                "summary": "Update an existing TasksGroup",
-                "description": "",
-                "operationId": "updateTasksGroup",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "tasksGroup",
-                        "description": "The TasksGroup instance to update",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/TasksGroup"
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid ID supplied"
-                    },
-                    "404": {
-                        "description": "TasksGroup not found"
-                    },
-                    "405": {
-                        "description": "Validation exception"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "tasksGroups"
-                ],
-                "summary": "Deletes a TasksGroup",
-                "description": "",
-                "operationId": "deleteTasksGroup",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "tasksGroupId",
-                        "in": "path",
-                        "description": "The identifier of the TasksGroup to be deleted",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid TasksGroup value"
-                    }
-                }
-            }
-        },
-        "/tasksGroups": {
-            "post": {
-                "tags": [
-                    "tasksGroups"
-                ],
-                "summary": "Create tasksGroups to the system",
-                "description": "",
-                "operationId": "createTasksGroups",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "tasksGroups",
-                        "description": "Collection of TasksGroup that needs to be added",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/TasksGroup"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "405": {
-                        "description": "Invalid input"
-                    }
-                },
-                "metadata": {
-                    "urdMode": false
-                }
-            },
-            "get": {
-                "tags": [
-                    "tasksGroups"
-                ],
-                "summary": "Find tasksGroups by ID",
-                "description": "Returns a collection of TasksGroup",
-                "operationId": "readTasksGroupsByIds",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "ids",
-                        "in": "path",
-                        "description": "The IDS of the tasksGroups to return",
-                        "required": true,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "in": "body",
-                        "name": "result_fields",
-                        "description": "the result fields (MONGO DB)",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    {
-                        "in": "body",
-                        "name": "sort",
-                        "description": "the sort (MONGO DB)",
-                        "required": false,
-                        "type": "dictionary"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/TasksGroup"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid IDS supplied"
-                    },
-                    "404": {
-                        "description": "TasksGroups not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "tasksGroups"
-                ],
-                "summary": "Update an existing TasksGroup",
-                "description": "",
-                "operationId": "updateTasksGroups",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "tasksGroups",
-                        "description": "Collection of TasksGroup to update",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/TasksGroup"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid IDS supplied"
-                    },
-                    "404": {
-                        "description": "TasksGroups not found"
-                    },
-                    "405": {
-                        "description": "Validation exception"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "tasksGroups"
-                ],
-                "summary": "Deletes some tasksGroups",
-                "description": "",
-                "operationId": "deleteTasksGroups",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "ids",
-                        "in": "path",
-                        "description": "The ids of tasksGroups to delete",
-                        "required": true,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid tasksGroups value"
-                    }
-                }
-            }
-        },
-        "/tasksGroupsByQuery": {
-            "get": {
-                "tags": [
-                    "tasksGroups"
-                ],
-                "summary": "Find tasksGroups by query (check $q, $s, $f in Bartleby's MongoCallDataRawWrapper)",
-                "description": "Returns a collection of TasksGroup",
-                "operationId": "readTasksGroupsByQuery",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "result_fields",
-                        "description": "the result fields (MONGO DB)",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    {
-                        "in": "body",
-                        "name": "sort",
-                        "description": "the sort (MONGO DB)",
-                        "required": false,
-                        "type": "dictionary"
-                    },
-                    {
-                        "in": "body",
-                        "name": "query",
-                        "description": "the query (MONGO DB)",
-                        "required": false,
-                        "type": "dictionary"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/TasksGroup"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid IDS supplied"
-                    },
-                    "404": {
-                        "description": "TasksGroups not found"
                     }
                 }
             }
@@ -3797,22 +2905,22 @@
                 }
             }
         },
-        "/group/{groupId}": {
+        "/pushOperation/{pushOperationId}": {
             "get": {
                 "tags": [
-                    "groups"
+                    "pushOperations"
                 ],
-                "summary": "Find Group by ID",
-                "description": "Returns a single Group",
-                "operationId": "readGroupById",
+                "summary": "Find PushOperation by ID",
+                "description": "Returns a single PushOperation",
+                "operationId": "readPushOperationById",
                 "produces": [
                     "application/json"
                 ],
                 "parameters": [
                     {
-                        "name": "groupId",
+                        "name": "pushOperationId",
                         "in": "path",
-                        "description": "The unique identifier the the of Group",
+                        "description": "The unique identifier the the of PushOperation",
                         "required": true,
                         "type": "string"
                     }
@@ -3821,23 +2929,23 @@
                     "200": {
                         "description": "successful operation",
                         "schema": {
-                            "$ref": "#/definitions/Group"
+                            "$ref": "#/definitions/PushOperation"
                         }
                     },
                     "404": {
-                        "description": "Group not found"
+                        "description": "PushOperation not found"
                     }
                 }
             }
         },
-        "/group": {
+        "/pushOperation": {
             "post": {
                 "tags": [
-                    "groups"
+                    "pushOperations"
                 ],
-                "summary": "Creates a new Group to the system",
+                "summary": "Creates a new PushOperation to the system",
                 "description": "",
-                "operationId": "createGroup",
+                "operationId": "createPushOperation",
                 "consumes": [
                     "application/json"
                 ],
@@ -3847,11 +2955,11 @@
                 "parameters": [
                     {
                         "in": "body",
-                        "name": "group",
-                        "description": "The instance ofGroup that needs to be added",
+                        "name": "pushOperation",
+                        "description": "The instance ofPushOperation that needs to be added",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/Group"
+                            "$ref": "#/definitions/PushOperation"
                         }
                     }
                 ],
@@ -3866,11 +2974,11 @@
             },
             "put": {
                 "tags": [
-                    "groups"
+                    "pushOperations"
                 ],
-                "summary": "Update an existing Group",
+                "summary": "Update an existing PushOperation",
                 "description": "",
-                "operationId": "updateGroup",
+                "operationId": "updatePushOperation",
                 "consumes": [
                     "application/json"
                 ],
@@ -3880,11 +2988,11 @@
                 "parameters": [
                     {
                         "in": "body",
-                        "name": "group",
-                        "description": "The Group instance to update",
+                        "name": "pushOperation",
+                        "description": "The PushOperation instance to update",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/Group"
+                            "$ref": "#/definitions/PushOperation"
                         }
                     }
                 ],
@@ -3893,7 +3001,7 @@
                         "description": "Invalid ID supplied"
                     },
                     "404": {
-                        "description": "Group not found"
+                        "description": "PushOperation not found"
                     },
                     "405": {
                         "description": "Validation exception"
@@ -3902,38 +3010,38 @@
             },
             "delete": {
                 "tags": [
-                    "groups"
+                    "pushOperations"
                 ],
-                "summary": "Deletes a Group",
+                "summary": "Deletes a PushOperation",
                 "description": "",
-                "operationId": "deleteGroup",
+                "operationId": "deletePushOperation",
                 "produces": [
                     "application/json"
                 ],
                 "parameters": [
                     {
-                        "name": "groupId",
+                        "name": "pushOperationId",
                         "in": "path",
-                        "description": "The identifier of the Group to be deleted",
+                        "description": "The identifier of the PushOperation to be deleted",
                         "required": true,
                         "type": "string"
                     }
                 ],
                 "responses": {
                     "400": {
-                        "description": "Invalid Group value"
+                        "description": "Invalid PushOperation value"
                     }
                 }
             }
         },
-        "/groups": {
+        "/pushOperations": {
             "post": {
                 "tags": [
-                    "groups"
+                    "pushOperations"
                 ],
-                "summary": "Create groups to the system",
+                "summary": "Create pushOperations to the system",
                 "description": "",
-                "operationId": "createGroups",
+                "operationId": "createPushOperations",
                 "consumes": [
                     "application/json"
                 ],
@@ -3943,13 +3051,13 @@
                 "parameters": [
                     {
                         "in": "body",
-                        "name": "groups",
-                        "description": "Collection of Group that needs to be added",
+                        "name": "pushOperations",
+                        "description": "Collection of PushOperation that needs to be added",
                         "required": true,
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Group"
+                                "$ref": "#/definitions/PushOperation"
                             }
                         }
                     }
@@ -3965,11 +3073,11 @@
             },
             "get": {
                 "tags": [
-                    "groups"
+                    "pushOperations"
                 ],
-                "summary": "Find groups by ID",
-                "description": "Returns a collection of Group",
-                "operationId": "readGroupsByIds",
+                "summary": "Find pushOperations by ID",
+                "description": "Returns a collection of PushOperation",
+                "operationId": "readPushOperationsByIds",
                 "produces": [
                     "application/json"
                 ],
@@ -3977,7 +3085,7 @@
                     {
                         "name": "ids",
                         "in": "path",
-                        "description": "The IDS of the groups to return",
+                        "description": "The IDS of the pushOperations to return",
                         "required": true,
                         "type": "array",
                         "items": {
@@ -4010,7 +3118,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Group"
+                                "$ref": "#/definitions/PushOperation"
                             }
                         }
                     },
@@ -4018,17 +3126,17 @@
                         "description": "Invalid IDS supplied"
                     },
                     "404": {
-                        "description": "Groups not found"
+                        "description": "PushOperations not found"
                     }
                 }
             },
             "put": {
                 "tags": [
-                    "groups"
+                    "pushOperations"
                 ],
-                "summary": "Update an existing Group",
+                "summary": "Update an existing PushOperation",
                 "description": "",
-                "operationId": "updateGroups",
+                "operationId": "updatePushOperations",
                 "consumes": [
                     "application/json"
                 ],
@@ -4038,13 +3146,13 @@
                 "parameters": [
                     {
                         "in": "body",
-                        "name": "groups",
-                        "description": "Collection of Group to update",
+                        "name": "pushOperations",
+                        "description": "Collection of PushOperation to update",
                         "required": true,
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Group"
+                                "$ref": "#/definitions/PushOperation"
                             }
                         }
                     }
@@ -4054,7 +3162,7 @@
                         "description": "Invalid IDS supplied"
                     },
                     "404": {
-                        "description": "Groups not found"
+                        "description": "PushOperations not found"
                     },
                     "405": {
                         "description": "Validation exception"
@@ -4063,11 +3171,11 @@
             },
             "delete": {
                 "tags": [
-                    "groups"
+                    "pushOperations"
                 ],
-                "summary": "Deletes some groups",
+                "summary": "Deletes some pushOperations",
                 "description": "",
-                "operationId": "deleteGroups",
+                "operationId": "deletePushOperations",
                 "produces": [
                     "application/json"
                 ],
@@ -4075,7 +3183,7 @@
                     {
                         "name": "ids",
                         "in": "path",
-                        "description": "The ids of groups to delete",
+                        "description": "The ids of pushOperations to delete",
                         "required": true,
                         "type": "array",
                         "items": {
@@ -4085,19 +3193,19 @@
                 ],
                 "responses": {
                     "400": {
-                        "description": "Invalid groups value"
+                        "description": "Invalid pushOperations value"
                     }
                 }
             }
         },
-        "/groupsByQuery": {
+        "/pushOperationsByQuery": {
             "get": {
                 "tags": [
-                    "groups"
+                    "pushOperations"
                 ],
-                "summary": "Find groups by query (check $q, $s, $f in Bartleby's MongoCallDataRawWrapper)",
-                "description": "Returns a collection of Group",
-                "operationId": "readGroupsByQuery",
+                "summary": "Find pushOperations by query (check $q, $s, $f in Bartleby's MongoCallDataRawWrapper)",
+                "description": "Returns a collection of PushOperation",
+                "operationId": "readPushOperationsByQuery",
                 "produces": [
                     "application/json"
                 ],
@@ -4135,7 +3243,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Group"
+                                "$ref": "#/definitions/PushOperation"
                             }
                         }
                     },
@@ -4143,709 +3251,7 @@
                         "description": "Invalid IDS supplied"
                     },
                     "404": {
-                        "description": "Groups not found"
-                    }
-                }
-            }
-        },
-        "/operation/{operationId}": {
-            "get": {
-                "tags": [
-                    "operations"
-                ],
-                "summary": "Find Operation by ID",
-                "description": "Returns a single Operation",
-                "operationId": "readOperationById",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "operationId",
-                        "in": "path",
-                        "description": "The unique identifier the the of Operation",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/Operation"
-                        }
-                    },
-                    "404": {
-                        "description": "Operation not found"
-                    }
-                }
-            }
-        },
-        "/operation": {
-            "post": {
-                "tags": [
-                    "operations"
-                ],
-                "summary": "Creates a new Operation to the system",
-                "description": "",
-                "operationId": "createOperation",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "operation",
-                        "description": "The instance ofOperation that needs to be added",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/Operation"
-                        }
-                    }
-                ],
-                "responses": {
-                    "405": {
-                        "description": "Invalid input"
-                    }
-                },
-                "metadata": {
-                    "urdMode": false
-                }
-            },
-            "put": {
-                "tags": [
-                    "operations"
-                ],
-                "summary": "Update an existing Operation",
-                "description": "",
-                "operationId": "updateOperation",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "operation",
-                        "description": "The Operation instance to update",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/Operation"
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid ID supplied"
-                    },
-                    "404": {
-                        "description": "Operation not found"
-                    },
-                    "405": {
-                        "description": "Validation exception"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "operations"
-                ],
-                "summary": "Deletes a Operation",
-                "description": "",
-                "operationId": "deleteOperation",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "operationId",
-                        "in": "path",
-                        "description": "The identifier of the Operation to be deleted",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid Operation value"
-                    }
-                }
-            }
-        },
-        "/operations": {
-            "post": {
-                "tags": [
-                    "operations"
-                ],
-                "summary": "Create operations to the system",
-                "description": "",
-                "operationId": "createOperations",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "operations",
-                        "description": "Collection of Operation that needs to be added",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Operation"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "405": {
-                        "description": "Invalid input"
-                    }
-                },
-                "metadata": {
-                    "urdMode": false
-                }
-            },
-            "get": {
-                "tags": [
-                    "operations"
-                ],
-                "summary": "Find operations by ID",
-                "description": "Returns a collection of Operation",
-                "operationId": "readOperationsByIds",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "ids",
-                        "in": "path",
-                        "description": "The IDS of the operations to return",
-                        "required": true,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "in": "body",
-                        "name": "result_fields",
-                        "description": "the result fields (MONGO DB)",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    {
-                        "in": "body",
-                        "name": "sort",
-                        "description": "the sort (MONGO DB)",
-                        "required": false,
-                        "type": "dictionary"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Operation"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid IDS supplied"
-                    },
-                    "404": {
-                        "description": "Operations not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "operations"
-                ],
-                "summary": "Update an existing Operation",
-                "description": "",
-                "operationId": "updateOperations",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "operations",
-                        "description": "Collection of Operation to update",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Operation"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid IDS supplied"
-                    },
-                    "404": {
-                        "description": "Operations not found"
-                    },
-                    "405": {
-                        "description": "Validation exception"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "operations"
-                ],
-                "summary": "Deletes some operations",
-                "description": "",
-                "operationId": "deleteOperations",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "ids",
-                        "in": "path",
-                        "description": "The ids of operations to delete",
-                        "required": true,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid operations value"
-                    }
-                }
-            }
-        },
-        "/operationsByQuery": {
-            "get": {
-                "tags": [
-                    "operations"
-                ],
-                "summary": "Find operations by query (check $q, $s, $f in Bartleby's MongoCallDataRawWrapper)",
-                "description": "Returns a collection of Operation",
-                "operationId": "readOperationsByQuery",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "result_fields",
-                        "description": "the result fields (MONGO DB)",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    {
-                        "in": "body",
-                        "name": "sort",
-                        "description": "the sort (MONGO DB)",
-                        "required": false,
-                        "type": "dictionary"
-                    },
-                    {
-                        "in": "body",
-                        "name": "query",
-                        "description": "the query (MONGO DB)",
-                        "required": false,
-                        "type": "dictionary"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Operation"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid IDS supplied"
-                    },
-                    "404": {
-                        "description": "Operations not found"
-                    }
-                }
-            }
-        },
-        "/permission/{permissionId}": {
-            "get": {
-                "tags": [
-                    "permissions"
-                ],
-                "summary": "Find Permission by ID",
-                "description": "Returns a single Permission",
-                "operationId": "readPermissionById",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "permissionId",
-                        "in": "path",
-                        "description": "The unique identifier the the of Permission",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/Permission"
-                        }
-                    },
-                    "404": {
-                        "description": "Permission not found"
-                    }
-                }
-            }
-        },
-        "/permission": {
-            "post": {
-                "tags": [
-                    "permissions"
-                ],
-                "summary": "Creates a new Permission to the system",
-                "description": "",
-                "operationId": "createPermission",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "permission",
-                        "description": "The instance ofPermission that needs to be added",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/Permission"
-                        }
-                    }
-                ],
-                "responses": {
-                    "405": {
-                        "description": "Invalid input"
-                    }
-                },
-                "metadata": {
-                    "urdMode": false
-                }
-            },
-            "put": {
-                "tags": [
-                    "permissions"
-                ],
-                "summary": "Update an existing Permission",
-                "description": "",
-                "operationId": "updatePermission",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "permission",
-                        "description": "The Permission instance to update",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/Permission"
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid ID supplied"
-                    },
-                    "404": {
-                        "description": "Permission not found"
-                    },
-                    "405": {
-                        "description": "Validation exception"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "permissions"
-                ],
-                "summary": "Deletes a Permission",
-                "description": "",
-                "operationId": "deletePermission",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "permissionId",
-                        "in": "path",
-                        "description": "The identifier of the Permission to be deleted",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid Permission value"
-                    }
-                }
-            }
-        },
-        "/permissions": {
-            "post": {
-                "tags": [
-                    "permissions"
-                ],
-                "summary": "Create permissions to the system",
-                "description": "",
-                "operationId": "createPermissions",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "permissions",
-                        "description": "Collection of Permission that needs to be added",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Permission"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "405": {
-                        "description": "Invalid input"
-                    }
-                },
-                "metadata": {
-                    "urdMode": false
-                }
-            },
-            "get": {
-                "tags": [
-                    "permissions"
-                ],
-                "summary": "Find permissions by ID",
-                "description": "Returns a collection of Permission",
-                "operationId": "readPermissionsByIds",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "ids",
-                        "in": "path",
-                        "description": "The IDS of the permissions to return",
-                        "required": true,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "in": "body",
-                        "name": "result_fields",
-                        "description": "the result fields (MONGO DB)",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    {
-                        "in": "body",
-                        "name": "sort",
-                        "description": "the sort (MONGO DB)",
-                        "required": false,
-                        "type": "dictionary"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Permission"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid IDS supplied"
-                    },
-                    "404": {
-                        "description": "Permissions not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "permissions"
-                ],
-                "summary": "Update an existing Permission",
-                "description": "",
-                "operationId": "updatePermissions",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "permissions",
-                        "description": "Collection of Permission to update",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Permission"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid IDS supplied"
-                    },
-                    "404": {
-                        "description": "Permissions not found"
-                    },
-                    "405": {
-                        "description": "Validation exception"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "permissions"
-                ],
-                "summary": "Deletes some permissions",
-                "description": "",
-                "operationId": "deletePermissions",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "ids",
-                        "in": "path",
-                        "description": "The ids of permissions to delete",
-                        "required": true,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid permissions value"
-                    }
-                }
-            }
-        },
-        "/permissionsByQuery": {
-            "get": {
-                "tags": [
-                    "permissions"
-                ],
-                "summary": "Find permissions by query (check $q, $s, $f in Bartleby's MongoCallDataRawWrapper)",
-                "description": "Returns a collection of Permission",
-                "operationId": "readPermissionsByQuery",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "result_fields",
-                        "description": "the result fields (MONGO DB)",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    {
-                        "in": "body",
-                        "name": "sort",
-                        "description": "the sort (MONGO DB)",
-                        "required": false,
-                        "type": "dictionary"
-                    },
-                    {
-                        "in": "body",
-                        "name": "query",
-                        "description": "the query (MONGO DB)",
-                        "required": false,
-                        "type": "dictionary"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Permission"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid IDS supplied"
-                    },
-                    "404": {
-                        "description": "Permissions not found"
+                        "description": "PushOperations not found"
                     }
                 }
             }

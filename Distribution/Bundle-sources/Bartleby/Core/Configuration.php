@@ -6,6 +6,8 @@ require_once __DIR__ . '/Mode.php';
 if (!defined('PERMISSION_IS_STATIC')) {
     define('PERMISSION_IS_STATIC', 0);
 
+    date_default_timezone_set ( 'UTC' );
+
     // PERMISSION_RESTRICTED_TO_ENUMERATED_USERS is equivalent
     // to PERMISSION_IS_STATIC+PERMISSION_RESTRICTED_TO_ENUMERATED_USERS
 
@@ -29,8 +31,7 @@ if (!defined('PERMISSION_IS_STATIC')) {
     define('MONGO_ID_KEY', '_id'); // For example : PERMISSION_RESTRICTED_TO_ENUMERATED_USERS the ids of the users
     define('KVID_KEY','kvid'); // Used for KVID identification by Headers
     define('SPACE_UID_KEY', 'spaceUID');
-    define('REGISTRY_ROOT_OBJECT_UID_KEY', 'rootObjectUID');
-    define('OBSERVATION_UID_KEY', 'observationUID');
+    define('OBSERVATION_UID_KEY', 'observationUID');// Is generally a RootObjectUID
     define('RUN_UID_KEY', 'runUID');
     define('EPHEMERAL_KEY','ephemeral');
     define('REQUEST_COUNTER_KEY', 'requestCounter');
@@ -56,7 +57,7 @@ if (!defined('PERMISSION_IS_STATIC')) {
 
     define('TOKEN_CONTEXT_KEY', 'context');
 
-    define('NOT_OBSERVABLE', 'NO');
+    define('NOT_SUPERVISABLE', 'NO');
     define('NO_UID', 'NU');
 
     define('DEFAULT_SPACE_UID', '0');  //used when there no dID by the GateKeeper
@@ -66,6 +67,21 @@ if (!defined('PERMISSION_IS_STATIC')) {
     // SO WE PREFER TO RETURN A VOID JSON DICTIONARY instead of a void
     define('VOID_RESPONSE', "{}");
 
+    if ( ( array_key_exists('argc', $_SERVER) && $_SERVER ['argc'] == 0 )
+        || (!defined('STDIN') && !defined('SHELL') )
+        && php_sapi_name() !== 'cli'
+        ){
+
+        define("COMMANDLINE_MODE", false);
+    } else {
+        define("COMMANDLINE_MODE", true);
+    }
+
+    if (COMMANDLINE_MODE){
+        define('CR',"\n");
+    }else{
+        define('CR',"<br/>");
+    }
 }
 
 
@@ -89,7 +105,7 @@ class Configuration {
 
     // Bartleby's version
     const BARTLEBY_VERSION = "1.0";
-    const BARTLEBY_RELEASE = "beta2";
+    const BARTLEBY_RELEASE = "RC";
     const INFORMATIONS_KEY = 'informations';
     const ANONYMOUS = 'anonymous';
 
@@ -236,6 +252,22 @@ class Configuration {
     public function ALLOW_DESTRUCTIVE_INSTALLER() {
         return $this::ALLOW_DESTRUCTIVE_INSTALLER;
     }
+
+
+    /**
+     * Disables the data Filters IN & OUT
+     * This options should never be turned to true in production.
+     * The passwords would be  server side stored
+     */
+    const DISABLE_DATA_FILTERS = false;  // Should be set to false (!)
+
+    /**
+     * @return bool
+     */
+    public function DISABLE_DATA_FILTERS() {
+        return $this::DISABLE_DATA_FILTERS;
+    }
+
 
     /* Used by developers */
     const DEVELOPER_DEBUG_MODE = true; // Should be set to false (!)

@@ -92,10 +92,10 @@ class  PropertyRepresentation {
     public $isSerializable = true;
 
     /**
-     * Defines if the property changes should be observed
+     * Defines if the property changes should be supervised
      * @var bool
      */
-    public $isObservable = true;
+    public $isSupervisable = true;
 
 
     /**
@@ -121,7 +121,7 @@ class  PropertyRepresentation {
      * Set to true to allow for example cocoa bindings.
      * @var bool
      */
-    public $isDynamic = false;
+    public $isDynamic = true;
 
     /**
      * @var NULL or an  array of PropertyRepresentation used to propose a serialization re-mapping

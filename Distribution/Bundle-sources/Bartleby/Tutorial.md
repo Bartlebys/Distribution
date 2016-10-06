@@ -6,13 +6,14 @@ You can install [HTTPie] (https://github.com/jkbrzt/httpie)
 
 ## 1- Setup the base URL ##
 
-    BASE_URL=http://yd.local/api/v1/
+    BASE_URL=http://localhost/api/v1/
 
 ## 2- Reachability and Configuration ## 
 
 ### Is the app reachable ? ### 
 
     http GET ${BASE_URL}/reachable
+
 
 Successful response 
 
@@ -43,4 +44,8 @@ If you are blocked you can temporarly add a permissive rule into your configurat
 
     'CreateUser->call'=>array('level' =>PERMISSION_NO_RESTRICTION)
     
+### 4 - Test the existence of en entity
 
+```shell
+http GET ${BASE_URL}exists/<replace by the UID>/in/<replace by the spaceUID>
+```

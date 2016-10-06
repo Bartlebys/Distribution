@@ -67,7 +67,8 @@ class JsonResponse extends Response implements  IHTTPResponse{
          $header = 'HTTP/1.1 ' . $code . ' ' . Response::getRequestStatus($code);
          header($header);
          if (isset ($this->data)) {
-             echo $this->getJsonEncodedData();
+             $json=$this->getJsonEncodedData();
+             echo  $json;
          }
     }
 }

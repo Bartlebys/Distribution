@@ -82,14 +82,14 @@ In this case we don't want the property proxy to serialized
 ```
 
 
-## observable
+## supervisable
 
-If a property is marked as observable any change will mark its parent as changed.
+If a property is marked as supervisable any change will mark its parent as changed.
 
 ```
   "fruit": {
                             ...
-                            "observable":false
+                            "supervisable":false
                         },
 ```
 
