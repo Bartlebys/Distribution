@@ -1,10 +1,11 @@
 # FAQ 
 
-
 ## Do i need MongoDB ?
 Currently Bartleby's api are relying on : PHP / MONGODB + JSON
 
 ## So What are the server prerequisits?
+
+You can deploy a [Zero Config Server] (../Installation.md)
 
 1. Min version of **PHP is 5**
 2. **enable mcrypt** 

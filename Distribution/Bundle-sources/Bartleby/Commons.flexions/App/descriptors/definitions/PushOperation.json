@@ -1,0 +1,74 @@
+{
+    "name": "PushOperation",
+    "definition": {
+        "description": "Bartleby's Core: an object used to provision serialized operation. All its properties are not supervisable",
+        "allOf": [
+            {
+                "type": "object",
+                "properties": {
+                    "commandUID": {
+                        "type": "string",
+                        "description": "The unique identifier of the related Command",
+                        "supervisable": false
+                    },
+                    "toDictionary": {
+                        "description": "The dictionary representation of a serialized action call",
+                        "type": "dictionary",
+                        "supervisable": false
+                    },
+                    "responseDictionary": {
+                        "description": "The dictionary representation of the last response serialized data",
+                        "type": "dictionary",
+                        "supervisable": false,
+                        "dynamic": false
+                    },
+                    "completionState": {
+                        "schema": {
+                            "description": "The completion state of the operation",
+                            "$ref": "#/definitions/Completion",
+                            "supervisable": false
+                        }
+                    },
+                    "status": {
+                        "type": "enum",
+                        "instanceOf": "string",
+                        "emumPreciseType": "PushOperation.Status",
+                        "description": "The invocation Status None: on creation, Pending: can be pushed, Provisionned: is currently in an operation bunch, InProgress: the endpoint has been called, Completed : The end point call has been completed",
+                        "enum": [
+                            "none",
+                            "pending",
+                            "provisionned",
+                            "inProgress",
+                            "completed"
+                        ],
+                        "default": ".none",
+                        "supervisable": false
+                    },
+                    "counter": {
+                        "description": "The invocation counter",
+                        "type": "integer",
+                        "supervisable": false,
+                        "default": -1,
+                        "required": true
+                    },
+                    "creationDate": {
+                        "description": "The creationdate",
+                        "type": "date",
+                        "supervisable": false
+                    },
+                    "lastInvocationDate": {
+                        "description": "The last invocation date",
+                        "type": "date",
+                        "supervisable": false
+                    }
+                }
+            }
+        ],
+        "metadata": {
+            "urdMode": false,
+            "persistsLocallyOnlyInMemory": false,
+            "persistsDistantly": false,
+            "undoable": false
+        }
+    }
+}

@@ -1,0 +1,123 @@
+{
+  "project":{
+    "infos": {
+      "description": "This is Bartleby's Commons API descriptor",
+      "projectName": "Bartleby",
+      "company": "[Bartleby's org] (https://bartlebys.org) ",
+      "author":"[Benoit Pereira da Silva] (https://pereira-da-silva.com/contact)",
+      "year":"2016",
+      "version": "1.0.beta1",
+      "license": {
+        "name": "Proprietary",
+        "url": "https://bartlebys.org/license.html"
+      }
+    },
+    "host": "https://demo.bartlebys.org/www",
+    "tags": [],
+    "schemes": [
+      "https"
+    ],
+    "basePath": "/api/v1",
+    "externalDocs": {
+      "description": "Find out more about Bartleby",
+      "url": "https://bartlebys.org/about/"
+    },
+    "templates": {
+      "paths": {
+        "path": "${BARTLEBYS_MODULE_DIR}/modeling-meta-templates/project/endPoints.json.template.php",
+        "description": "This template generate endpoints paths by parsing entities. It is used by the app during pre-generation phase."
+      },
+      "entities": [
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/entities/model.swift.template.php",
+          "description": "Bartleby's swift model template"
+        },
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/entities/model.php.template.php",
+          "description": "Bartleby's php model template (not really used currently)"
+        },
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/entities/modelCollectionController.swift.template.php",
+          "description": "Bartleby's swift model collection controller (central piece of the Distributed execution)"
+        }
+      ],
+      "project": [
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/project/document.swift.template.php",
+          "description": "Bartleby's swift Document template. (!) Uses a global configurator to deternime what collection to serialize locally.",
+          "variables": {
+            "configurator": {
+              "className": "SwiftDocumentConfigurator",
+              "imports": [
+                "${BARTLEBYS_MODULE_DIR}/templates/project/SwiftDocumentConfigurator.php"
+              ],
+              "properties": {
+                "filename": "BartlebyDocument.swift",
+                "includeCollectionControllerForEntityContainingString": [
+                  "User",
+                  "Group",
+                  "Permission",
+                  "Operation",
+                  "Locker"
+                ]
+              }
+            },
+            "excludeCollectionControllerForEntityContainingString": [
+            ]
+          }
+        },
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/project/commons.configuration.php.template.php",
+          "description": "Bartleby's commons php configuration template."
+        }
+      ],
+      "actions": [
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/actions/cuds.withWeakLogic.swift.template.php",
+          "description": "Bartleby's Swift CUD/UD actions template."
+        },
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/actions/endpoint.php.template.php",
+          "description": "Bartleby's Php CRUD/URD endpoints template."
+        },
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/actions/endpoint.swift.template.php",
+          "description": "Bartleby's Swift R actions template."
+        }
+      ]
+    },
+    "variables": {
+      "modelsShouldConformToNSCoding": true,
+      "excludeEntitiesWith": [
+        "AbstractContext"
+      ],
+      "xOSIncludeCollectionControllerForEntityNamed": [
+        "Operation"
+      ],
+      "excludeActionsWith": [
+        "JString",
+        "JDictionary",
+        "JData",
+        "Trigger",
+        "PushOperation",
+        "Abstract",
+        "ExternalReference",
+        "Progression",
+        "Completion",
+        "BaseObject",
+        "Tag",
+        "CollectionMetadatum",
+        "HTTPResponse",
+        "RegistryMetadata",
+        "CollectionMetadata",
+        "CollectionMetadatum"
+      ],
+      "excludeFromServerActionsWith": [],
+      "unDeletableEntitiesWith": [],
+      "unModifiableEntitiesWith": [],
+      "doNotGenerate": [],
+      "isIncludeInBartlebysCommons":true
+    },
+    "postProcessor":"post-processor.php"
+  }
+}

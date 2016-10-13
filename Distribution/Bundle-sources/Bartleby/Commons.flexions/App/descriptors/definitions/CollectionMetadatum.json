@@ -1,0 +1,52 @@
+{
+    "name": "CollectionMetadatum",
+    "definition": {
+        "description": "Bartleby's Core: Collection Metadatum. Complete implementation in CollectionMetadatum",
+        "allOf": [
+            {
+                "type": "object",
+                "required": [],
+                "properties": {
+                    "storage": {
+                        "type": "enum",
+                        "instanceOf": "string",
+                        "emumPreciseType": "CollectionMetadatum.Storage",
+                        "description": "the used file storage",
+                        "enum": [
+                            "monolithicFileStorage"
+                        ],
+                        "default": ".monolithicFileStorage",
+                        "supervisable": false
+                    },
+                    "collectionName": {
+                        "type": "string",
+                        "description": "The holding collection name",
+                        "default": "\\(Default.NO_NAME)",
+                        "supervisable": false
+                    },
+                    "proxy": {
+                        "explicitType": "JObject",
+                        "description": "The proxy object (not serializable, not supervisable)",
+                        "serializable": false,
+                        "supervisable": false
+                    },
+                    "persistsDistantly": {
+                        "type": "boolean",
+                        "description": "Allow distant persistency?",
+                        "default": "true",
+                        "supervisable": false
+                    },
+                    "inMemory": {
+                        "type": "Boolean",
+                        "description": "In Memory?",
+                        "default": "true",
+                        "supervisable": false
+                    }
+                }
+            }
+        ],
+        "metadata": {
+            "urdMode": false
+        }
+    }
+}

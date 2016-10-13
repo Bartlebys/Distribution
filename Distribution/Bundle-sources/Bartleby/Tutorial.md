@@ -1,16 +1,16 @@
-<# Command line Tutorial #
+# Command line Tutorial 
 
-## Install HTTPIE if necessary ##
+## Install HTTPIE if necessary 
 
 You can install [HTTPie] (https://github.com/jkbrzt/httpie)
 
-## 1- Setup the base URL ##
+## 1- Setup the base URL
 
     BASE_URL=http://localhost/api/v1/
 
-## 2- Reachability and Configuration ## 
+## 2- Reachability and Configuration
 
-### Is the app reachable ? ### 
+### Is the app reachable ?
 
     http GET ${BASE_URL}/reachable
 
@@ -30,13 +30,13 @@ Successful response
     
     "{}"
 
-### How is the app configured ? ###
+### How is the app configured ?
 
     http -v GET ${BASE_URL}infos 
 
-## 3- Test of commons services ## 
+## 3- Test of commons services
 
-### Try to create a user (ACL may block the creation) ###
+### Try to create a user (ACL may block the creation)
 
     echo '{"user": {"email": "bpds@me.com", "password":"xxx", "dID":"0000"}}' | http -v -f POST ${BASE_URL}user
 

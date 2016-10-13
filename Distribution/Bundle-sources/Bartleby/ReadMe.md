@@ -11,10 +11,6 @@ Bartleby is licensed to its customers.
 
 ## Code generation ## 
 
-We use a swagger 2.0 descriptor to generate code both server side and client side.
-1. You should first proceed to modeling  "swagger.definitions" 
-2. You can use the "Flexions/modules/Bartleby/swagger-meta-template" to generate the Swagger paths to provide Entity CRUD, and collection of entities CRUD endpoints.
-3. You can generate the server side & clients side components.
 
 ### server side API 
 
@@ -281,70 +277,3 @@ Sample of a filter IN
             return $data;
         };
         $this->addFilterIn('CreateUser->call',$filterCreateUser);
-        
-       
-       
-
-# ********* TO BE REEVALUATED *************
-
-## OFF Line support
-
-Object are created, updated, deleted calling isolated transaction like : "CreateNote"
-
-
-# Bartleby's Distributed execution strategy
-
-Distributed observer are created lazzyly by posting the first command for a given root object UID.
-
-## COMMANDS
- 
-The commands identifiers
-
-+ CREATE= 1 
-+ READ = 2      
-+ UPDATE = 3
-+ DELETE = 4 
-+ LINK = 5
-+ UNLINK = 6
-+ ADD_COLLECTION_ITEM = 7
-+ INSERT_COLLECTION_ITEM = 8
-+ UPDATE_COLLECTION_ITEM = 9
-+ DELETE_COLLECTION_ITEM = 10
-+ MOVE_COLLECTION_ITEM = 11
-+ LINK_COLLECTION_ITEM = 12
-+ UNLINK_COLLECTION_ITEM = 13 
-
-
-## On the client A 
-
-1. self.startDistributedOperations(channelUID)
-2. "objx.set(value)" occurs
-3. the value is immediately set on objx.
-4. the value is added to the related operation eg: updateSentence() && the operation is  provisioned (serialized to DocumentWrapper/.provisioning/)
-5. the sequence 2->4 can be repeat X times before : self.stopDistributedOperations(channelUID) occurs
-6. operations are then reduced (e.g nuclear updates are mapped to collective updates)
-7. operations are declared pending  == serialized  DocumentWrapper/.pending/
-8. when possible the operations are called passing the channelUID and its creatorUID as a parameter
-9. after successful transmission operation are moved to DocumentWrapper/.stored/
-
-## Server Side 
-
-1. for any CRUD endpoint call if there is a channelUID each call is serialized as a Command
-
-## On the client B (first connection to the channel)  
-
-1. the client GET the root Object of the channel.
-2. the callsGET commands (channelUID, fromIndex)  passing 0 as fromIndex
-3. the client subscribes to the channel by calling a SSE endpoint (L4 "subscribes:channelUID" access control applies)
-4. the SSE endpoints transmits the bunch of commands (excluding the commands that has be emitted by the subscriber ) 
-5. if necessary (in case of a disconnection or a hole in the index list) the client can call GET commands (channelUID, fromIndex) 
-6. if there are no holes the sequence of command is interpreted and moved to DocumentWrapper/.stored/ the other commands are DocumentWrapper/.delayed/ until there is no more lacking indexes.
-
-## On the client B (next connection)  
-
-1. the client calls GET commands (channelUID, fromIndex)  passing its lastIndex as fromIndex
-2. executes the commands and moves them to to DocumentWrapper/.stored/
-
-## The CommandsSSE
-Works using Server sent events
-Each N seconds

@@ -1,0 +1,23 @@
+{
+  "bunch":{
+    "infos":{
+      "version":"1.0",
+      "projectName": "Bsync",
+      "company": "Bartleby's https://bartlebys.org ",
+      "author":"Benoit Pereira da Silva https://pereira-da-silva.com/contact",
+      "year":"2016"
+    },
+    "templates": [
+      {
+        "path": "${BARTLEBYS_MODULE_DIR}/templates/entities/model.swift.template.php",
+        "description": "Bartleby's swift model template"
+      }
+    ],
+    "definitions":"/definitions",
+    "exportPathVariableName":"bsync_xOS_exportPath",
+    "flatExport":true,
+    "variables": {
+      "excludeEntitiesWith": []
+    }
+  }
+}

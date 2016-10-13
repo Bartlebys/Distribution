@@ -1,0 +1,12 @@
+{
+  "description":"An example of Bunch generation demonstrating Inheritance & Composition + exclusions (excludeEntitiesWith)",
+  "informations": "https://bartlebys.org/documentation/targetfiles",
+  "targets": {
+    "CompositionAndInheritanceSample": {
+      "bunch": "${CONFIGURATION_FOLDER}/bunch.json",
+      "variables": {
+        "sample_exportPath": "${CONFIGURATION_FOLDER}/_generated"
+      }
+    }
+  }
+}

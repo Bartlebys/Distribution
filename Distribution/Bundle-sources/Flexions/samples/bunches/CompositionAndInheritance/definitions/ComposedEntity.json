@@ -1,0 +1,27 @@
+{
+    "name": "ComposedEntity",
+    "definition": {
+        "description":"An object that uses composition (allOf)",
+        "allOf": [
+            {
+                "$ref": "#/definitions/AbstractContext"
+            },
+            {
+                "type": "object",
+                "properties": {
+                    "creationDate": {
+                        "type": "date"
+                    },
+                    "color": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": "string"
+                    }
+                }
+            }
+        ],
+        "metadata": {
+        }
+    }
+}

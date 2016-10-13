@@ -1,0 +1,93 @@
+{
+  "name": "Organism",
+  "definition": {
+    "description": "An Organism",
+    "type": "object",
+    "properties": {
+      "domain": {
+        "description": "The biological domain",
+        "type": "enum",
+        "instanceOf": "string",
+        "emumPreciseType": "Organism.Domain",
+        "enum": [
+          "bacteria",
+          "archaea",
+          "eukaryota"
+        ],
+        "default":"Domain.bacteria",
+        "supervisable": false
+
+      },
+      "kingdom": {
+        "description": "The kingdom",
+        "type": "String",
+        "default": "‎animalia",
+        "mutable": true,
+        "scope": "public",
+        "method": "instance",
+        "serializable": true,
+        "dynamic": false,
+        "supervisable": false,
+        "cryptable": true
+      },
+      "phylum‎": {
+        "description": "The phylum",
+        "type": "string",
+        "default": "‎chordata",
+        "supervisable": true
+      },
+      "class": {
+        "description": "The class",
+        "explicitType": "OrganismClass",
+        "default": "OrganismClass(\"mammalia\")",
+        "supervisable": false,
+        "dynamic": "false"
+      },
+      "order‎": {
+        "description": "The Order‎",
+        "type": "string",
+        "supervisable": false,
+        "mutable": false
+      },
+      "family": {
+        "description": "The family of the Organism",
+        "type": "string",
+        "supervisable": false
+      },
+      "genus": {
+        "description": "The Genus",
+        "type": "string",
+        "supervisable": false
+      },
+      "species": {
+        "description": "The species ",
+        "type": "string",
+        "supervisable": false
+      },
+      "extincted": {
+        "description": "Is the organism currently extincted ",
+        "type": "boolean",
+        "supervisable": false,
+        "method": "static"
+      },
+      "age": {
+        "description": "Age of the organism ",
+        "type": "integer",
+        "format": "int64",
+        "default": 0,
+        "supervisable": false
+      },
+      "birthdayAsDate": {
+        "description": "Birthday",
+        "type": "date"
+      }
+    },
+    "metadata": {
+      "urdMode": false,
+      "persistsLocallyOnlyInMemory": false,
+      "persistsDistantly": true,
+      "undoable": false,
+      "groupable": true
+    }
+  }
+}

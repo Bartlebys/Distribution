@@ -1,0 +1,69 @@
+{
+  "name": "BsyncDirectives",
+  "definition": {
+    "description": "Synchronization directives",
+    "explicitType": "BsyncCredentials",
+    "properties": {
+      "distantSchemes": {
+        "schema": {
+          "type": "array",
+          "items": {
+            "description": "The possible distants schemes",
+            "type": "string",
+            "default": "[\"http\", \"https\", \"ftp\", \"ftps\"]",
+            "dynamic":false,
+            "method": "class",
+            "mutable" : false,
+            "supervisable" :false,
+            "scope":"public"
+          }
+        }
+      },
+      "DEFAULT_FILE_NAME": {
+        "description": "The default file name is just a convention",
+        "type": "string",
+        "default": ".directives",
+        "dynamic":false,
+        "method": "class",
+        "mutable" : false,
+        "supervisable" :false,
+        "scope":"public",
+        "serializable":false
+      },
+      "sourceURL": {
+        "description": " TODO: @bpds @md #bsync Change url to not optional",
+        "type": "url",
+        "supervisable" :false,
+        "dynamic":false
+      },
+      "destinationURL": {
+        "description": "The destination url",
+        "type": "url",
+        "supervisable" :false,
+        "dynamic":false
+      },
+      "hashMapViewName": {
+        "description": "the name of the hashmap view ",
+        "type": "string",
+        "supervisable" :false,
+        "dynamic":false
+      },
+      "computeTheHashMap": {
+        "description": "the name of the hashmap view ",
+        "type": "boolean",
+        "default":"true",
+        "supervisable" :false,
+        "dynamic":false
+      },
+      "automaticTreeCreation": {
+        "description": "the name of the hashmap view ",
+        "type": "boolean",
+        "default":"true",
+        "supervisable" :false,
+        "dynamic":false
+      }
+    },
+    "metadata": {
+    }
+  }
+}

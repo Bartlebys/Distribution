@@ -1,0 +1,54 @@
+{
+    "name": "Completion",
+    "definition": {
+        "description": "Bartleby's Commons: A completion state",
+        "allOf": [
+            {
+                "type": "object",
+                "required": [],
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Success if set to true",
+                        "default": "true",
+                        "required": true
+                    },
+                    "statusCode": {
+                        "type": "integer",
+                        "description": "The status",
+                        "default": "StatusOfCompletion.undefined.rawValue",
+                        "required": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "The Message",
+                        "default": "",
+                        "required": true
+                    },
+                    "data": {
+                        "type": "data",
+                        "description": "completion data",
+                        "required": false
+                    },
+                    "category": {
+                        "type": "string",
+                        "description": "A category to discriminate bunch of completion states",
+                        "default": "",
+                        "required": true,
+                        "supervisable": false
+                    },
+                    "externalIdentifier": {
+                        "type": "string",
+                        "description": "An external identifier",
+                        "default": "",
+                        "required": true,
+                        "supervisable": false
+                    }
+                }
+            }
+        ],
+        "metadata": {
+            "urdMode": false
+        }
+    }
+}

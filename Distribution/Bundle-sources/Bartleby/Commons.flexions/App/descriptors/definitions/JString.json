@@ -1,0 +1,20 @@
+{
+    "name": "JString",
+    "definition": {
+        "description": "Bartleby's Core: String Primitive Wrapper.",
+        "allOf": [
+            {
+                "type": "object",
+                "properties": {
+                    "string": {
+                        "type": "string",
+                        "description": "the embedded String"
+                    }
+                }
+            }
+        ],
+        "metadata": {
+            "urdMode": false
+        }
+    }
+}

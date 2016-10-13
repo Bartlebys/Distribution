@@ -1,0 +1,74 @@
+{
+    "name": "Progression",
+    "definition": {
+        "description": "Bartleby's Commons: A progression state",
+        "allOf": [
+            {
+                "type": "object",
+                "required": [],
+                "properties": {
+                    "startTime": {
+                        "type": "double",
+                        "description": "The start time of the progression state",
+                        "required": false,
+                        "serialisable": true,
+                        "supervisable": false,
+                        "dynamic": false
+                    },
+                    "currentTaskIndex": {
+                        "type": "integer",
+                        "description": "Index of the task",
+                        "default": 0,
+                        "required": true
+                    },
+                    "totalTaskCount": {
+                        "type": "integer",
+                        "description": "Total number of tasks",
+                        "default": 0,
+                        "required": true
+                    },
+                    "currentPercentProgress": {
+                        "type": "double",
+                        "description": "0 to 100",
+                        "default": 0,
+                        "required": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "The Message",
+                        "default": "",
+                        "required": true
+                    },
+                    "informations": {
+                        "type": "string",
+                        "description": "The consolidated information (may include the message)",
+                        "default": "",
+                        "required": true
+                    },
+                    "data": {
+                        "type": "data",
+                        "description": "The associated data",
+                        "required": false
+                    },
+                    "category": {
+                        "type": "string",
+                        "description": "A category to discriminate bunch of progression states",
+                        "default": "",
+                        "required": true,
+                        "supervisable": false
+                    },
+                    "externalIdentifier": {
+                        "type": "string",
+                        "description": "An external identifier",
+                        "default": "",
+                        "required": true,
+                        "supervisable": false
+                    }
+                }
+            }
+        ],
+        "metadata": {
+            "urdMode": false
+        }
+    }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "EntityWithInheritance",
+  "definition": {
+    "description": "An entity that uses Inheritance",
+    "explicitType": "BaseContext",
+    "properties": {
+      "creationDate": {
+        "type": "date"
+      },
+      "color": {
+        "type": "string"
+      },
+      "icon": {
+        "type": "string"
+      }
+    }
+  },
+  "metadata": {
+  }
+}

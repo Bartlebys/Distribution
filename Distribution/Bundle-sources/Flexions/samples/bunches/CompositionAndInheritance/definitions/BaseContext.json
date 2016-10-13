@@ -1,0 +1,42 @@
+{
+    "name": "BaseContext",
+    "definition": {
+        "description": "Base object",
+        "type": "object",
+        "properties": {
+            "name": {
+                "description": "You can give a name",
+                "type": "String",
+                "default": "\\(Default.NO_NAME)"
+            },
+            "informativeString": {
+                "description": "You can setup an informative string",
+                "type": "String"
+            },
+            "notes": {
+                "description": "Some notes associated with the context",
+                "type": "String",
+                "default": "",
+                "required": true
+            },
+            "creationDate": {
+                "description": "The creation date",
+                "type": "date",
+                "default": "Date()"
+            },
+            "tags": {
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "description": "Associated tags (external references)",
+                        "explicitType": "ExternalReference",
+                        "default": "[ExternalReference]()"
+                    }
+                }
+            }
+        },
+        "metadata": {
+
+        }
+    }
+}
