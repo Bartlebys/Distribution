@@ -1,0 +1,199 @@
+{
+  "name": "RegistryMetadata",
+  "definition": {
+    "description": "Bartleby's Core: Complete implementation in JRegistryMetadata. All its properties are not supervisable.",
+    "allOf": [
+      {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "spaceUID": {
+            "type": "string",
+            "description": "The data space UID can be shared between multiple registries.",
+            "default": "\\(Default.NO_UID)",
+            "supervisable": false
+          },
+          "currentUser": {
+            "schema": {
+              "description": "The user currently associated to the local instance of the registry",
+              "$ref": "#/definitions/User",
+              "supervisable": false,
+              "cryptable": false
+            }
+          },
+          "identificationMethod": {
+            "type": "enum",
+            "instanceOf": "string",
+            "emumPreciseType": "RegistryMetadata.IdentificationMethod",
+            "description": "The identification method (By cookie or by Key - kvid)",
+            "enum": [
+              "key",
+              "cookie"
+            ],
+            "default": ".key",
+            "supervisable": false
+          },
+          "identificationValue": {
+            "type": "string",
+            "description": "The current kvid identification value (injected in HTTP headers)",
+            "supervisable": false
+          },
+          "rootObjectUID": {
+            "type": "string",
+            "description": "The rootObject UID",
+            "default": "\\(Default.NO_UID)",
+            "supervisable": false
+          },
+          "collaborationServerURL": {
+            "type": "url",
+            "description": "The url of the collaboration server",
+            "supervisable": false
+          },
+          "collectionsMetadata": {
+            "schema": {
+              "description": "The collection of CollectionMetadatum ",
+              "type": "array",
+              "items": {
+                "description": "A collection of CollectionMetadatum",
+                "explicitType": "CollectionMetadatum",
+                "default": "[CollectionMetadatum]()",
+                "supervisable": false
+              }
+            }
+          },
+          "stateDictionary": {
+            "type": "dictionary",
+            "description": "The State dictionary to insure registry persistency ",
+            "default": "[String:AnyObject]()",
+            "supervisable": false
+          },
+          "URLBookmarkData": {
+            "type": "dictionary",
+            "description": "The collection of serialized Security-Scoped Bookmarks (you should store Data)",
+            "default": "[String:AnyObject]()",
+            "supervisable": false
+          },
+          "preferredFileName": {
+            "type": "string",
+            "description": "The preferred filename for this registry/document",
+            "supervisable": false
+          },
+          "triggersIndexesDebugHistory": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "used for Core Debug , stores all the indexes by order of reception.",
+                "instanceOf": "integer",
+                "default": "[Int]()",
+                "supervisable": false
+              }
+            }
+          },
+          "triggersIndexes": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "A collection of trigger Indexes (used to detect data holes)",
+                "instanceOf": "integer",
+                "default": "[Int]()",
+                "supervisable": false
+              }
+            }
+          },
+          "ownedTriggersIndexes": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "The persistentcollection of triggers indexes owned by the current user (allows local distinctive analytics even on cloned documents)",
+                "instanceOf": "integer",
+                "default": "[Int]()",
+                "supervisable": false
+              }
+            }
+          },
+          "highestReceivedTriggerIndex": {
+            "type": "integer",
+            "description": "The index of the highest trigger that has been received (used to detect potential divergences)",
+            "default": -1,
+            "dynamic": false,
+            "supervisable": false
+          },
+          "lastIntegratedTriggerIndex": {
+            "type": "integer",
+            "description": "The index of the last trigger that has been integrated",
+            "default": -1,
+            "dynamic": false,
+            "supervisable": false
+          },
+          "receivedTriggers": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "A collection Triggers that are temporarly stored before data integration",
+                "$ref": "#/definitions/Trigger",
+                "default": "[Trigger]()",
+                "supervisable": false
+              }
+            }
+          },
+          "operationsQuarantine": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "A collection of PushOperations in Quarantine (check DataSynchronization.md \"Faults\" section for details) ",
+                "$ref": "#/definitions/PushOperation",
+                "default": "[PushOperation]()",
+                "supervisable": false
+              }
+            }
+          },
+          "bunchInProgress": {
+            "type": "boolean",
+            "description": "Do we have operations in progress in the current bunch ?",
+            "default": "false",
+            "supervisable": false,
+            "serializable": false
+          },
+          "totalNumberOfOperations": {
+            "type": "integer",
+            "description": "The highest number that we may have counted",
+            "default": 0,
+            "dynamic": false,
+            "supervisable": false,
+            "serializable": false
+          },
+          "pendingOperationsProgressionState": {
+            "schema": {
+              "description": "The consolidated progression state of all pending operations",
+              "$ref": "#/definitions/Progression",
+              "supervisable": false,
+              "required": false,
+              "serializable": false
+            }
+          },
+          "online": {
+            "type": "boolean",
+            "description": "is the user performing Online",
+            "default": "Bartleby.configuration.ONLINE_BY_DEFAULT",
+            "supervisable": true
+          },
+          "pushOnChanges": {
+            "type": "boolean",
+            "description": "If set to true any object creation, update, or deletion will be pushed as soon as possible.",
+            "default": "Bartleby.configuration.ONLINE_BY_DEFAULT",
+            "supervisable": true
+          },
+          "saveThePassword": {
+            "type": "boolean",
+            "description": "Save the password or not?",
+            "default": "Bartleby.configuration.SAVE_PASSWORD_DEFAULT_VALUE",
+            "supervisable": true
+          }
+        }
+      }
+    ],
+    "metadata": {
+      "urdMode": false
+    }
+  }
+}

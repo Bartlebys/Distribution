@@ -1,0 +1,104 @@
+{
+  "name": "User",
+  "definition": {
+    "description": "Bartleby's Core: a user in a specified data Space",
+    "allOf": [
+      {
+        "type": "object",
+        "required": [
+          "spaceUID",
+          "phoneNumber",
+          "password"
+        ],
+        "properties": {
+          "externalID": {
+            "type": "string",
+            "description": "An external unique identifier"
+          },
+          "spaceUID": {
+            "type": "string",
+            "description": "The spaceUID. A user with the same credentials can exists within multiple Data space.",
+            "default": "\\(Bartleby.createUID())"
+          },
+          "verificationMethod": {
+            "type": "enum",
+            "instanceOf": "string",
+            "emumPreciseType": "User.VerificationMethod",
+            "description": "the verification method",
+            "enum": [
+              "none",
+              "byPhoneNumber",
+              "byEmail"
+            ],
+            "default": ".byPhoneNumber"
+          },
+          "firstname": {
+            "type": "string",
+            "default": "\\(Bartleby.randomStringWithLength(5))"
+          },
+          "lastname": {
+            "type": "string",
+            "default": "\\(Bartleby.randomStringWithLength(5))"
+          },
+          "email": {
+            "description": "The user's email. Can be the secondary Identification source ",
+            "type": "string"
+          },
+          "phoneNumber": {
+            "description": "The user's phone number. Can be the secondary Identification source ",
+            "type": "string"
+          },
+          "password": {
+            "description": "The hashed version of the user password",
+            "type": "string",
+            "default": "\\(Bartleby.randomStringWithLength(8,signs:Bartleby.configuration.PASSWORD_CHAR_CART))",
+            "cryptable": true
+          },
+          "activationCode": {
+            "description": "An activation code",
+            "type": "string",
+            "default": "\\(Bartleby.randomStringWithLength(8,signs:Bartleby.configuration.PASSWORD_CHAR_CART))"
+          },
+          "status": {
+            "type": "enum",
+            "instanceOf": "string",
+            "emumPreciseType": "User.Status",
+            "description": "User Status",
+            "enum": [
+              "new",
+              "actived",
+              "suspended"
+            ],
+            "default": ".new"
+          },
+          "tags": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "The user Tags. External reference to Tags instances",
+                "$ref": "#/definitions/ExternalReference",
+                "required": true,
+                "default": "[ExternalReference]()"
+              }
+            }
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notes"
+          },
+          "loginHasSucceed": {
+            "type": "boolean",
+            "description": "set to true on the first successfull login in the session (this property is not serialized)",
+            "default": "false",
+            "supervisable": false,
+            "serializable": false
+          }
+        }
+      }
+    ],
+    "metadata": {
+      "urdMode": false,
+      "groupable": false
+    }
+  }
+}

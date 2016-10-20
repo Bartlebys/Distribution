@@ -1,0 +1,39 @@
+{
+    "name": "Message",
+    "definition": {
+        "description": "A message is a small piece of text associated to a communication context",
+        "allOf": [
+            {
+                "type": "object",
+                "properties": {
+                    "creationDate": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "String"
+                    },
+                    "body": {
+                        "type": "String"
+                    },
+                    "parent": {
+                        "description": "The external reference to the parent message",
+                        "explicitType": "ExternalReference"
+                    },
+                    "tags": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "description": "The associated tags (external refence of Tag)",
+                                "explicitType": "ExternalReference",
+                                "default": "[ExternalReference]()"
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "metadata": {
+            "urdMode": true
+        }
+    }
+}

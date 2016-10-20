@@ -1,0 +1,1649 @@
+#BMS#->{"filename":"AppDelegate.swift","checksum":1401623375,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME\/AppDelegate.swift","size":540}<-#BME#
+//
+//  AppDelegate.swift
+//  XCODE_PRODUCT_NAME
+//
+//  Created by Benoit Pereira da silva on 20/10/2016.
+//  Copyright ¬© 2016 XCODE_ORGANIZATION_NAME. All rights reserved.
+//
+
+import Cocoa
+
+@NSApplicationMain
+class AppDelegate: NSObject, NSApplicationDelegate {
+
+
+
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
+        // Insert code here to initialize your application
+    }
+
+    func applicationWillTerminate(_ aNotification: Notification) {
+        // Insert code here to tear down your application
+    }
+
+
+}
+
+#BMS#->{"filename":"Contents.json","checksum":1048645176,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME\/Assets.xcassets\/AppIcon.appiconset\/Contents.json","size":903}<-#BME#
+{
+  "images" : [
+    {
+      "idiom" : "mac",
+      "size" : "16x16",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "mac",
+      "size" : "16x16",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "mac",
+      "size" : "32x32",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "mac",
+      "size" : "32x32",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "mac",
+      "size" : "128x128",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "mac",
+      "size" : "128x128",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "mac",
+      "size" : "256x256",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "mac",
+      "size" : "256x256",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "mac",
+      "size" : "512x512",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "mac",
+      "size" : "512x512",
+      "scale" : "2x"
+    }
+  ],
+  "info" : {
+    "version" : 1,
+    "author" : "xcode"
+  }
+}#BMS#->{"filename":"Main.storyboard","checksum":1790545160,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME\/Base.lproj\/Main.storyboard","size":60166}<-#BME#
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11134" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11134"/>
+    </dependencies>
+    <scenes>
+        <!--Application-->
+        <scene sceneID="JPo-4y-FX3">
+            <objects>
+                <application id="hnw-xV-0zn" sceneMemberID="viewController">
+                    <menu key="mainMenu" title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
+                        <items>
+                            <menuItem title="XCODE_PRODUCT_NAME" id="1Xt-HY-uBw">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="XCODE_PRODUCT_NAME" systemMenu="apple" id="uQy-DD-JDr">
+                                    <items>
+                                        <menuItem title="About XCODE_PRODUCT_NAME" id="5kV-Vb-QxS">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="orderFrontStandardAboutPanel:" target="Ady-hI-5gd" id="Exp-CZ-Vem"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
+                                        <menuItem title="Preferences‚Ä¶" keyEquivalent="," id="BOF-NM-1cW"/>
+                                        <menuItem isSeparatorItem="YES" id="wFC-TO-SCJ"/>
+                                        <menuItem title="Services" id="NMo-om-nkz">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Services" systemMenu="services" id="hz9-B4-Xy5"/>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="4je-JR-u6R"/>
+                                        <menuItem title="Hide XCODE_PRODUCT_NAME" keyEquivalent="h" id="Olw-nP-bQN">
+                                            <connections>
+                                                <action selector="hide:" target="Ady-hI-5gd" id="PnN-Uc-m68"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Hide Others" keyEquivalent="h" id="Vdr-fp-XzO">
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="hideOtherApplications:" target="Ady-hI-5gd" id="VT4-aY-XCT"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Show All" id="Kd2-mp-pUS">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="unhideAllApplications:" target="Ady-hI-5gd" id="Dhg-Le-xox"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="kCx-OE-vgT"/>
+                                        <menuItem title="Quit XCODE_PRODUCT_NAME" keyEquivalent="q" id="4sb-4s-VLi">
+                                            <connections>
+                                                <action selector="terminate:" target="Ady-hI-5gd" id="Te7-pn-YzF"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="File" id="dMs-cI-mzQ">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="File" id="bib-Uj-vzu">
+                                    <items>
+                                        <menuItem title="New" keyEquivalent="n" id="Was-JA-tGl">
+                                            <connections>
+                                                <action selector="newDocument:" target="Ady-hI-5gd" id="4Si-XN-c54"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Open‚Ä¶" keyEquivalent="o" id="IAo-SY-fd9">
+                                            <connections>
+                                                <action selector="openDocument:" target="Ady-hI-5gd" id="bVn-NM-KNZ"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Open Recent" id="tXI-mr-wws">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Open Recent" systemMenu="recentDocuments" id="oas-Oc-fiZ">
+                                                <items>
+                                                    <menuItem title="Clear Menu" id="vNY-rz-j42">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="clearRecentDocuments:" target="Ady-hI-5gd" id="Daa-9d-B3U"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="m54-Is-iLE"/>
+                                        <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG">
+                                            <connections>
+                                                <action selector="performClose:" target="Ady-hI-5gd" id="HmO-Ls-i7Q"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Save‚Ä¶" keyEquivalent="s" id="pxx-59-PXV">
+                                            <connections>
+                                                <action selector="saveDocument:" target="Ady-hI-5gd" id="teZ-XB-qJY"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Save As‚Ä¶" keyEquivalent="S" id="Bw7-FT-i3A">
+                                            <connections>
+                                                <action selector="saveDocumentAs:" target="Ady-hI-5gd" id="mDf-zr-I0C"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Revert to Saved" keyEquivalent="r" id="KaW-ft-85H">
+                                            <connections>
+                                                <action selector="revertDocumentToSaved:" target="Ady-hI-5gd" id="iJ3-Pv-kwq"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="aJh-i4-bef"/>
+                                        <menuItem title="Page Setup‚Ä¶" keyEquivalent="P" id="qIS-W8-SiK">
+                                            <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="runPageLayout:" target="Ady-hI-5gd" id="Din-rz-gC5"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Print‚Ä¶" keyEquivalent="p" id="aTl-1u-JFS">
+                                            <connections>
+                                                <action selector="print:" target="Ady-hI-5gd" id="qaZ-4w-aoO"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Edit" id="5QF-Oa-p0T">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Edit" id="W48-6f-4Dl">
+                                    <items>
+                                        <menuItem title="Undo" keyEquivalent="z" id="dRJ-4n-Yzg">
+                                            <connections>
+                                                <action selector="undo:" target="Ady-hI-5gd" id="M6e-cu-g7V"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Redo" keyEquivalent="Z" id="6dh-zS-Vam">
+                                            <connections>
+                                                <action selector="redo:" target="Ady-hI-5gd" id="oIA-Rs-6OD"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="WRV-NI-Exz"/>
+                                        <menuItem title="Cut" keyEquivalent="x" id="uRl-iY-unG">
+                                            <connections>
+                                                <action selector="cut:" target="Ady-hI-5gd" id="YJe-68-I9s"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Copy" keyEquivalent="c" id="x3v-GG-iWU">
+                                            <connections>
+                                                <action selector="copy:" target="Ady-hI-5gd" id="G1f-GL-Joy"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Paste" keyEquivalent="v" id="gVA-U4-sdL">
+                                            <connections>
+                                                <action selector="paste:" target="Ady-hI-5gd" id="UvS-8e-Qdg"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Paste and Match Style" keyEquivalent="V" id="WeT-3V-zwk">
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="pasteAsPlainText:" target="Ady-hI-5gd" id="cEh-KX-wJQ"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Delete" id="pa3-QI-u2k">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="delete:" target="Ady-hI-5gd" id="0Mk-Ml-PaM"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Select All" keyEquivalent="a" id="Ruw-6m-B2m">
+                                            <connections>
+                                                <action selector="selectAll:" target="Ady-hI-5gd" id="VNm-Mi-diN"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="uyl-h8-XO2"/>
+                                        <menuItem title="Find" id="4EN-yA-p0u">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Find" id="1b7-l0-nxx">
+                                                <items>
+                                                    <menuItem title="Find‚Ä¶" tag="1" keyEquivalent="f" id="Xz5-n4-O0W">
+                                                        <connections>
+                                                            <action selector="performFindPanelAction:" target="Ady-hI-5gd" id="cD7-Qs-BN4"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Find and Replace‚Ä¶" tag="12" keyEquivalent="f" id="YEy-JH-Tfz">
+                                                        <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                                        <connections>
+                                                            <action selector="performFindPanelAction:" target="Ady-hI-5gd" id="WD3-Gg-5AJ"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Find Next" tag="2" keyEquivalent="g" id="q09-fT-Sye">
+                                                        <connections>
+                                                            <action selector="performFindPanelAction:" target="Ady-hI-5gd" id="NDo-RZ-v9R"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Find Previous" tag="3" keyEquivalent="G" id="OwM-mh-QMV">
+                                                        <connections>
+                                                            <action selector="performFindPanelAction:" target="Ady-hI-5gd" id="HOh-sY-3ay"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Use Selection for Find" tag="7" keyEquivalent="e" id="buJ-ug-pKt">
+                                                        <connections>
+                                                            <action selector="performFindPanelAction:" target="Ady-hI-5gd" id="U76-nv-p5D"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Jump to Selection" keyEquivalent="j" id="S0p-oC-mLd">
+                                                        <connections>
+                                                            <action selector="centerSelectionInVisibleArea:" target="Ady-hI-5gd" id="IOG-6D-g5B"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
+                                        <menuItem title="Spelling and Grammar" id="Dv1-io-Yv7">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Spelling" id="3IN-sU-3Bg">
+                                                <items>
+                                                    <menuItem title="Show Spelling and Grammar" keyEquivalent=":" id="HFo-cy-zxI">
+                                                        <connections>
+                                                            <action selector="showGuessPanel:" target="Ady-hI-5gd" id="vFj-Ks-hy3"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Check Document Now" keyEquivalent=";" id="hz2-CU-CR7">
+                                                        <connections>
+                                                            <action selector="checkSpelling:" target="Ady-hI-5gd" id="fz7-VC-reM"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem isSeparatorItem="YES" id="bNw-od-mp5"/>
+                                                    <menuItem title="Check Spelling While Typing" id="rbD-Rh-wIN">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="toggleContinuousSpellChecking:" target="Ady-hI-5gd" id="7w6-Qz-0kB"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Check Grammar With Spelling" id="mK6-2p-4JG">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="toggleGrammarChecking:" target="Ady-hI-5gd" id="muD-Qn-j4w"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Correct Spelling Automatically" id="78Y-hA-62v">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="toggleAutomaticSpellingCorrection:" target="Ady-hI-5gd" id="2lM-Qi-WAP"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
+                                        <menuItem title="Substitutions" id="9ic-FL-obx">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Substitutions" id="FeM-D8-WVr">
+                                                <items>
+                                                    <menuItem title="Show Substitutions" id="z6F-FW-3nz">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="orderFrontSubstitutionsPanel:" target="Ady-hI-5gd" id="oku-mr-iSq"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem isSeparatorItem="YES" id="gPx-C9-uUO"/>
+                                                    <menuItem title="Smart Copy/Paste" id="9yt-4B-nSM">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="toggleSmartInsertDelete:" target="Ady-hI-5gd" id="3IJ-Se-DZD"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Smart Quotes" id="hQb-2v-fYv">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="toggleAutomaticQuoteSubstitution:" target="Ady-hI-5gd" id="ptq-xd-QOA"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Smart Dashes" id="rgM-f4-ycn">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="toggleAutomaticDashSubstitution:" target="Ady-hI-5gd" id="oCt-pO-9gS"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Smart Links" id="cwL-P1-jid">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="toggleAutomaticLinkDetection:" target="Ady-hI-5gd" id="Gip-E3-Fov"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Data Detectors" id="tRr-pd-1PS">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="toggleAutomaticDataDetection:" target="Ady-hI-5gd" id="R1I-Nq-Kbl"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Text Replacement" id="HFQ-gK-NFA">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="toggleAutomaticTextReplacement:" target="Ady-hI-5gd" id="DvP-Fe-Py6"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
+                                        <menuItem title="Transformations" id="2oI-Rn-ZJC">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Transformations" id="c8a-y6-VQd">
+                                                <items>
+                                                    <menuItem title="Make Upper Case" id="vmV-6d-7jI">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="uppercaseWord:" target="Ady-hI-5gd" id="sPh-Tk-edu"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Make Lower Case" id="d9M-CD-aMd">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="lowercaseWord:" target="Ady-hI-5gd" id="iUZ-b5-hil"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Capitalize" id="UEZ-Bs-lqG">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="capitalizeWord:" target="Ady-hI-5gd" id="26H-TL-nsh"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
+                                        <menuItem title="Speech" id="xrE-MZ-jX0">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Speech" id="3rS-ZA-NoH">
+                                                <items>
+                                                    <menuItem title="Start Speaking" id="Ynk-f8-cLZ">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="startSpeaking:" target="Ady-hI-5gd" id="654-Ng-kyl"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Stop Speaking" id="Oyz-dy-DGm">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="stopSpeaking:" target="Ady-hI-5gd" id="dX8-6p-jy9"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Format" id="jxT-CU-nIS">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Format" id="GEO-Iw-cKr">
+                                    <items>
+                                        <menuItem title="Font" id="Gi5-1S-RQB">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Font" systemMenu="font" id="aXa-aM-Jaq">
+                                                <items>
+                                                    <menuItem title="Show Fonts" keyEquivalent="t" id="Q5e-8K-NDq"/>
+                                                    <menuItem title="Bold" tag="2" keyEquivalent="b" id="GB9-OM-e27"/>
+                                                    <menuItem title="Italic" tag="1" keyEquivalent="i" id="Vjx-xi-njq"/>
+                                                    <menuItem title="Underline" keyEquivalent="u" id="WRG-CD-K1S">
+                                                        <connections>
+                                                            <action selector="underline:" target="Ady-hI-5gd" id="FYS-2b-JAY"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem isSeparatorItem="YES" id="5gT-KC-WSO"/>
+                                                    <menuItem title="Bigger" tag="3" keyEquivalent="+" id="Ptp-SP-VEL"/>
+                                                    <menuItem title="Smaller" tag="4" keyEquivalent="-" id="i1d-Er-qST"/>
+                                                    <menuItem isSeparatorItem="YES" id="kx3-Dk-x3B"/>
+                                                    <menuItem title="Kern" id="jBQ-r6-VK2">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <menu key="submenu" title="Kern" id="tlD-Oa-oAM">
+                                                            <items>
+                                                                <menuItem title="Use Default" id="GUa-eO-cwY">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="useStandardKerning:" target="Ady-hI-5gd" id="6dk-9l-Ckg"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem title="Use None" id="cDB-IK-hbR">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="turnOffKerning:" target="Ady-hI-5gd" id="U8a-gz-Maa"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem title="Tighten" id="46P-cB-AYj">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="tightenKerning:" target="Ady-hI-5gd" id="hr7-Nz-8ro"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem title="Loosen" id="ogc-rX-tC1">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="loosenKerning:" target="Ady-hI-5gd" id="8i4-f9-FKE"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                            </items>
+                                                        </menu>
+                                                    </menuItem>
+                                                    <menuItem title="Ligatures" id="o6e-r0-MWq">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <menu key="submenu" title="Ligatures" id="w0m-vy-SC9">
+                                                            <items>
+                                                                <menuItem title="Use Default" id="agt-UL-0e3">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="useStandardLigatures:" target="Ady-hI-5gd" id="7uR-wd-Dx6"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem title="Use None" id="J7y-lM-qPV">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="turnOffLigatures:" target="Ady-hI-5gd" id="iX2-gA-Ilz"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem title="Use All" id="xQD-1f-W4t">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="useAllLigatures:" target="Ady-hI-5gd" id="KcB-kA-TuK"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                            </items>
+                                                        </menu>
+                                                    </menuItem>
+                                                    <menuItem title="Baseline" id="OaQ-X3-Vso">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <menu key="submenu" title="Baseline" id="ijk-EB-dga">
+                                                            <items>
+                                                                <menuItem title="Use Default" id="3Om-Ey-2VK">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="unscript:" target="Ady-hI-5gd" id="0vZ-95-Ywn"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem title="Superscript" id="Rqc-34-cIF">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="superscript:" target="Ady-hI-5gd" id="3qV-fo-wpU"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem title="Subscript" id="I0S-gh-46l">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="subscript:" target="Ady-hI-5gd" id="Q6W-4W-IGz"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem title="Raise" id="2h7-ER-AoG">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="raiseBaseline:" target="Ady-hI-5gd" id="4sk-31-7Q9"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem title="Lower" id="1tx-W0-xDw">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="lowerBaseline:" target="Ady-hI-5gd" id="OF1-bc-KW4"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                            </items>
+                                                        </menu>
+                                                    </menuItem>
+                                                    <menuItem isSeparatorItem="YES" id="Ndw-q3-faq"/>
+                                                    <menuItem title="Show Colors" keyEquivalent="C" id="bgn-CT-cEk">
+                                                        <connections>
+                                                            <action selector="orderFrontColorPanel:" target="Ady-hI-5gd" id="mSX-Xz-DV3"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem isSeparatorItem="YES" id="iMs-zA-UFJ"/>
+                                                    <menuItem title="Copy Style" keyEquivalent="c" id="5Vv-lz-BsD">
+                                                        <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                                        <connections>
+                                                            <action selector="copyFont:" target="Ady-hI-5gd" id="GJO-xA-L4q"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Paste Style" keyEquivalent="v" id="vKC-jM-MkH">
+                                                        <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                                        <connections>
+                                                            <action selector="pasteFont:" target="Ady-hI-5gd" id="JfD-CL-leO"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
+                                        <menuItem title="Text" id="Fal-I4-PZk">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Text" id="d9c-me-L2H">
+                                                <items>
+                                                    <menuItem title="Align Left" keyEquivalent="{" id="ZM1-6Q-yy1">
+                                                        <connections>
+                                                            <action selector="alignLeft:" target="Ady-hI-5gd" id="zUv-R1-uAa"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Center" keyEquivalent="|" id="VIY-Ag-zcb">
+                                                        <connections>
+                                                            <action selector="alignCenter:" target="Ady-hI-5gd" id="spX-mk-kcS"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Justify" id="J5U-5w-g23">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="alignJustified:" target="Ady-hI-5gd" id="ljL-7U-jND"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Align Right" keyEquivalent="}" id="wb2-vD-lq4">
+                                                        <connections>
+                                                            <action selector="alignRight:" target="Ady-hI-5gd" id="r48-bG-YeY"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem isSeparatorItem="YES" id="4s2-GY-VfK"/>
+                                                    <menuItem title="Writing Direction" id="H1b-Si-o9J">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <menu key="submenu" title="Writing Direction" id="8mr-sm-Yjd">
+                                                            <items>
+                                                                <menuItem title="Paragraph" enabled="NO" id="ZvO-Gk-QUH">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                </menuItem>
+                                                                <menuItem id="YGs-j5-SAR">
+                                                                    <string key="title">	Default</string>
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="makeBaseWritingDirectionNatural:" target="Ady-hI-5gd" id="qtV-5e-UBP"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem id="Lbh-J2-qVU">
+                                                                    <string key="title">	Left to Right</string>
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="makeBaseWritingDirectionLeftToRight:" target="Ady-hI-5gd" id="S0X-9S-QSf"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem id="jFq-tB-4Kx">
+                                                                    <string key="title">	Right to Left</string>
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="makeBaseWritingDirectionRightToLeft:" target="Ady-hI-5gd" id="5fk-qB-AqJ"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem isSeparatorItem="YES" id="swp-gr-a21"/>
+                                                                <menuItem title="Selection" enabled="NO" id="cqv-fj-IhA">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                </menuItem>
+                                                                <menuItem id="Nop-cj-93Q">
+                                                                    <string key="title">	Default</string>
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="makeTextWritingDirectionNatural:" target="Ady-hI-5gd" id="lPI-Se-ZHp"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem id="BgM-ve-c93">
+                                                                    <string key="title">	Left to Right</string>
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="makeTextWritingDirectionLeftToRight:" target="Ady-hI-5gd" id="caW-Bv-w94"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem id="RB4-Sm-HuC">
+                                                                    <string key="title">	Right to Left</string>
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                    <connections>
+                                                                        <action selector="makeTextWritingDirectionRightToLeft:" target="Ady-hI-5gd" id="EXD-6r-ZUu"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                            </items>
+                                                        </menu>
+                                                    </menuItem>
+                                                    <menuItem isSeparatorItem="YES" id="fKy-g9-1gm"/>
+                                                    <menuItem title="Show Ruler" id="vLm-3I-IUL">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="toggleRuler:" target="Ady-hI-5gd" id="FOx-HJ-KwY"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Copy Ruler" keyEquivalent="c" id="MkV-Pr-PK5">
+                                                        <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                                        <connections>
+                                                            <action selector="copyRuler:" target="Ady-hI-5gd" id="71i-fW-3W2"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Paste Ruler" keyEquivalent="v" id="LVM-kO-fVI">
+                                                        <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                                        <connections>
+                                                            <action selector="pasteRuler:" target="Ady-hI-5gd" id="cSh-wd-qM2"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="View" id="H8h-7b-M4v">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="View" id="HyV-fh-RgO">
+                                    <items>
+                                        <menuItem title="Show Toolbar" keyEquivalent="t" id="snW-S8-Cw5">
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="toggleToolbarShown:" target="Ady-hI-5gd" id="BXY-wc-z0C"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Customize Toolbar‚Ä¶" id="1UK-8n-QPP">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="runToolbarCustomizationPalette:" target="Ady-hI-5gd" id="pQI-g3-MTW"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="hB3-LF-h0Y"/>
+                                        <menuItem title="Show Sidebar" keyEquivalent="s" id="kIP-vf-haE">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="toggleSourceList:" target="Ady-hI-5gd" id="iwa-gc-5KM"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Enter Full Screen" keyEquivalent="f" id="4J7-dP-txa">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="toggleFullScreen:" target="Ady-hI-5gd" id="dU3-MA-1Rq"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Window" id="aUF-d1-5bR">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Window" systemMenu="window" id="Td7-aD-5lo">
+                                    <items>
+                                        <menuItem title="Minimize" keyEquivalent="m" id="OY7-WF-poV">
+                                            <connections>
+                                                <action selector="performMiniaturize:" target="Ady-hI-5gd" id="VwT-WD-YPe"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Zoom" id="R4o-n2-Eq4">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="performZoom:" target="Ady-hI-5gd" id="DIl-cC-cCs"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="eu3-7i-yIM"/>
+                                        <menuItem title="Bring All to Front" id="LE2-aR-0XJ">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="arrangeInFront:" target="Ady-hI-5gd" id="DRN-fu-gQh"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Help" id="wpr-3q-Mcd">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Help" systemMenu="help" id="F2S-fz-NVQ">
+                                    <items>
+                                        <menuItem title="XCODE_PRODUCT_NAME Help" keyEquivalent="?" id="FKE-Sm-Kum">
+                                            <connections>
+                                                <action selector="showHelp:" target="Ady-hI-5gd" id="y7X-2Q-9no"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                        </items>
+                    </menu>
+                    <connections>
+                        <outlet property="delegate" destination="Voe-Tx-rLC" id="PrD-fu-P6m"/>
+                    </connections>
+                </application>
+                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModuleProvider="target"/>
+                <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="75" y="0.0"/>
+        </scene>
+        <!--Window Controller-->
+        <scene sceneID="R2V-B0-nI4">
+            <objects>
+                <windowController storyboardIdentifier="Document Window Controller" id="jGA-0Y-lOj" sceneMemberID="viewController">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="Ckk-yw-fiv">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="196" y="240" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+                    </window>
+                    <connections>
+                        <segue destination="5gI-5U-AMq" kind="relationship" relationship="window.shadowedContentViewController" id="nsd-lR-9xd"/>
+                    </connections>
+                </windowController>
+                <customObject id="6f7-a7-6o1" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="75" y="250"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="hIz-AP-VOD">
+            <objects>
+                <viewController id="5gI-5U-AMq" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" wantsLayer="YES" id="ERx-hH-rdd">
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" preferredMaxLayoutWidth="246" translatesAutoresizingMaskIntoConstraints="NO" id="TyV-c9-G0C">
+                                <rect key="frame" x="115" y="124" width="250" height="22"/>
+                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Your document contents here" id="Cc7-nU-5Mv">
+                                    <font key="font" metaFont="system" size="18"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="centerY" secondItem="TyV-c9-G0C" secondAttribute="centerY" id="Rxv-Yd-F43"/>
+                            <constraint firstAttribute="centerX" secondItem="TyV-c9-G0C" secondAttribute="centerX" id="Zn4-Y4-lbg"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <customObject id="2Tp-Fl-jBw" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="75" y="655"/>
+        </scene>
+    </scenes>
+</document>
+#BMS#->{"filename":"Document.swift","checksum":1437938205,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME\/Document.swift","size":1887}<-#BME#
+//
+//  Document.swift
+//  XCODE_PRODUCT_NAME
+//
+//  Created by Benoit Pereira da silva on 20/10/2016.
+//  Copyright ¬© 2016 XCODE_ORGANIZATION_NAME. All rights reserved.
+//
+
+import Cocoa
+
+class Document: NSDocument {
+
+    override init() {
+        super.init()
+        // Add your subclass-specific initialization here.
+    }
+
+    override class func autosavesInPlace() -> Bool {
+        return true
+    }
+
+    override func makeWindowControllers() {
+        // Returns the Storyboard that contains your Document window.
+        let storyboard = NSStoryboard(name: "Main", bundle: nil)
+        let windowController = storyboard.instantiateController(withIdentifier: "Document Window Controller") as! NSWindowController
+        self.addWindowController(windowController)
+    }
+
+    override func data(ofType typeName: String) throws -> Data {
+        // Insert code here to write your document to data of the specified type. If outError != nil, ensure that you create and set an appropriate error when returning nil.
+        // You can also choose to override fileWrapperOfType:error:, writeToURL:ofType:error:, or writeToURL:ofType:forSaveOperation:originalContentsURL:error: instead.
+        throw NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
+    }
+
+    override func read(from data: Data, ofType typeName: String) throws {
+        // Insert code here to read your document from the given data of the specified type. If outError != nil, ensure that you create and set an appropriate error when returning false.
+        // You can also choose to override readFromFileWrapper:ofType:error: or readFromURL:ofType:error: instead.
+        // If you override either of these, you should also override -isEntireFileLoaded to return false if the contents are lazily loaded.
+        throw NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
+    }
+
+
+}
+
+#BMS#->{"filename":"Info.plist","checksum":2330291734,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME\/Info.plist","size":1566}<-#BME#
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>XCODE_DOCUMENT_EXTENSION</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string></string>
+			<key>CFBundleTypeName</key>
+			<string>DocumentType</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>????</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>$(PRODUCT_MODULE_NAME).Document</string>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIconFile</key>
+	<string></string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright ¬© 2016 XCODE_ORGANIZATION_NAME. All rights reserved.</string>
+	<key>NSMainStoryboardFile</key>
+	<string>Main</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+</dict>
+</plist>
+#BMS#->{"filename":"ViewController.swift","checksum":2474107288,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME\/ViewController.swift","size":493}<-#BME#
+//
+//  ViewController.swift
+//  XCODE_PRODUCT_NAME
+//
+//  Created by Benoit Pereira da silva on 20/10/2016.
+//  Copyright ¬© 2016 XCODE_ORGANIZATION_NAME. All rights reserved.
+//
+
+import Cocoa
+
+class ViewController: NSViewController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Do any additional setup after loading the view.
+    }
+
+    override var representedObject: Any? {
+        didSet {
+        // Update the view, if already loaded.
+        }
+    }
+
+
+}
+
+#BMS#->{"filename":"project.pbxproj","checksum":2938864577,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME.xcodeproj\/project.pbxproj","size":16009}<-#BME#
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E50C0AC31DB8B1BC00AA0067 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50C0AC21DB8B1BC00AA0067 /* AppDelegate.swift */; };
+		E50C0AC51DB8B1BC00AA0067 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50C0AC41DB8B1BC00AA0067 /* ViewController.swift */; };
+		E50C0AC71DB8B1BC00AA0067 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50C0AC61DB8B1BC00AA0067 /* Document.swift */; };
+		E50C0AC91DB8B1BC00AA0067 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E50C0AC81DB8B1BC00AA0067 /* Assets.xcassets */; };
+		E50C0ACC1DB8B1BC00AA0067 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E50C0ACA1DB8B1BC00AA0067 /* Main.storyboard */; };
+		E50C0AD71DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50C0AD61DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E50C0AD31DB8B1BC00AA0067 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E50C0AB71DB8B1BC00AA0067 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E50C0ABE1DB8B1BC00AA0067;
+			remoteInfo = XCODE_PRODUCT_NAME;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		E50C0ABF1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XCODE_PRODUCT_NAME.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E50C0AC21DB8B1BC00AA0067 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		E50C0AC41DB8B1BC00AA0067 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		E50C0AC61DB8B1BC00AA0067 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
+		E50C0AC81DB8B1BC00AA0067 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E50C0ACB1DB8B1BC00AA0067 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		E50C0ACD1DB8B1BC00AA0067 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E50C0AD21DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XCODE_PRODUCT_NAMETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E50C0AD61DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCODE_PRODUCT_NAMETests.swift; sourceTree = "<group>"; };
+		E50C0AD81DB8B1BC00AA0067 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E50C0ABC1DB8B1BC00AA0067 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E50C0ACF1DB8B1BC00AA0067 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E50C0AB61DB8B1BC00AA0067 = {
+			isa = PBXGroup;
+			children = (
+				E50C0AC11DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME */,
+				E50C0AD51DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests */,
+				E50C0AC01DB8B1BC00AA0067 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E50C0AC01DB8B1BC00AA0067 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E50C0ABF1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME.app */,
+				E50C0AD21DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E50C0AC11DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME */ = {
+			isa = PBXGroup;
+			children = (
+				E50C0AC21DB8B1BC00AA0067 /* AppDelegate.swift */,
+				E50C0AC41DB8B1BC00AA0067 /* ViewController.swift */,
+				E50C0AC61DB8B1BC00AA0067 /* Document.swift */,
+				E50C0AC81DB8B1BC00AA0067 /* Assets.xcassets */,
+				E50C0ACA1DB8B1BC00AA0067 /* Main.storyboard */,
+				E50C0ACD1DB8B1BC00AA0067 /* Info.plist */,
+			);
+			path = XCODE_PRODUCT_NAME;
+			sourceTree = "<group>";
+		};
+		E50C0AD51DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests */ = {
+			isa = PBXGroup;
+			children = (
+				E50C0AD61DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.swift */,
+				E50C0AD81DB8B1BC00AA0067 /* Info.plist */,
+			);
+			path = XCODE_PRODUCT_NAMETests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E50C0ABE1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E50C0ADB1DB8B1BC00AA0067 /* Build configuration list for PBXNativeTarget "XCODE_PRODUCT_NAME" */;
+			buildPhases = (
+				E50C0ABB1DB8B1BC00AA0067 /* Sources */,
+				E50C0ABC1DB8B1BC00AA0067 /* Frameworks */,
+				E50C0ABD1DB8B1BC00AA0067 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XCODE_PRODUCT_NAME;
+			productName = XCODE_PRODUCT_NAME;
+			productReference = E50C0ABF1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E50C0AD11DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E50C0ADE1DB8B1BC00AA0067 /* Build configuration list for PBXNativeTarget "XCODE_PRODUCT_NAMETests" */;
+			buildPhases = (
+				E50C0ACE1DB8B1BC00AA0067 /* Sources */,
+				E50C0ACF1DB8B1BC00AA0067 /* Frameworks */,
+				E50C0AD01DB8B1BC00AA0067 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E50C0AD41DB8B1BC00AA0067 /* PBXTargetDependency */,
+			);
+			name = XCODE_PRODUCT_NAMETests;
+			productName = XCODE_PRODUCT_NAMETests;
+			productReference = E50C0AD21DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E50C0AB71DB8B1BC00AA0067 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0800;
+				LastUpgradeCheck = 0800;
+				ORGANIZATIONNAME = XCODE_ORGANIZATION_NAME;
+				TargetAttributes = {
+					E50C0ABE1DB8B1BC00AA0067 = {
+						CreatedOnToolsVersion = 8.0;
+						ProvisioningStyle = Automatic;
+					};
+					E50C0AD11DB8B1BC00AA0067 = {
+						CreatedOnToolsVersion = 8.0;
+						ProvisioningStyle = Automatic;
+						TestTargetID = E50C0ABE1DB8B1BC00AA0067;
+					};
+				};
+			};
+			buildConfigurationList = E50C0ABA1DB8B1BC00AA0067 /* Build configuration list for PBXProject "XCODE_PRODUCT_NAME" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E50C0AB61DB8B1BC00AA0067;
+			productRefGroup = E50C0AC01DB8B1BC00AA0067 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E50C0ABE1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME */,
+				E50C0AD11DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E50C0ABD1DB8B1BC00AA0067 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E50C0AC91DB8B1BC00AA0067 /* Assets.xcassets in Resources */,
+				E50C0ACC1DB8B1BC00AA0067 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E50C0AD01DB8B1BC00AA0067 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E50C0ABB1DB8B1BC00AA0067 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E50C0AC51DB8B1BC00AA0067 /* ViewController.swift in Sources */,
+				E50C0AC31DB8B1BC00AA0067 /* AppDelegate.swift in Sources */,
+				E50C0AC71DB8B1BC00AA0067 /* Document.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E50C0ACE1DB8B1BC00AA0067 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E50C0AD71DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E50C0AD41DB8B1BC00AA0067 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E50C0ABE1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME */;
+			targetProxy = E50C0AD31DB8B1BC00AA0067 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		E50C0ACA1DB8B1BC00AA0067 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E50C0ACB1DB8B1BC00AA0067 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E50C0AD91DB8B1BC00AA0067 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E50C0ADA1DB8B1BC00AA0067 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+			};
+			name = Release;
+		};
+		E50C0ADC1DB8B1BC00AA0067 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = XCODE_PRODUCT_NAME/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "XCODE-ORGANIZATION-IDENTIFIER.XCODE-PRODUCT-NAME";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		E50C0ADD1DB8B1BC00AA0067 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = XCODE_PRODUCT_NAME/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "XCODE-ORGANIZATION-IDENTIFIER.XCODE-PRODUCT-NAME";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		E50C0ADF1DB8B1BC00AA0067 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = XCODE_PRODUCT_NAMETests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "XCODE-ORGANIZATION-IDENTIFIER.XCODE-PRODUCT-NAMETests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/XCODE_PRODUCT_NAME.app/Contents/MacOS/XCODE_PRODUCT_NAME";
+			};
+			name = Debug;
+		};
+		E50C0AE01DB8B1BC00AA0067 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = XCODE_PRODUCT_NAMETests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "XCODE-ORGANIZATION-IDENTIFIER.XCODE-PRODUCT-NAMETests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/XCODE_PRODUCT_NAME.app/Contents/MacOS/XCODE_PRODUCT_NAME";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E50C0ABA1DB8B1BC00AA0067 /* Build configuration list for PBXProject "XCODE_PRODUCT_NAME" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E50C0AD91DB8B1BC00AA0067 /* Debug */,
+				E50C0ADA1DB8B1BC00AA0067 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E50C0ADB1DB8B1BC00AA0067 /* Build configuration list for PBXNativeTarget "XCODE_PRODUCT_NAME" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E50C0ADC1DB8B1BC00AA0067 /* Debug */,
+				E50C0ADD1DB8B1BC00AA0067 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		E50C0ADE1DB8B1BC00AA0067 /* Build configuration list for PBXNativeTarget "XCODE_PRODUCT_NAMETests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E50C0ADF1DB8B1BC00AA0067 /* Debug */,
+				E50C0AE01DB8B1BC00AA0067 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E50C0AB71DB8B1BC00AA0067 /* Project object */;
+}
+#BMS#->{"filename":"contents.xcworkspacedata","checksum":90864078,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME.xcodeproj\/project.xcworkspace\/contents.xcworkspacedata","size":163}<-#BME#
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "self:XCODE_PRODUCT_NAME.xcodeproj">
+   </FileRef>
+</Workspace>
+#BMS#->{"filename":"UserInterfaceState.xcuserstate","checksum":3719779041,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME.xcodeproj\/project.xcworkspace\/xcuserdata\/bpds.xcuserdatad\/UserInterfaceState.xcuserstate","size":10970}<-#BME#
+bplist00‘      ‘’X$versionX$objectsY$archiverT$top Ü†Ø       % & ' ( ) * + 2 8 9 ? C D H I M N R V ` a b c i { | } ~  Ä Å Ç Ö â å ç ë ï õ ú ü ° ¢ ¶ Æ ≤ ≥ ø ¿ ¡ ¬ √ …   œ ◊ ÿ Ÿ ⁄ € › Â Ê Á Ë Ï Ù ı ˝ ˛ ˇ "#(01234<=>?CHIJRSTUVZbnopqrstuvÇÉÑÖãåç°¢£§•¶ß®©™´¨≠Æ¿¡¬√ƒ≈∆«»Ã‡·‚„‰ÂÊÁËÈˇ &'-348<@AEIMRVZ^deklvwxy}èêëíìîïñó£§•´±µπΩæ¬∆«”‘’÷◊„‰ÂÊÁÍı˝˛ˇ	'()1239>FGOPXYZ[klmnopqwx~áàâèïõ°ß´±∑ø¿¡… À”U$null” 	 
+    WNS.keysZNS.objectsV$class¢  ÄÄ¢  ÄÄäÄ@_IDEWorkspaceDocument_$28385CCF-EBDA-41E4-900E-EB5BFBA9D928” 	 
+    $¶      ÄÄÄÄÄ	Ä
+¶     ! " #ÄÄÄÄxÄyÄ|Ä)_RecentEditorDocumentURLs_DocumentWindows_DefaultEditorStatesForURLs_BreakpointsActivated\ActiveScheme_ActiveRunDestination“ 
+  , 1§ - . / 0ÄÄÄÄÄ” 3  4 5 6 7WNS.base[NS.relativeÄ ÄÄ_ffile:///Users/bpds/Desktop/macOS-app-prototype/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME/AppDelegate.swift“ : ; < =Z$classnameX$classesUNSURL¢ < >XNSObject” 3  4 5 6 BÄ ÄÄ_efile:///Users/bpds/Desktop/macOS-app-prototype/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME/Assets.xcassets/” 3  4 5 6 GÄ ÄÄ_ifile:///Users/bpds/Desktop/macOS-app-prototype/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME/ViewController.swift” 3  4 5 6 LÄ ÄÄ__file:///Users/bpds/Desktop/macOS-app-prototype/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME.xcodeproj/“ : ; O P^NSMutableArray£ O Q >WNSArray“ 
+  S 1° ÄÄ” 	 
+  W [ $£ X Y ZÄÄÄ£ \ ] ^ÄÄ0ÄkÄ)_(Xcode.IDEKit.EditorDocument.AssetCatalog_7Xcode.Xcode3ProjectSupport.EditorDocument.Xcode3Project_&Xcode.IDEKit.EditorDocument.SourceCode” 	 
+  d f $° .Ä° gÄÄ)” 	 
+  j r $ß k l m n o p qÄÄÄÄ Ä!Ä"Ä#ß s t u v w x yÄ$Ä&Ä'Ä(Ä*Ä.Ä/Ä)_selectedItemIdentifiers[sourceItems_detailController]sclicing-area_source-list-area_lastFocusedArea]overview-area“ 
+  É Ñ†Ä%“ : ; Ü á\NSMutableSet£ Ü à >UNSSet“ 
+  ä Ñ†Ä%_IBICCatalogOverviewController” 	 
+  é è $††Ä)“ : ; í ì_NSMutableDictionary£ í î >\NSDictionary” 	 
+  ñ ò $° óÄ+° ôÄ,Ä)_expandedItemIDs“ 
+  ù û†Ä-“ : ; à †¢ à >_DVTStateTokenNilValueMarker” 	 
+  £ § $††Ä)” 	 
+  ß ™ $¢ 0 ©ÄÄ1¢ ´ ¨Ä3ÄPÄ)” 3  4 5 6 ±Ä ÄÄ2_Kfile:///Users/bpds/Desktop/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME.xcodeproj/” 	 
+  ¥ π $§ µ ∂ ∑ ∏Ä4Ä5Ä6Ä7§ ∫ ª º ΩÄ8ÄDÄEÄOÄ)_(Xcode3ProjectEditor.sourceList.splitview_,Xcode3ProjectEditorPreviousTargetEditorClass_,Xcode3ProjectEditorSelectedDocumentLocations_&Xcode3ProjectEditor_Xcode3TargetEditor” 	 
+  ƒ ∆ $° ≈Ä9° «Ä:Ä)_DVTSplitViewItems“ 
+  À 1¢ Ã ÕÄ;ÄAÄ” 	 
+  – ” ¢ — “Ä<Ä=¢ ‘ ’Ä>Ä?Ä@]DVTIdentifier_DVTViewMagnitude_!sourceListSplitViewItemIdentifier#@e@     “ : ; î ‹¢ î >” 	 
+  ﬁ · ¢ — “Ä<Ä=¢ ‚ „ÄBÄCÄ@P#@Ü(     _Xcode3TargetEditor“ 
+  È Î° ÍÄFÄN‘ Ì Ó Ô   Ò L ÛYselectionYtimestamp[documentURLÄHÄGÄÄM#AΩ∏≤Ó?.ù” 	 
+  ˆ ˘ $¢ ˜ ¯ÄIÄJ¢ ˙ ˚ÄKÄLÄ)VEditorVTarget_Xcode3TargetEditor_XCODE_PRODUCT_NAME“ : ;_Xcode3ProjectDocumentLocation£ >_Xcode3ProjectDocumentLocation_DVTDocumentLocation“ : ; Q¢ Q >” 	 
+ 	
+ $††Ä)” 	 
+  $§ÄQÄRÄSÄT§ÄUÄ`ÄaÄjÄ)_(Xcode3ProjectEditor.sourceList.splitview_,Xcode3ProjectEditorPreviousTargetEditorClass_,Xcode3ProjectEditorSelectedDocumentLocations_&Xcode3ProjectEditor_Xcode3TargetEditor” 	 
+  $°ÄV° ÄWÄ)_DVTSplitViewItems“ 
+ $ 1¢%&ÄXÄ]Ä” 	 
+ ), ¢*+ÄYÄZ¢-.Ä[Ä\Ä@]DVTIdentifier_DVTViewMagnitude_!sourceListSplitViewItemIdentifier#@d`     ” 	 
+ 58 ¢*+ÄYÄZ¢9:Ä^Ä_Ä@P#@Ü`     _Xcode3TargetEditor“ 
+ @ Î°AÄbÄN‘ Ì Ó Ô DEF ÛÄeÄdÄcÄM_Kfile:///Users/bpds/Desktop/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME.xcodeproj/#AΩ∏±≈ƒè” 	 
+ KN $¢LMÄfÄg¢OPÄhÄiÄ)VEditorVTarget_Xcode3TargetEditor_XCODE_PRODUCT_NAME” 	 
+ WX $††Ä)” 	 
+ [^ $¢ / -ÄÄ¢_`ÄlÄuÄ)” 	 
+ ch $§defgÄmÄnÄoÄp§ijklÄqÄrÄsÄtÄ)_PrimaryDocumentTimestamp_$PrimaryDocumentVisibleCharacterRange]HideAllIssues_%PrimaryDocumentSelectedCharacterRange#AΩ∏≤ÓΩˇX{0, 492}V{0, 0}” 	 
+ w| $§defgÄmÄnÄoÄp§}~klÄvÄwÄsÄtÄ)#AΩ∏≤Ú1zX{0, 539}	” 	 
+ Üà °áÄz°âÄ{Ä@]IDENameString_XCODE_PRODUCT_NAME” 	 
+ éó ®èêëíìîïñÄ}Ä~ÄÄÄÄÅÄÇÄÉÄÑ®ò !kõúùû !ÄÖÄxÄsÄÜÄáÄàÄâÄxÄ@YtargetSDKZisEligible_targetDeviceIsWireless_targetDeviceLocation_targetArchitecture_targetDeviceFamily_targetDeviceModelCode_targetDeviceIsConcrete[macosx10.12_"dvtdevice-local-computer:localhostVx86_64P^MacBookPro11,5” 	 
+ Ø∑ $ß∞±≤≥¥µ∂ÄãÄåÄçÄéÄèÄêÄëß∏π∫ ≤ ! !ÄíÄìÄîÄÄçÄxÄxÄ)^IDEWindowFrame_!IDEOrderedWorkspaceTabControllers_>IDEWorkspaceTabController_86399A1E-9F82-4D7E-A697-691EC16212AB_,IDEWorkspaceWindowControllerUniqueIdentifier_IDEActiveWorkspaceTabController_IDEWindowToolbarIsVisible_IDEWindowTabBarIsVisible_{{353, 484}, {1400, 960}}“ 
+ … Î°≤ÄçÄN” 	 
+ Õ÷ $®Œœ–—“”‘’ÄïÄñÄóÄòÄôÄöÄõÄú®◊ !Ÿ⁄€‹ !ﬁÄùÄxÄûÄ¯Ä˛ÅÄxÄØÄ)[IDETabLabel_IDEShowNavigator]IDEEditorArea_-IDEWorkspaceTabControllerUtilityAreaSplitView_IDENavigatorArea_,IDEWorkspaceTabControllerDesignAreaSplitView_IDEShowUtilities_AssistantEditorsLayout_AppDelegate.swift” 	 
+ ÍÙ $©ÎÏÌÓÔÒÚÛÄüÄ†Ä°Ä¢Ä£Ä§Ä•Ä¶Äß©ıˆ !ﬁﬁ˙˚¸kÄ®ÄªÄxÄØÄØÄŸÄÔÄÄsÄ)ZlayoutTree_IDEEditorMode_Standard]IDEShowEditor_VersionEditorSubmodeZEditorMode_IDEDefaultDebugArea_ DefaultPersistentRepresentations_DebuggerSplitView_ShowDebuggerArea‘	
+  5_rootLayoutTreeNode_geniusEditorContextNode_primaryEditorContextNodeÄ∑Ä Ä©Ä∫÷  5XchildrenVparent[contentType_ documentArchivableRepresentation[orientationÄ Ä∑ÄπÄ™ ’  !"#$ﬁ_DocumentLocation^IdentifierPath_DomainIdentifier_IndexOfDocumentIdentifierÄ¥Ä¨Ä∂Ä´ÄØ_/Xcode.IDENavigableItemDomain.WorkspaceStructure“ 
+ ( Î£)*+Ä≠Ä±Ä≤ÄN”./ 0ﬁ2ZIdentifierUIndexÄÆÄØÄ∞_AppDelegate.swift“ : ;56_IDEArchivableStringIndexPair¢7 >_IDEArchivableStringIndexPair”./  ˚ﬁ2ÄLÄØÄ∞”./ =ﬁ2Ä≥ÄØÄ∞_XCODE_PRODUCT_NAME” Ô  Ó 7C 5ÄÄµÄ “ : ;FG_DVTDocumentLocation¢H >_DVTDocumentLocation“ : ;JK_(IDENavigableItemArchivableRepresentation¢L >_(IDENavigableItemArchivableRepresentation÷ N 5 5Ä∏Ä ÄπÄ “ 
+ S Î°Ä©ÄN“ : ;WX_'IDEWorkspaceTabControllerLayoutTreeNode¢Y >_'IDEWorkspaceTabControllerLayoutTreeNode“ : ;[\_#IDEWorkspaceTabControllerLayoutTree¢] >_#IDEWorkspaceTabControllerLayoutTree” 	 
+ _a $°`Äº°bÄΩÄ)_%EditorLayout_PersistentRepresentation” 	 
+ fh $°gÄæ°iÄøÄ)TMain” 	 
+ mq £nopÄ¿Ä¡Ä¬£rﬁtÄ√ÄØÄ◊Ä@_)EditorLayout_StateSavingStateDictionaries_EditorLayout_Selected_EditorLayout_Geometry“ 
+ z Î°{ÄƒÄN” 	 
+ ~Ü $ßÄÅÇÉÑÖÄ≈Ä∆Ä«Ä»Ä…Ä ÄÀßáàâ00 Z -ÄÃÄÕÄ–ÄÆÄÆÄÄÄ)\FileDataType[EditorState_ArchivableRepresentation_NavigableItemName_DocumentNavigableItemName_DocumentExtensionIdentifier[DocumentURL_public.swift-source” 	 
+ òù §defgÄmÄnÄoÄp§ûüklÄŒÄœÄsÄtÄ@#AΩ∏≤Ú1bûX{0, 539}’  ¶ß#$ﬁÄ÷Ä—Ä∂Ä´ÄØ“ 
+ ¨ Î£≠ÆØÄ“Ä”Ä‘ÄN”./ 0ﬁ2ÄÆÄØÄ∞”./  ˚ﬁ2ÄLÄØÄ∞”./ ∫ﬁ2Ä’ÄØÄ∞_XCODE_PRODUCT_NAME” Ô  Ó 7C 5ÄÄµÄ “ 
+ √ Î°ƒÄÿÄN_{{0, 0}, {880, 898}}” 	 
+ »Õ $§… ÀÃÄ⁄Ä€Ä‹Ä›§Œœ–—ÄﬁÄ‰ÄÏÄÌÄ)XLeftView_IDESplitViewDebugAreaZLayoutModeYRightView” 	 
+ ÿ› $§Ÿ⁄€‹ÄﬂÄ‡Ä·Ä‚§kﬁ‡ !ÄsÄØÄ„ÄxÄ)_VariablesViewShowsRawValues_VariablesViewSelectedScope_ VariablesViewViewSortDescriptors_VariablesViewShowsType“ 
+ Ë Î†ÄN” 	 
+ ÎÌ $°ÄV°ÓÄÂÄ)“ 
+ Ò 1¢ÚÛÄÊÄÈÄ” 	 
+ ˆ˘ ¢ — “Ä<Ä=¢˙˚ÄÁÄËÄ@XLeftView#@{Ä     ” 	 
+   ¢ — “Ä<Ä=¢ÄÍÄÎÄ@YRightView#@{p     ” 	 
+ 
+ $°ÄÓ°ﬁÄØÄ)_ConsoleFilterMode” 	 
+  $††Ä)” 	 
+  $° ≈Ä9°ÄÒÄ)“ 
+  1¢ÄÚÄıÄ” 	 
+  # ¢ — “Ä<Ä=¢$%ÄÛÄÙÄ@YIDEEditor#@i`     ” 	 
+ *- ¢ — “Ä<Ä=¢./ÄˆÄ˜Ä@_IDEDebuggerArea#@\¿     ” 	 
+ 46 $°ÄV°7Ä˘Ä)“ 
+ : 1¢;<Ä˙Ä¸Ä” 	 
+ ?B ¢ — “Ä<Ä=¢ ‚DÄBÄ˚Ä@#@Ñh     ” 	 
+ HK ¢ — “Ä<Ä=¢ ‚MÄBÄ˝Ä@#@n†     ” 	 
+ QT $¢RSÄˇÅ ¢UVÅÅÄ)_SelectedNavigator_ Xcode.IDEKit.Navigator.Structure_ Xcode.IDEKit.Navigator.Structure” 	 
+ \c $¶]^_`abÅÅÅÅÅÅ¶defkhkÅ	ÅÅÄsÅÄsÄ)_IDEExpandedItemsTree^IDEVisibleRect_IDESelectedTree_!IDERecentDocumentFilteringEnabled_,IDENavigatorExpandedItemsBeforeFilteringTree_IDESCMStatusFilteringEnabled” 	 
+ rt °sÅ
+°uÅÄ@_IDEValuesAsTree” 	 
+ y{ $°zÅ°|ÅÄ)_XCODE_PRODUCT_NAME” 	 
+ ÄÉ $¢Å ˚ÅÄL¢ÅÅÅÅÄ)P_{{0, 0}, {259, 841}}” 	 
+ äå °sÅ
+°çÅÄ@” 	 
+ êí $°zÅ°ìÅÄ)” 	 
+ ñò $° ˚ÄL°ôÅÄ)” 	 
+ úû $°0ÄÆ°ÅÅÄ)” 	 
+ ¢§ °sÅ
+°•ÅÄ@” 	 
+ ®© $††Ä)” 	 
+ ¨Æ $°ÄV°ØÅÄ)“ 
+ ≤ 1£≥¥µÅÅÅÄ” 	 
+ ∏ª ¢ — “Ä<Ä=¢ºΩÅÅÄ@_IDENavigatorArea#@p@     ” 	 
+ ¬≈ ¢ — “Ä<Ä=¢∆«ÅÅÄ@]IDEEditorArea#@ãÄ     ” 	 
+ Ãœ ¢ — “Ä<Ä=¢–ΩÅÅÄ@_IDEUtilitiesArea_NSKeyedArchiver—÷◊UStateÄ   " + 5 : ?Éâñû©∞µ∑πæ¿¬ƒ€ "$&(579;=?AC^pç§±»—⁄‹ﬁ‡‚‰Ò˘	t}àëóú•≤¥∂∏ -/13ü¨Æ∞≤,3;DGIKX_acelnprtüŸ(79;=?ACETVXZ\^`bd~äù´æ–ﬁÁËÍÛ 9FGHJSip}äçèíîñ®±≤¥Ω¬‡ÌÓÔÒ˛									!	#	%	s	Ä	â	ã	ç	è	ë	ö	ú	û	†	¢	§	œ	˛
+-
+V
+c
+f
+h
+k
+m
+o
+É
+å
+ë
+ì
+ï
+ó
+§
+©
+´
+≠
+≤
+¥
+∂
+∏
+∆
+Ÿ
+˝!&(*/1356?T]`bduâïóôõù¶≥∏∫º¡√≈«Œ’Íˇ(/OensÄÅÇÑëöúû†¢´≠Ø±≥µ‡>gtwy|~Äîù¢§¶®µ∫ºæ√≈«…◊Í$)+-24689BW`cegxz|~ÄŒ◊‰ÈÎÌÚÙˆ¯ˇ0=>?ANSUW\^`boxz|~ÄâãçèëìÆ’„%2;=?ACLNPRTV_hivy{~ÄÇê•≤√≈«…ÀÕœ—”‰ÊËÍÏÓÚÙˆ $;Pe}ñ¢«ŒœﬁÎ˙¸˛ !#%'6Zõ Ï#?HKMO\moqsuwy{}éêíîñòõùü°≠¿Œ˛@SlÄç†¢§¶®™¨Æ∞≤≈«…ÀÕœ—”’◊Ÿ‰˝"-Cfzçû≥ÕËÍÏÓ	%HTVXZ\^`uàó™∆» ÃŒ–'28:<>R[zû´≠Ø±æ¿¬ƒŸÊËÍÏı&/Z_ä£•ß©´¥∑πªƒÓÛ&LQwÑáâåéê∏≈» Õœ—÷„ÍÏÓ˜˘˚˝ˇ+C[dgikxáâãçèëìï§¶®™¨Æ∞≤¥¡ÕË¸6BXenprtvÅÉÖáâíõ∞≤¥∂∏∫√ ÃŒ–“ﬂ·„ÂÚÙˆ¯	 -/13<?ACZgprtvxÅÉÖáâãî¨∑¡Œ◊Ÿ€›ﬂËÍÏÓÚ-PirsuÇÖáäåéóúû†¢Ø¥∂∏Ωø¡√Ã’‚ÁÈÎÚÙˆ 	 "6CDEGTWY\^`inprtÅÜàäèëìïü®µ∫ºæ√≈«…€‰ÒÙˆ˘˚˝#%',.02;HMOQVXZ\erwy|ÅÑáâù¿„˝     	     " % ' * , . E T f ä π ÿ Â Ë Î Ó Ò Û!!!!!!! !5!B!G!J!L!Q!T!W!Y!Z!q!~!Å!Ñ!á!ä!å!ô!ú!ü!¢!•!ß!¥!∑!π!º!ø!¡!Œ!—!”!÷!Ÿ!€!Ë!Î!Ó!Ò!Ù!ˆ""""""""""!"*"1"4"7":"<"I"N"P"R"W"Z"]"_"r"{"à"ç"è"ë"ñ"ô"ú"û"¨"µ"¬"«"…"À"–"”"÷"ÿ"Î"˝##            ÿ              #
+#BMS#->{"filename":"XCODE_PRODUCT_NAME.xcscheme","checksum":2181871788,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME.xcodeproj\/xcuserdata\/bpds.xcuserdatad\/xcschemes\/XCODE_PRODUCT_NAME.xcscheme","size":3898}<-#BME#
+<?xml version="1.0" encoding="UTF-8"?>
+<Scheme
+   LastUpgradeVersion = "0800"
+   version = "1.3">
+   <BuildAction
+      parallelizeBuildables = "YES"
+      buildImplicitDependencies = "YES">
+      <BuildActionEntries>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E50C0ABE1DB8B1BC00AA0067"
+               BuildableName = "XCODE_PRODUCT_NAME.app"
+               BlueprintName = "XCODE_PRODUCT_NAME"
+               ReferencedContainer = "container:XCODE_PRODUCT_NAME.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
+   </BuildAction>
+   <TestAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      shouldUseLaunchSchemeArgsEnv = "YES">
+      <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E50C0AD11DB8B1BC00AA0067"
+               BuildableName = "XCODE_PRODUCT_NAMETests.xctest"
+               BlueprintName = "XCODE_PRODUCT_NAMETests"
+               ReferencedContainer = "container:XCODE_PRODUCT_NAME.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "E50C0ABE1DB8B1BC00AA0067"
+            BuildableName = "XCODE_PRODUCT_NAME.app"
+            BlueprintName = "XCODE_PRODUCT_NAME"
+            ReferencedContainer = "container:XCODE_PRODUCT_NAME.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
+      <AdditionalOptions>
+      </AdditionalOptions>
+   </TestAction>
+   <LaunchAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      launchStyle = "0"
+      useCustomWorkingDirectory = "NO"
+      ignoresPersistentStateOnLaunch = "NO"
+      debugDocumentVersioning = "YES"
+      debugServiceExtension = "internal"
+      allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "E50C0ABE1DB8B1BC00AA0067"
+            BuildableName = "XCODE_PRODUCT_NAME.app"
+            BlueprintName = "XCODE_PRODUCT_NAME"
+            ReferencedContainer = "container:XCODE_PRODUCT_NAME.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+      <AdditionalOptions>
+      </AdditionalOptions>
+   </LaunchAction>
+   <ProfileAction
+      buildConfiguration = "Release"
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      savedToolIdentifier = ""
+      useCustomWorkingDirectory = "NO"
+      debugDocumentVersioning = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "E50C0ABE1DB8B1BC00AA0067"
+            BuildableName = "XCODE_PRODUCT_NAME.app"
+            BlueprintName = "XCODE_PRODUCT_NAME"
+            ReferencedContainer = "container:XCODE_PRODUCT_NAME.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+   </ProfileAction>
+   <AnalyzeAction
+      buildConfiguration = "Debug">
+   </AnalyzeAction>
+   <ArchiveAction
+      buildConfiguration = "Release"
+      revealArchiveInOrganizer = "YES">
+   </ArchiveAction>
+</Scheme>
+#BMS#->{"filename":"xcschememanagement.plist","checksum":2631899828,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME.xcodeproj\/xcuserdata\/bpds.xcuserdatad\/xcschemes\/xcschememanagement.plist","size":580}<-#BME#
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SchemeUserState</key>
+	<dict>
+		<key>XCODE_PRODUCT_NAME.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>0</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>E50C0ABE1DB8B1BC00AA0067</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E50C0AD11DB8B1BC00AA0067</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+	</dict>
+</dict>
+</plist>
+#BMS#->{"filename":"Info.plist","checksum":2476580494,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAMETests\/Info.plist","size":680}<-#BME#
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>BNDL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+</dict>
+</plist>
+#BMS#->{"filename":"XCODE_PRODUCT_NAMETests.swift","checksum":668116683,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAMETests\/XCODE_PRODUCT_NAMETests.swift","size":1040}<-#BME#
+//
+//  XCODE_PRODUCT_NAMETests.swift
+//  XCODE_PRODUCT_NAMETests
+//
+//  Created by Benoit Pereira da silva on 20/10/2016.
+//  Copyright ¬© 2016 XCODE_ORGANIZATION_NAME. All rights reserved.
+//
+
+import XCTest
+@testable import XCODE_PRODUCT_NAME
+
+class XCODE_PRODUCT_NAMETests: XCTestCase {
+    
+    override func setUp() {
+        super.setUp()
+        // Put setup code here. This method is called before the invocation of each test method in the class.
+    }
+    
+    override func tearDown() {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        super.tearDown()
+    }
+    
+    func testExample() {
+        // This is an example of a functional test case.
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    }
+    
+    func testPerformanceExample() {
+        // This is an example of a performance test case.
+        self.measure {
+            // Put the code you want to measure the time of here.
+        }
+    }
+    
+}

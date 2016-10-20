@@ -1,0 +1,16 @@
+{
+  "description": "A configuration file for flexions 3.0. It generate Bartleby's stack  + YouDub's. + a bunch for Bsync",
+  "informations": "https://bartlebys.org/documentation/targetfiles",
+  "targets": {
+    "Bsync": {
+      "bunch": "${youDubApiFolder}/BartlebySync/Bsync.flexions/Bunch/bunch.json",
+      "variables": {
+        "bsync_xOS_exportPath": "${youDubOSXRootFolder}/Bartleby/BartlebySync/bsync/bsyncLibsources/Swift/_generated"
+      }
+    }
+  },
+  "variables": {
+    "youDubOSXRootFolder": "/Users/bpds/Documents/Entrepot/Git/Clients/LyLo.TV/YouDubOSX",
+    "youDubApiFolder": "/Users/bpds/Documents/Entrepot/Git/Clients/LyLo.TV/YouDubAPI"
+  }
+}

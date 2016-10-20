@@ -1,0 +1,2 @@
+<?php
+echo(REPOSITORY_WRITING_PATH);

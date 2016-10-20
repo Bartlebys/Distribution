@@ -1,0 +1,71 @@
+{
+    "name": "BsyncDMGCard",
+    "definition": {
+        "description": "A DMG card enable store the data required to unlock the DMG.",
+        "type": "object",
+        "properties": {
+            "NO_PATH": {
+                "type": "string",
+                "default": "none",
+                "method": "class",
+                "dynamic":false,
+                "mutable" : false,
+                "supervisable" :false,
+                "scope":"public",
+                "serializable":false
+            },"NOT_SET": {
+                "type": "string",
+                "default": "not-set",
+                "method": "class",
+                "dynamic":false,
+                "mutable" : false,
+                "supervisable" :false,
+                "scope":"public",
+                "serializable":false
+            },"DMG_EXTENSION": {
+                "type": "string",
+                "default": "sparseimage",
+                "method": "class",
+                "dynamic":false,
+                "mutable" : false,
+                "supervisable" :false,
+                "scope":"public",
+                "serializable":false
+            },"userUID": {
+                "description": "The user Unique Identifier",
+                "type": "string",
+                "default":"\\(BsyncDMGCard.NOT_SET)",
+                "supervisable":true
+            },
+            "contextUID": {
+                "description": "Associated to a context (e.g. project UID)",
+                "type": "string",
+                "default":"\\(BsyncDMGCard.NOT_SET)",
+                "supervisable":true
+            },"imagePath": {
+                "description": "The last kwnow path (if not correct the client should ask for a path  The full path including the \".sparseimage\" extension.",
+                "type": "string",
+                "default":"\\(BsyncDMGCard.NO_PATH)",
+                "supervisable":true
+            },"volumeName": {
+                "description": "The associated volumeName",
+                "type": "string",
+                "default":"\\(BsyncDMGCard.NOT_SET)",
+                "supervisable":true
+            },"directivesRelativePath": {
+                "description": " You can provide an optionnal sync directive path",
+                "type": "string",
+                "default":"\\(BsyncDMGCard.NO_PATH)",
+                "supervisable":true
+            },"size": {
+                "description": "The size of the disk image : \"1g\" == 1 GB ",
+                "type": "string",
+                "default":"10g",
+                "supervisable":true
+            }
+        },
+        "metadata": {
+
+        }
+    }
+}

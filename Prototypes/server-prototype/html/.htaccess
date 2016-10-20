@@ -1,0 +1,17 @@
+<IfModule mod_rewrite.c>
+
+RewriteEngine On
+
+RewriteRule ^files/(.*)$ files/$1 [QSA,NC,L]
+
+# Routes to API
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^api/v1/(.*)$ api/go.php?request=$1 [QSA,NC,L]
+
+# Routes to Pages
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule (.*)$ Pages/go.php?request=$1 [QSA,NC,L]
+
+</IfModule>

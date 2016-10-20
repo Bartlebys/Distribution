@@ -1,0 +1,134 @@
+{
+  "project":{
+    "infos": {
+      "description": "This is the [FLOCK_PROJECT_NAME]",
+      "projectName": "[FLOCK_PROJECT_NAME]",
+      "company":"[FLOCK_COMPANY_NAME]",
+      "author":"[FLOCK_USER_CREDENTIALS]",
+      "year":"2016",
+      "version": "1.0",
+      "termsOfService": "[FLOCK_TERMS_OF_SERVICES]",
+      "contact": {
+        "email": "[FLOCK_CONTACT_EMAIL]"
+      },
+      "license": {
+        "name": "Proprietary",
+        "url": "[FLOCK_LICENCE_URL]"
+      }
+    },
+    "host": "[FLOCK_HOST_URL]",
+    "tags": [],
+    "basePath": "/api/v1",
+    "schemes": [
+      "https"
+    ],
+    "externalDocs": {
+      "description": "",
+      "url": "[FLOCK_EXTERNAL_DOC_URL]"
+    },
+    "templates": {
+      "paths": {
+        "path": "${BARTLEBYS_MODULE_DIR}/modeling-meta-templates/project/endPoints.json.template.php",
+        "description": "This template generate endpoints paths by parsing entities. It is used by the app during pre-generation phase."
+      },
+      "entities": [
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/entities/model.swift.php",
+          "description": "Bartleby's swift model template"
+        },
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/entities/model.php.template.php",
+          "description": "Bartleby's php model template (not really used currently)"
+        },
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/entities/modelCollectionController.swift.template.php",
+          "description": "Bartleby's swift model collection controller (central piece of the Distributed execution)"
+        }
+      ],
+      "project": [
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/project/document.swift.template.php",
+          "description": "Bartleby's swift Document template. (!) Uses a global configurator to deternime what collection to serialize locally.",
+          "variables": {
+            "configurator": {
+              "className": "SwiftDocumentConfigurator",
+              "imports": [
+                "${BARTLEBYS_MODULE_DIR}/templates/project/SwiftDocumentConfigurator.php"
+              ],
+              "properties": {
+                "filename": "ProjectDocument.swift",
+                "includeCollectionControllerForEntityContainingString": [
+                  "Episode",
+                  "Project",
+                  "Fragment",
+                  "Note",
+                  "Message"
+                ]
+              }
+            },
+            "excludeCollectionControllerForEntityContainingString": [
+            ]
+          }
+        },
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/project/document.swift.template.php",
+          "description": "Bartleby's swift Document template. (!) Uses a global configurator to deternime what collection to serialize locally.",
+          "variables": {
+            "configurator": {
+              "className": "SwiftDocumentConfigurator",
+              "imports": [
+                "${BARTLEBYS_MODULE_DIR}/templates/project/SwiftDocumentConfigurator.php"
+              ],
+              "properties": {
+                "filename": "WorkspaceDocument.swift",
+                "includeCollectionControllerForEntityContainingString": [
+                  "Episode",
+                  "Workspace",
+                  "Project",
+                  "Fragment",
+                  "Note",
+                  "Message"
+                ]
+              }
+            },
+            "excludeCollectionControllerForEntityContainingString": [
+            ]
+          }
+        },
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/project/configuration.php.template.php",
+          "description": "The Php App configuration file template."
+        }
+      ],
+      "actions": [
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/actions/cuds.swift.php",
+          "description": "Bartleby's Swift CUD/UD actions template."
+        },
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/actions/endpoint.php.template.php",
+          "description": "Bartleby's Php CRUD/URD endpoints template."
+        },
+        {
+          "path": "${BARTLEBYS_MODULE_DIR}/templates/actions/endpoint.swift.template.php",
+          "description": "Bartleby's Swift R actions template."
+        }
+      ]
+    },
+    "variables": {
+      "modelsShouldConformToNSSecureCoding": true,
+      "modelsShouldConformToMappable": true,
+      "modelsShouldConformToExposed": true,
+      "excludeEntitiesWith": [],
+      "xOSIncludeCollectionControllerForEntityNamed": [
+      ],
+      "excludeActionsWith": [],
+      "excludeFromServerActionsWith": [],
+      "unDeletableEntitiesWith": [],
+      "unModifiableEntitiesWith": [],
+      "doNotGenerate": [],
+      "isIncludeInBartlebysCommons": false
+    },
+    "postProcessor": "post-processor.php"
+  }
+}

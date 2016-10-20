@@ -9,13 +9,13 @@ The official distributions of Bartleby's stack to be used by [Bartleby's CLI] (h
 
 ## The distribution includes 
 
-1. The [Zipped Bundle](https://github.com/Bartlebys/Distribution/raw/master/Distribution/Bundle.package.zip)
-2. The [Unzipped Bundle](https://github.com/Bartlebys/Distribution/blob/master/Distribution/Bundle.package)
-2. The [Expanded sources] (Distribution/Bundle-sources/) 
+1. The [Zipped Flocks](https://github.com/Bartlebys/Distribution/raw/master/Distribution/Flocked/Compressed)
+2. The [Unzipped Flocks](https://github.com/Bartlebys/Distribution/raw/master/Distribution/Flocked/Not-Compressed)
+2. The [Expanded prototypes] (Distribution/Prototypes/) 
 
-# Bartleby's Bundler
+# Bartleby's Flocker
 
-[Bartleby Bundler] (Bundler/README.md) is the tool we use to prepare and distribute Bundles to be used by the bartleby's Command Line Tool. It can be used as standalone tool or via a web server.
+[Bartleby Flocker] (Flocker/README.md) is the tool we use to prepare and distribute Flocks to be used by the bartleby's Command Line Tool. It can be used as standalone tool or via a web server.
 
 
 ## License 

@@ -1,0 +1,1851 @@
+{
+    "definitions": {
+        "Acknowledgment": {
+            "description": "Bartleby's Core: an object used to Acknowledge a Trigger",
+            "properties": {
+                "triggerIndex": {
+                    "type": "integer",
+                    "description": "The trigger index",
+                    "default": -1,
+                    "supervisable": false
+                },
+                "uids": {
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "description": "The subjects UIDS",
+                            "type": "string",
+                            "default": "[String]()",
+                            "supervisable": false
+                        }
+                    }
+                },
+                "versions": {
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "description": "The subjects versions (used to analyze possible divergences)",
+                            "type": "integer",
+                            "default": "[Int]()",
+                            "supervisable": false
+                        }
+                    }
+                }
+            },
+            "metadata": {
+                "urdMode": false,
+                "persistsLocallyOnlyInMemory": false,
+                "persistsDistantly": false,
+                "undoable": false
+            }
+        },
+        "BartlebyObject": {
+            "description": "Bartleby's Core: The base object of any other generated Object",
+            "type": "object",
+            "explicitType": "NSObject, Collectible, Mappable, NSSecureCoding",
+            "properties": {
+                "_autoCommitIsEnabled": {
+                    "type": "boolean",
+                    "description": "Auto commit availability",
+                    "default": "true",
+                    "scope": "protected",
+                    "supervisable": false,
+                    "serializable": false
+                },
+                "_shouldBeCommitted": {
+                    "type": "boolean",
+                    "description": "The internal flag for auto commit",
+                    "default": "false",
+                    "scope": "protected",
+                    "supervisable": false,
+                    "serializable": false
+                },
+                "_supervisionIsEnabled": {
+                    "type": "boolean",
+                    "description": "Supervision availability",
+                    "default": "true",
+                    "scope": "protected",
+                    "supervisable": false,
+                    "serializable": false
+                },
+                "collectedIndex": {
+                    "type": "integer",
+                    "description": "Reflects the index of of the item in the collection initial value is -1. During it life cycle the collection updates if necessary its real value. \u2021It allow better perfomance in Collection Controllers ( e.g : random insertion and entity removal )",
+                    "default": -1,
+                    "supervisable": false
+                },
+                "creatorUID": {
+                    "type": "string",
+                    "description": "Collectible protocol: The Creator UID",
+                    "default": "\\(Default.NO_UID)"
+                },
+                "summary": {
+                    "type": "string",
+                    "description": "The object summary can be used for example by externalReferences to describe the JObject instance. If you want to disclose more information you can adopt the Descriptible protocol."
+                },
+                "ephemeral": {
+                    "type": "boolean",
+                    "description": "An instance Marked ephemeral will be destroyed server side on next ephemeral cleaning procedure.This flag allows for example to remove entities that have been for example created by unit-tests.",
+                    "default": "false"
+                },
+                "distributed": {
+                    "type": "boolean",
+                    "description": "Collectible protocol: distributed",
+                    "default": "false"
+                },
+                "version": {
+                    "type": "integer",
+                    "description": "The version is incremented on each change",
+                    "default": "0",
+                    "supervisable": false
+                },
+                "changedKeys": {
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "description": "MARK: - ChangesInspectable Protocol",
+                            "explicitType": "KeyedChanges",
+                            "default": "[KeyedChanges]()",
+                            "supervisable": false,
+                            "serializable": false
+                        }
+                    }
+                }
+            },
+            "metadata": {
+                "urdMode": false
+            }
+        },
+        "CollectionMetadatum": {
+            "description": "Bartleby's Core: Collection Metadatum. Complete implementation in CollectionMetadatum",
+            "allOf": [
+                {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                        "storage": {
+                            "type": "enum",
+                            "instanceOf": "string",
+                            "emumPreciseType": "CollectionMetadatum.Storage",
+                            "description": "the used file storage",
+                            "enum": [
+                                "monolithicFileStorage"
+                            ],
+                            "default": ".monolithicFileStorage",
+                            "supervisable": false
+                        },
+                        "collectionName": {
+                            "type": "string",
+                            "description": "The holding collection name",
+                            "default": "\\(Default.NO_NAME)",
+                            "supervisable": false
+                        },
+                        "proxy": {
+                            "explicitType": "BartlebyObject",
+                            "description": "The proxy object (not serializable, not supervisable)",
+                            "serializable": false,
+                            "supervisable": false
+                        },
+                        "persistsDistantly": {
+                            "type": "boolean",
+                            "description": "Allow distant persistency?",
+                            "default": "true",
+                            "supervisable": false
+                        },
+                        "inMemory": {
+                            "type": "Boolean",
+                            "description": "In Memory?",
+                            "default": "true",
+                            "supervisable": false
+                        }
+                    }
+                }
+            ],
+            "metadata": {
+                "urdMode": false
+            }
+        },
+        "Completion": {
+            "description": "Bartleby's Commons: A completion state",
+            "allOf": [
+                {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                        "success": {
+                            "type": "boolean",
+                            "description": "Success if set to true",
+                            "default": "true",
+                            "required": true
+                        },
+                        "statusCode": {
+                            "type": "integer",
+                            "description": "The status",
+                            "default": "StatusOfCompletion.undefined.rawValue",
+                            "required": true
+                        },
+                        "message": {
+                            "type": "string",
+                            "description": "The Message",
+                            "default": "",
+                            "required": true
+                        },
+                        "data": {
+                            "type": "data",
+                            "description": "completion data",
+                            "required": false
+                        },
+                        "category": {
+                            "type": "string",
+                            "description": "A category to discriminate bunch of completion states",
+                            "default": "",
+                            "required": true,
+                            "supervisable": false
+                        },
+                        "externalIdentifier": {
+                            "type": "string",
+                            "description": "An external identifier",
+                            "default": "",
+                            "required": true,
+                            "supervisable": false
+                        }
+                    }
+                }
+            ],
+            "metadata": {
+                "urdMode": false
+            }
+        },
+        "ExternalReference": {
+            "description": "Bartleby's Core: an ExternalReference stores all the necessary data to find a unique resource.",
+            "allOf": [
+                {
+                    "type": "object",
+                    "required": [
+                        "iUID"
+                    ],
+                    "properties": {
+                        "iUID": {
+                            "description": "The UID of the referred instance",
+                            "type": "string",
+                            "default": "\\(Default.NO_UID)"
+                        },
+                        "iTypeName": {
+                            "description": "The typeName of the referred instance",
+                            "type": "string",
+                            "default": "\\(Default.NO_UID)"
+                        }
+                    }
+                }
+            ],
+            "metadata": {
+                "urdMode": false
+            }
+        },
+        "JData": {
+            "description": "Bartleby's Core: Data Primitive Wrapper.",
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "data": {
+                            "type": "data",
+                            "description": "the data"
+                        }
+                    }
+                }
+            ],
+            "metadata": {
+                "urdMode": false
+            }
+        },
+        "JString": {
+            "description": "Bartleby's Core: String Primitive Wrapper.",
+            "type": "object",
+            "properties": {
+                "string": {
+                    "type": "string",
+                    "description": "the embedded String"
+                }
+            },
+            "metadata": {
+                "urdMode": false
+            }
+        },
+        "KeyedChanges": {
+            "description": "Bartleby's Core: used to keep track of changes in memory when inspecting an App",
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "elapsed": {
+                            "type": "double",
+                            "description": "the elapsed time since the app has been launched",
+                            "default": "Bartleby.elapsedTime",
+                            "mutable": true,
+                            "supervisable": false
+                        },
+                        "key": {
+                            "type": "string",
+                            "description": "the key",
+                            "default": "\\(Default.NO_KEY)",
+                            "supervisable": false
+                        },
+                        "changes": {
+                            "type": "string",
+                            "description": "A description of the changes that have occured",
+                            "default": "\\(Default.NO_MESSAGE)",
+                            "supervisable": false
+                        }
+                    }
+                }
+            ],
+            "metadata": {
+                "urdMode": false
+            }
+        },
+        "Locker": {
+            "description": "Bartleby's Core: a locker",
+            "allOf": [
+                {
+                    "type": "object",
+                    "required": [
+                        "spaceUID",
+                        "username",
+                        "password"
+                    ],
+                    "properties": {
+                        "registryUID": {
+                            "type": "string",
+                            "description": "The associated registry UID."
+                        },
+                        "subjectUID": {
+                            "description": "The subject UID you want to lock",
+                            "type": "string",
+                            "default": "\\(Default.NO_UID)"
+                        },
+                        "userUID": {
+                            "description": "The userUID that can unlock the locker",
+                            "type": "string",
+                            "default": "\\(Default.NO_UID)"
+                        },
+                        "mode": {
+                            "type": "enum",
+                            "instanceOf": "string",
+                            "emumPreciseType": "Locker.Mode",
+                            "description": "the locker mode",
+                            "enum": [
+                                "autoDestructive",
+                                "persistent"
+                            ],
+                            "default": ".autoDestructive"
+                        },
+                        "verificationMethod": {
+                            "type": "enum",
+                            "instanceOf": "string",
+                            "emumPreciseType": "Locker.VerificationMethod",
+                            "description": "the locker mode",
+                            "enum": [
+                                "online",
+                                "offline"
+                            ],
+                            "default": ".online"
+                        },
+                        "code": {
+                            "description": "This code should be crypted / decrypted",
+                            "type": "string",
+                            "default": "\\(Bartleby.randomStringWithLength(6,signs:\"0123456789ABCDEFGHJKMNPQRZTUVW\"))"
+                        },
+                        "numberOfAttempt": {
+                            "description": "The number of attempts",
+                            "type": "integer",
+                            "default": 3
+                        },
+                        "startDate": {
+                            "type": "date",
+                            "definition": "the starting date. If Locker.verifyed.online The server date will be used as reference",
+                            "default": "Date.distantPast"
+                        },
+                        "endDate": {
+                            "type": "date",
+                            "definition": "the ending date. If Locker.verifyed.online The server date will be used as reference",
+                            "default": "Date.distantFuture"
+                        },
+                        "gems": {
+                            "description": "Thoses data gems will be return on success",
+                            "type": "string",
+                            "default": "\\(Default.NO_GEM)"
+                        }
+                    }
+                }
+            ],
+            "metadata": {
+                "urdMode": false
+            }
+        },
+        "PrintEntries": {
+            "description": "Bartleby's Core: an object used to Acknowledge a Trigger",
+            "properties": {
+                "entries": {
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "description": "The subjects versions (used to analyze possible divergences)",
+                            "type": "object",
+                            "explicitType": "PrintEntry",
+                            "default": "[PrintEntry]()",
+                            "supervisable": true
+                        }
+                    }
+                }
+            },
+            "metadata": {
+                "urdMode": false,
+                "persistsLocallyOnlyInMemory": false,
+                "persistsDistantly": false,
+                "undoable": false
+            }
+        },
+        "PrintEntry": {
+            "description": "Bartleby's Core: A single print entry (bprint)",
+            "properties": {
+                "counter": {
+                    "type": "integer",
+                    "description": "The print entry counter",
+                    "default": -1,
+                    "supervisable": false
+                },
+                "line": {
+                    "type": "integer",
+                    "description": "The referent line",
+                    "default": -1,
+                    "supervisable": false
+                },
+                "elapsed": {
+                    "type": "double",
+                    "description": "The elasped duration",
+                    "default": -1,
+                    "supervisable": false
+                },
+                "message": {
+                    "type": "string",
+                    "description": "the message",
+                    "default": "no message",
+                    "supervisable": false
+                },
+                "file": {
+                    "type": "string",
+                    "description": "the file",
+                    "default": "no file",
+                    "supervisable": false
+                },
+                "function": {
+                    "type": "string",
+                    "description": "the function",
+                    "default": "no function",
+                    "supervisable": false
+                },
+                "category": {
+                    "type": "string",
+                    "description": "the category",
+                    "default": "no category",
+                    "supervisable": false
+                },
+                "decorative": {
+                    "type": "boolean",
+                    "description": "Is the entry decorative or significant? decoration includes separators, etc...",
+                    "default": "false",
+                    "supervisable": false
+                },
+                "_runUID": {
+                    "type": "string",
+                    "description": "Is the entry decorative or significant? decoration includes separators, etc...",
+                    "default": "\\(Bartleby.runUID)",
+                    "scope": "private",
+                    "supervisable": false
+                }
+            },
+            "metadata": {
+                "urdMode": false,
+                "persistsLocallyOnlyInMemory": false,
+                "persistsDistantly": false,
+                "undoable": false
+            }
+        },
+        "Progression": {
+            "description": "Bartleby's Commons: A progression state",
+            "allOf": [
+                {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                        "startTime": {
+                            "type": "double",
+                            "description": "The start time of the progression state",
+                            "required": false,
+                            "serialisable": true,
+                            "supervisable": false,
+                            "dynamic": false
+                        },
+                        "currentTaskIndex": {
+                            "type": "integer",
+                            "description": "Index of the task",
+                            "default": 0,
+                            "required": true
+                        },
+                        "totalTaskCount": {
+                            "type": "integer",
+                            "description": "Total number of tasks",
+                            "default": 0,
+                            "required": true
+                        },
+                        "currentPercentProgress": {
+                            "type": "double",
+                            "description": "0 to 100",
+                            "default": 0,
+                            "required": true
+                        },
+                        "message": {
+                            "type": "string",
+                            "description": "The Message",
+                            "default": "",
+                            "required": true
+                        },
+                        "informations": {
+                            "type": "string",
+                            "description": "The consolidated information (may include the message)",
+                            "default": "",
+                            "required": true
+                        },
+                        "data": {
+                            "type": "data",
+                            "description": "The associated data",
+                            "required": false
+                        },
+                        "category": {
+                            "type": "string",
+                            "description": "A category to discriminate bunch of progression states",
+                            "default": "",
+                            "required": true,
+                            "supervisable": false
+                        },
+                        "externalIdentifier": {
+                            "type": "string",
+                            "description": "An external identifier",
+                            "default": "",
+                            "required": true,
+                            "supervisable": false
+                        }
+                    }
+                }
+            ],
+            "metadata": {
+                "urdMode": false
+            }
+        },
+        "PushOperation": {
+            "description": "Bartleby's Core: an object used to provision serialized operation. All its properties are not supervisable",
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "commandUID": {
+                            "type": "string",
+                            "description": "The unique identifier of the related Command",
+                            "supervisable": false
+                        },
+                        "toDictionary": {
+                            "description": "The dictionary representation of a serialized action call",
+                            "type": "dictionary",
+                            "supervisable": false
+                        },
+                        "responseDictionary": {
+                            "description": "The dictionary representation of the last response serialized data",
+                            "type": "dictionary",
+                            "supervisable": false,
+                            "dynamic": false
+                        },
+                        "completionState": {
+                            "schema": {
+                                "description": "The completion state of the operation",
+                                "$ref": "#/definitions/Completion",
+                                "supervisable": false
+                            }
+                        },
+                        "status": {
+                            "type": "enum",
+                            "instanceOf": "string",
+                            "emumPreciseType": "PushOperation.Status",
+                            "description": "The invocation Status None: on creation, Pending: can be pushed, Provisionned: is currently in an operation bunch, InProgress: the endpoint has been called, Completed : The end point call has been completed",
+                            "enum": [
+                                "none",
+                                "pending",
+                                "provisionned",
+                                "inProgress",
+                                "completed"
+                            ],
+                            "default": ".none",
+                            "supervisable": false
+                        },
+                        "counter": {
+                            "description": "The invocation counter",
+                            "type": "integer",
+                            "supervisable": false,
+                            "default": -1,
+                            "required": true
+                        },
+                        "creationDate": {
+                            "description": "The creationdate",
+                            "type": "date",
+                            "supervisable": false
+                        },
+                        "lastInvocationDate": {
+                            "description": "The last invocation date",
+                            "type": "date",
+                            "supervisable": false
+                        }
+                    }
+                }
+            ],
+            "metadata": {
+                "urdMode": false,
+                "persistsLocallyOnlyInMemory": false,
+                "persistsDistantly": false,
+                "undoable": false
+            }
+        },
+        "RegistryMetadata": {
+            "description": "Bartleby's Core: Complete implementation in JRegistryMetadata. All its properties are not supervisable.",
+            "allOf": [
+                {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                        "spaceUID": {
+                            "type": "string",
+                            "description": "The data space UID can be shared between multiple registries.",
+                            "default": "\\(Default.NO_UID)",
+                            "supervisable": false
+                        },
+                        "currentUser": {
+                            "schema": {
+                                "description": "The user currently associated to the local instance of the registry",
+                                "$ref": "#/definitions/User",
+                                "supervisable": false,
+                                "cryptable": false
+                            }
+                        },
+                        "identificationMethod": {
+                            "type": "enum",
+                            "instanceOf": "string",
+                            "emumPreciseType": "RegistryMetadata.IdentificationMethod",
+                            "description": "The identification method (By cookie or by Key - kvid)",
+                            "enum": [
+                                "key",
+                                "cookie"
+                            ],
+                            "default": ".key",
+                            "supervisable": false
+                        },
+                        "identificationValue": {
+                            "type": "string",
+                            "description": "The current kvid identification value (injected in HTTP headers)",
+                            "supervisable": false
+                        },
+                        "rootObjectUID": {
+                            "type": "string",
+                            "description": "The rootObject UID",
+                            "default": "\\(Default.NO_UID)",
+                            "supervisable": false
+                        },
+                        "collaborationServerURL": {
+                            "type": "url",
+                            "description": "The url of the collaboration server",
+                            "supervisable": false
+                        },
+                        "collectionsMetadata": {
+                            "schema": {
+                                "description": "The collection of CollectionMetadatum ",
+                                "type": "array",
+                                "items": {
+                                    "description": "A collection of CollectionMetadatum",
+                                    "explicitType": "CollectionMetadatum",
+                                    "default": "[CollectionMetadatum]()",
+                                    "supervisable": false
+                                }
+                            }
+                        },
+                        "stateDictionary": {
+                            "type": "dictionary",
+                            "description": "The State dictionary to insure registry persistency ",
+                            "default": "[String:AnyObject]()",
+                            "supervisable": false
+                        },
+                        "URLBookmarkData": {
+                            "type": "dictionary",
+                            "description": "The collection of serialized Security-Scoped Bookmarks (you should store Data)",
+                            "default": "[String:AnyObject]()",
+                            "supervisable": false
+                        },
+                        "preferredFileName": {
+                            "type": "string",
+                            "description": "The preferred filename for this registry/document",
+                            "supervisable": false
+                        },
+                        "triggersIndexesDebugHistory": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "used for Core Debug , stores all the indexes by order of reception.",
+                                    "instanceOf": "integer",
+                                    "default": "[Int]()",
+                                    "supervisable": false
+                                }
+                            }
+                        },
+                        "triggersIndexes": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "A collection of trigger Indexes (used to detect data holes)",
+                                    "instanceOf": "integer",
+                                    "default": "[Int]()",
+                                    "supervisable": false
+                                }
+                            }
+                        },
+                        "ownedTriggersIndexes": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "The persistentcollection of triggers indexes owned by the current user (allows local distinctive analytics even on cloned documents)",
+                                    "instanceOf": "integer",
+                                    "default": "[Int]()",
+                                    "supervisable": false
+                                }
+                            }
+                        },
+                        "highestReceivedTriggerIndex": {
+                            "type": "integer",
+                            "description": "The index of the highest trigger that has been received (used to detect potential divergences)",
+                            "default": -1,
+                            "dynamic": false,
+                            "supervisable": false
+                        },
+                        "lastIntegratedTriggerIndex": {
+                            "type": "integer",
+                            "description": "The index of the last trigger that has been integrated",
+                            "default": -1,
+                            "dynamic": false,
+                            "supervisable": false
+                        },
+                        "receivedTriggers": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "A collection Triggers that are temporarly stored before data integration",
+                                    "$ref": "#/definitions/Trigger",
+                                    "default": "[Trigger]()",
+                                    "supervisable": false
+                                }
+                            }
+                        },
+                        "operationsQuarantine": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "A collection of PushOperations in Quarantine (check DataSynchronization.md \"Faults\" section for details) ",
+                                    "$ref": "#/definitions/PushOperation",
+                                    "default": "[PushOperation]()",
+                                    "supervisable": false
+                                }
+                            }
+                        },
+                        "bunchInProgress": {
+                            "type": "boolean",
+                            "description": "Do we have operations in progress in the current bunch ?",
+                            "default": "false",
+                            "supervisable": false,
+                            "serializable": false
+                        },
+                        "totalNumberOfOperations": {
+                            "type": "integer",
+                            "description": "The highest number that we may have counted",
+                            "default": 0,
+                            "dynamic": false,
+                            "supervisable": false,
+                            "serializable": false
+                        },
+                        "pendingOperationsProgressionState": {
+                            "schema": {
+                                "description": "The consolidated progression state of all pending operations",
+                                "$ref": "#/definitions/Progression",
+                                "supervisable": false,
+                                "required": false,
+                                "serializable": false
+                            }
+                        },
+                        "online": {
+                            "type": "boolean",
+                            "description": "is the user performing Online",
+                            "default": "Bartleby.configuration.ONLINE_BY_DEFAULT",
+                            "supervisable": true
+                        },
+                        "pushOnChanges": {
+                            "type": "boolean",
+                            "description": "If set to true any object creation, update, or deletion will be pushed as soon as possible.",
+                            "default": "Bartleby.configuration.ONLINE_BY_DEFAULT",
+                            "supervisable": true
+                        },
+                        "saveThePassword": {
+                            "type": "boolean",
+                            "description": "Save the password or not?",
+                            "default": "Bartleby.configuration.SAVE_PASSWORD_DEFAULT_VALUE",
+                            "supervisable": true
+                        }
+                    }
+                }
+            ],
+            "metadata": {
+                "urdMode": false
+            }
+        },
+        "Tag": {
+            "description": "Bartleby's Core: a tag can be used to classify instances.",
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "creationDate": {
+                            "type": "date"
+                        },
+                        "color": {
+                            "type": "string"
+                        },
+                        "icon": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ],
+            "metadata": {
+                "urdMode": false
+            }
+        },
+        "Trigger": {
+            "description": "Bartleby's Core: a Trigger encapsulates a bunch of ExternalReferencees that's modelizes a state transformation",
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "index": {
+                            "description": "The index is injected server side (each dataspace-registry) has it own counter)",
+                            "type": "integer",
+                            "format": "int64",
+                            "supervisable": false,
+                            "default": -1
+                        },
+                        "spaceUID": {
+                            "description": "The dataSpace UID",
+                            "type": "string",
+                            "supervisable": false
+                        },
+                        "observationUID": {
+                            "description": "The observation UID for a given document correspond  to the Registry.rootObjectUID",
+                            "type": "string",
+                            "required": false,
+                            "supervisable": false
+                        },
+                        "senderUID": {
+                            "description": "The user.UID of the sender",
+                            "type": "string",
+                            "supervisable": false
+                        },
+                        "runUID": {
+                            "description": "The UID of the instance of Bartleby client that has created the trigger.",
+                            "type": "string",
+                            "supervisable": false
+                        },
+                        "origin": {
+                            "description": "The action that has initiated the trigger",
+                            "type": "string",
+                            "required": false,
+                            "supervisable": false
+                        },
+                        "targetCollectionName": {
+                            "description": "The targetted collection name",
+                            "type": "string",
+                            "required": true,
+                            "default": "",
+                            "supervisable": false
+                        },
+                        "creationDate": {
+                            "description": "The server side creation date ( informative, use index for ranking)",
+                            "type": "date",
+                            "required": false,
+                            "supervisable": false
+                        },
+                        "action": {
+                            "description": "The action name",
+                            "type": "string",
+                            "required": true,
+                            "default": "",
+                            "supervisable": false
+                        },
+                        "UIDS": {
+                            "description": "A coma separated UIDS list",
+                            "type": "string",
+                            "required": true,
+                            "default": "",
+                            "supervisable": false
+                        },
+                        "payloads": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "A collection of JSON payload",
+                                    "explicitType": "dictionary",
+                                    "supervisable": false
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "metadata": {
+                "urdMode": false,
+                "persistsLocallyOnlyInMemory": false,
+                "persistsDistantly": false,
+                "undoable": false
+            }
+        },
+        "User": {
+            "description": "Bartleby's Core: a user in a specified data Space",
+            "allOf": [
+                {
+                    "type": "object",
+                    "required": [
+                        "spaceUID",
+                        "phoneNumber",
+                        "password"
+                    ],
+                    "properties": {
+                        "externalID": {
+                            "type": "string",
+                            "description": "An external unique identifier"
+                        },
+                        "spaceUID": {
+                            "type": "string",
+                            "description": "The spaceUID. A user with the same credentials can exists within multiple Data space.",
+                            "default": "\\(Bartleby.createUID())"
+                        },
+                        "verificationMethod": {
+                            "type": "enum",
+                            "instanceOf": "string",
+                            "emumPreciseType": "User.VerificationMethod",
+                            "description": "the verification method",
+                            "enum": [
+                                "none",
+                                "byPhoneNumber",
+                                "byEmail"
+                            ],
+                            "default": ".byPhoneNumber"
+                        },
+                        "firstname": {
+                            "type": "string",
+                            "default": "\\(Bartleby.randomStringWithLength(5))"
+                        },
+                        "lastname": {
+                            "type": "string",
+                            "default": "\\(Bartleby.randomStringWithLength(5))"
+                        },
+                        "email": {
+                            "description": "The user's email. Can be the secondary Identification source ",
+                            "type": "string"
+                        },
+                        "phoneNumber": {
+                            "description": "The user's phone number. Can be the secondary Identification source ",
+                            "type": "string"
+                        },
+                        "password": {
+                            "description": "The hashed version of the user password",
+                            "type": "string",
+                            "default": "\\(Bartleby.randomStringWithLength(8,signs:Bartleby.configuration.PASSWORD_CHAR_CART))",
+                            "cryptable": true
+                        },
+                        "activationCode": {
+                            "description": "An activation code",
+                            "type": "string",
+                            "default": "\\(Bartleby.randomStringWithLength(8,signs:Bartleby.configuration.PASSWORD_CHAR_CART))"
+                        },
+                        "status": {
+                            "type": "enum",
+                            "instanceOf": "string",
+                            "emumPreciseType": "User.Status",
+                            "description": "User Status",
+                            "enum": [
+                                "new",
+                                "actived",
+                                "suspended"
+                            ],
+                            "default": ".new"
+                        },
+                        "tags": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "The user Tags. External reference to Tags instances",
+                                    "$ref": "#/definitions/ExternalReference",
+                                    "required": true,
+                                    "default": "[ExternalReference]()"
+                                }
+                            }
+                        },
+                        "notes": {
+                            "type": "string",
+                            "description": "Notes"
+                        },
+                        "loginHasSucceed": {
+                            "type": "boolean",
+                            "description": "set to true on the first successfull login in the session (this property is not serialized)",
+                            "default": "false",
+                            "supervisable": false,
+                            "serializable": false
+                        }
+                    }
+                }
+            ],
+            "metadata": {
+                "urdMode": false,
+                "groupable": false
+            }
+        }
+    },
+    "infos": {
+        "description": "This is Bartleby's Commons API descriptor",
+        "projectName": "Bartleby",
+        "company": "[Bartleby's org] (https://bartlebys.org) ",
+        "author": "[Benoit Pereira da Silva] (https://pereira-da-silva.com/contact)",
+        "year": "2016",
+        "version": "1.0.beta1",
+        "license": {
+            "name": "Proprietary",
+            "url": "https://bartlebys.org/license.html"
+        }
+    },
+    "host": "https://demo.bartlebys.org/www",
+    "basePath": "/api/v1",
+    "tags": [],
+    "schemes": [
+        "https"
+    ],
+    "externalDocs": {
+        "description": "Find out more about Bartleby",
+        "url": "https://bartlebys.org/about/"
+    },
+    "templates": {
+        "paths": {
+            "path": "${BARTLEBYS_MODULE_DIR}/modeling-meta-templates/project/endPoints.json.template.php",
+            "description": "This template generate endpoints paths by parsing entities. It is used by the app during pre-generation phase."
+        },
+        "entities": [
+            {
+                "path": "${BARTLEBYS_MODULE_DIR}/templates/entities/model.swift.php",
+                "description": "Bartleby's swift model template"
+            },
+            {
+                "path": "${BARTLEBYS_MODULE_DIR}/templates/entities/model.php.template.php",
+                "description": "Bartleby's php model template (not really used currently)"
+            },
+            {
+                "path": "${BARTLEBYS_MODULE_DIR}/templates/entities/modelCollectionController.swift.template.php",
+                "description": "Bartleby's swift model collection controller (central piece of the Distributed execution)"
+            }
+        ],
+        "project": [
+            {
+                "path": "${BARTLEBYS_MODULE_DIR}/templates/project/document.swift.template.php",
+                "description": "Bartleby's swift Document template. (!) Uses a global configurator to deternime what collection to serialize locally.",
+                "variables": {
+                    "configurator": {
+                        "className": "SwiftDocumentConfigurator",
+                        "imports": [
+                            "${BARTLEBYS_MODULE_DIR}/templates/project/SwiftDocumentConfigurator.php"
+                        ],
+                        "properties": {
+                            "filename": "BartlebyDocument.swift",
+                            "includeCollectionControllerForEntityContainingString": [
+                                "User",
+                                "Group",
+                                "Permission",
+                                "Operation",
+                                "Locker"
+                            ]
+                        }
+                    },
+                    "excludeCollectionControllerForEntityContainingString": []
+                }
+            },
+            {
+                "path": "${BARTLEBYS_MODULE_DIR}/templates/project/commons.configuration.php.template.php",
+                "description": "Bartleby's commons php configuration template."
+            }
+        ],
+        "actions": [
+            {
+                "path": "${BARTLEBYS_MODULE_DIR}/templates/actions/cuds.swift.php",
+                "description": "Bartleby's Swift CUD/UD actions template."
+            },
+            {
+                "path": "${BARTLEBYS_MODULE_DIR}/templates/actions/endpoint.php.template.php",
+                "description": "Bartleby's Php CRUD/URD endpoints template."
+            },
+            {
+                "path": "${BARTLEBYS_MODULE_DIR}/templates/actions/endpoint.swift.template.php",
+                "description": "Bartleby's Swift R actions template."
+            }
+        ]
+    },
+    "variables": {
+        "modelsShouldConformToNSSecureCoding": true,
+        "modelsShouldConformToMappable": true,
+        "modelsShouldConformToExposed": true,
+        "excludeEntitiesWith": [],
+        "xOSIncludeCollectionControllerForEntityNamed": [
+            "Operation"
+        ],
+        "excludeActionsWith": [
+            "Acknowledgment",
+            "PrintEntries",
+            "PrintEntry",
+            "KeyedChanges",
+            "BartlebyObject",
+            "JString",
+            "JDictionary",
+            "JData",
+            "Trigger",
+            "PushOperation",
+            "Abstract",
+            "ExternalReference",
+            "Progression",
+            "Completion",
+            "BaseObject",
+            "Tag",
+            "CollectionMetadatum",
+            "HTTPResponse",
+            "RegistryMetadata",
+            "CollectionMetadata",
+            "CollectionMetadatum"
+        ],
+        "excludeFromServerActionsWith": [],
+        "unDeletableEntitiesWith": [],
+        "unModifiableEntitiesWith": [],
+        "doNotGenerate": [],
+        "isIncludeInBartlebysCommons": true
+    },
+    "postProcessor": "post-processor.php",
+    "paths": {
+        "/locker/{lockerId}": {
+            "get": {
+                "tags": [
+                    "lockers"
+                ],
+                "summary": "Find Locker by ID",
+                "description": "Returns a single Locker",
+                "operationId": "readLockerById",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "lockerId",
+                        "in": "path",
+                        "description": "The unique identifier the the of Locker",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Locker"
+                        }
+                    },
+                    "404": {
+                        "description": "Locker not found"
+                    }
+                }
+            }
+        },
+        "/locker": {
+            "post": {
+                "tags": [
+                    "lockers"
+                ],
+                "summary": "Creates a new Locker to the system",
+                "description": "",
+                "operationId": "createLocker",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "locker",
+                        "description": "The instance ofLocker that needs to be added",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Locker"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "metadata": {
+                    "urdMode": false
+                }
+            },
+            "put": {
+                "tags": [
+                    "lockers"
+                ],
+                "summary": "Update an existing Locker",
+                "description": "",
+                "operationId": "updateLocker",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "locker",
+                        "description": "The Locker instance to update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Locker"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    },
+                    "404": {
+                        "description": "Locker not found"
+                    },
+                    "405": {
+                        "description": "Validation exception"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "lockers"
+                ],
+                "summary": "Deletes a Locker",
+                "description": "",
+                "operationId": "deleteLocker",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "lockerId",
+                        "in": "path",
+                        "description": "The identifier of the Locker to be deleted",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid Locker value"
+                    }
+                }
+            }
+        },
+        "/lockers": {
+            "post": {
+                "tags": [
+                    "lockers"
+                ],
+                "summary": "Create lockers to the system",
+                "description": "",
+                "operationId": "createLockers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "lockers",
+                        "description": "Collection of Locker that needs to be added",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Locker"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "metadata": {
+                    "urdMode": false
+                }
+            },
+            "get": {
+                "tags": [
+                    "lockers"
+                ],
+                "summary": "Find lockers by ID",
+                "description": "Returns a collection of Locker",
+                "operationId": "readLockersByIds",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "ids",
+                        "in": "path",
+                        "description": "The IDS of the lockers to return",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "result_fields",
+                        "description": "the result fields (MONGO DB)",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "sort",
+                        "description": "the sort (MONGO DB)",
+                        "required": false,
+                        "type": "dictionary"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Locker"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid IDS supplied"
+                    },
+                    "404": {
+                        "description": "Lockers not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "lockers"
+                ],
+                "summary": "Update an existing Locker",
+                "description": "",
+                "operationId": "updateLockers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "lockers",
+                        "description": "Collection of Locker to update",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Locker"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid IDS supplied"
+                    },
+                    "404": {
+                        "description": "Lockers not found"
+                    },
+                    "405": {
+                        "description": "Validation exception"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "lockers"
+                ],
+                "summary": "Deletes some lockers",
+                "description": "",
+                "operationId": "deleteLockers",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "ids",
+                        "in": "path",
+                        "description": "The ids of lockers to delete",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid lockers value"
+                    }
+                }
+            }
+        },
+        "/lockersByQuery": {
+            "get": {
+                "tags": [
+                    "lockers"
+                ],
+                "summary": "Find lockers by query (check $q, $s, $f in Bartleby's MongoCallDataRawWrapper)",
+                "description": "Returns a collection of Locker",
+                "operationId": "readLockersByQuery",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "result_fields",
+                        "description": "the result fields (MONGO DB)",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "sort",
+                        "description": "the sort (MONGO DB)",
+                        "required": false,
+                        "type": "dictionary"
+                    },
+                    {
+                        "in": "body",
+                        "name": "query",
+                        "description": "the query (MONGO DB)",
+                        "required": false,
+                        "type": "dictionary"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Locker"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid IDS supplied"
+                    },
+                    "404": {
+                        "description": "Lockers not found"
+                    }
+                }
+            }
+        },
+        "/user/{userId}": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Find User by ID",
+                "description": "Returns a single User",
+                "operationId": "readUserById",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "The unique identifier the the of User",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/user": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Creates a new User to the system",
+                "description": "",
+                "operationId": "createUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "user",
+                        "description": "The instance ofUser that needs to be added",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "metadata": {
+                    "urdMode": false
+                }
+            },
+            "put": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update an existing User",
+                "description": "",
+                "operationId": "updateUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "user",
+                        "description": "The User instance to update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "405": {
+                        "description": "Validation exception"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Deletes a User",
+                "description": "",
+                "operationId": "deleteUser",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "The identifier of the User to be deleted",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid User value"
+                    }
+                }
+            }
+        },
+        "/users": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create users to the system",
+                "description": "",
+                "operationId": "createUsers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "users",
+                        "description": "Collection of User that needs to be added",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "metadata": {
+                    "urdMode": false
+                }
+            },
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Find users by ID",
+                "description": "Returns a collection of User",
+                "operationId": "readUsersByIds",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "ids",
+                        "in": "path",
+                        "description": "The IDS of the users to return",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "result_fields",
+                        "description": "the result fields (MONGO DB)",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "sort",
+                        "description": "the sort (MONGO DB)",
+                        "required": false,
+                        "type": "dictionary"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid IDS supplied"
+                    },
+                    "404": {
+                        "description": "Users not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update an existing User",
+                "description": "",
+                "operationId": "updateUsers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "users",
+                        "description": "Collection of User to update",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid IDS supplied"
+                    },
+                    "404": {
+                        "description": "Users not found"
+                    },
+                    "405": {
+                        "description": "Validation exception"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Deletes some users",
+                "description": "",
+                "operationId": "deleteUsers",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "ids",
+                        "in": "path",
+                        "description": "The ids of users to delete",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid users value"
+                    }
+                }
+            }
+        },
+        "/usersByQuery": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Find users by query (check $q, $s, $f in Bartleby's MongoCallDataRawWrapper)",
+                "description": "Returns a collection of User",
+                "operationId": "readUsersByQuery",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "result_fields",
+                        "description": "the result fields (MONGO DB)",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "sort",
+                        "description": "the sort (MONGO DB)",
+                        "required": false,
+                        "type": "dictionary"
+                    },
+                    {
+                        "in": "body",
+                        "name": "query",
+                        "description": "the query (MONGO DB)",
+                        "required": false,
+                        "type": "dictionary"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid IDS supplied"
+                    },
+                    "404": {
+                        "description": "Users not found"
+                    }
+                }
+            }
+        }
+    }
+}

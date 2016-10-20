@@ -1,0 +1,21 @@
+{
+    "bunch": {
+        "infos": {
+            "version": "1.0",
+            "projectName": "DiscreetTest",
+            "company": "Chaosmos",
+            "author": "bpds",
+            "year": "2016"
+        },
+        "templates": [
+            {
+                "path": "/Users/bpds/Documents/Entrepot/Git/Clients/LyLo.TV/YouDubAPI/Flexions/src/modules/Bartleby/templates/entities/model.swift.template.php",
+                "description": ""
+            }
+        ],
+        "definitions": "/",
+        "exportPathVariableName": "exportPath_580205EC91B19",
+        "flatExport": true,
+        "variables": []
+    }
+}

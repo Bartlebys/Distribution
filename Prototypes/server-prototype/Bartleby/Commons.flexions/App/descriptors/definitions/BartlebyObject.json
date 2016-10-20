@@ -1,0 +1,80 @@
+{
+  "name": "BartlebyObject",
+  "definition": {
+    "description": "Bartleby's Core: The base object of any other generated Object",
+    "type": "object",
+    "explicitType": "NSObject, Collectible, Mappable, NSSecureCoding",
+    "properties": {
+      "_autoCommitIsEnabled": {
+        "type": "boolean",
+        "description": "Auto commit availability",
+        "default": "true",
+        "scope": "protected",
+        "supervisable": false,
+        "serializable": false
+      },
+      "_shouldBeCommitted": {
+        "type": "boolean",
+        "description": "The internal flag for auto commit",
+        "default": "false",
+        "scope": "protected",
+        "supervisable": false,
+        "serializable": false
+      },
+      "_supervisionIsEnabled": {
+        "type": "boolean",
+        "description": "Supervision availability",
+        "default": "true",
+        "scope": "protected",
+        "supervisable": false,
+        "serializable": false
+      },
+      "collectedIndex": {
+        "type": "integer",
+        "description": "Reflects the index of of the item in the collection initial value is -1. During it life cycle the collection updates if necessary its real value. ‡It allow better perfomance in Collection Controllers ( e.g : random insertion and entity removal )",
+        "default": -1,
+        "supervisable": false
+      },
+      "creatorUID": {
+        "type": "string",
+        "description": "Collectible protocol: The Creator UID",
+        "default": "\\(Default.NO_UID)"
+      },
+      "summary": {
+        "type": "string",
+        "description": "The object summary can be used for example by externalReferences to describe the JObject instance. If you want to disclose more information you can adopt the Descriptible protocol."
+      },
+      "ephemeral": {
+        "type": "boolean",
+        "description": "An instance Marked ephemeral will be destroyed server side on next ephemeral cleaning procedure.This flag allows for example to remove entities that have been for example created by unit-tests.",
+        "default": "false"
+      },
+      "distributed": {
+        "type": "boolean",
+        "description": "Collectible protocol: distributed",
+        "default": "false"
+      },
+      "version": {
+        "type": "integer",
+        "description": "The version is incremented on each change",
+        "default": "0",
+        "supervisable": false
+      },
+      "changedKeys": {
+        "schema": {
+          "type": "array",
+          "items": {
+            "description": "MARK: - ChangesInspectable Protocol",
+            "explicitType": "KeyedChanges",
+            "default": "[KeyedChanges]()",
+            "supervisable": false,
+            "serializable": false
+          }
+        }
+      }
+    },
+    "metadata": {
+      "urdMode": false
+    }
+  }
+}

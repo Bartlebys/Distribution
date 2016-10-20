@@ -1,0 +1,29 @@
+{
+  "name": "ExternalReference",
+  "definition": {
+    "description": "Bartleby's Core: an ExternalReference stores all the necessary data to find a unique resource.",
+    "allOf": [
+      {
+        "type": "object",
+        "required": [
+          "iUID"
+        ],
+        "properties": {
+          "iUID": {
+            "description": "The UID of the referred instance",
+            "type": "string",
+            "default": "\\(Default.NO_UID)"
+          },
+          "iTypeName": {
+            "description": "The typeName of the referred instance",
+            "type": "string",
+            "default": "\\(Default.NO_UID)"
+          }
+        }
+      }
+    ],
+    "metadata": {
+      "urdMode": false
+    }
+  }
+}

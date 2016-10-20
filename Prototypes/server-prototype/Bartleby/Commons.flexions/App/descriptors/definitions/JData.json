@@ -1,0 +1,20 @@
+{
+  "name": "JData",
+  "definition": {
+    "description": "Bartleby's Core: Data Primitive Wrapper.",
+    "allOf": [
+      {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "data",
+            "description": "the data"
+          }
+        }
+      }
+    ],
+    "metadata": {
+      "urdMode": false
+    }
+  }
+}

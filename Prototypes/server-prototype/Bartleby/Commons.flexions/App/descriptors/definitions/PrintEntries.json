@@ -1,0 +1,26 @@
+{
+  "name": "PrintEntries",
+  "definition": {
+    "description": "Bartleby's Core: an object used to Acknowledge a Trigger",
+    "properties": {
+      "entries": {
+        "schema": {
+          "type": "array",
+          "items": {
+            "description": "The subjects versions (used to analyze possible divergences)",
+            "type": "object",
+            "explicitType": "PrintEntry",
+            "default": "[PrintEntry]()",
+            "supervisable": true
+          }
+        }
+      }
+    },
+    "metadata": {
+      "urdMode": false,
+      "persistsLocallyOnlyInMemory": false,
+      "persistsDistantly": false,
+      "undoable": false
+    }
+  }
+}

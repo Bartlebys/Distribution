@@ -1,0 +1,32 @@
+{
+  "description": "A configuration file for flexions 3.0. It generate Bartleby's stack  + YouDub's. + a bunch for Bsync",
+  "informations": "https://bartlebys.org/documentation/targetfiles",
+  "targets": {
+    "Bartleby": {
+      "project": "${youDubApiFolder}/Bartleby/Commons.flexions/App",
+      "stage": "development",
+      "variables": {
+        "bartlebysCommons_xOS_exportPath": "${youDubOSXRootFolder}/Bartleby/Bartleby.xOS/_generated",
+        "eraseFilesOnGenerationOfBartlebysCommons": true
+      }
+    },
+    "Bsync": {
+      "bunch": "${youDubApiFolder}/BartlebySync/Bsync.flexions/Bunch/bunch.json",
+      "variables": {
+        "bsync_xOS_exportPath": "${youDubOSXRootFolder}/Bartleby/BartlebySync/bsync/bsyncLibsources/Swift/_generated"
+      }
+    },
+    "YouDub": {
+      "project": "${youDubApiFolder}/YouDubApi.flexions/App",
+      "stage": "development",
+      "variables": {
+        "youDubApp_xOS_exportPath": "${youDubOSXRootFolder}/YouDubX.xOS/_generated",
+        "eraseFilesOnGenerationOfYouDubApp": true
+      }
+    }
+  },
+  "variables": {
+    "youDubOSXRootFolder": "/Users/bpds/Documents/Entrepot/Git/Clients/LyLo.TV/YouDubOSX",
+    "youDubApiFolder": "/Users/bpds/Documents/Entrepot/Git/Clients/LyLo.TV/YouDubAPI"
+  }
+}

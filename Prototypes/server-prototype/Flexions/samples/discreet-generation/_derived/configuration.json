@@ -1,0 +1,10 @@
+{
+    "targets": {
+        "temp-name": {
+            "bunch": "/Users/bpds/Documents/Entrepot/Git/Clients/LyLo.TV/YouDubAPI/Flexions/samples/discreet-generation/_derived/bunch.json",
+            "variables": {
+                "exportPath_580205EC91B19": "/Users/bpds/Documents/Entrepot/Git/Clients/LyLo.TV/YouDubAPI/Flexions/samples/discreet-generation/_generated"
+            }
+        }
+    }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "Acknowledgment",
+  "definition": {
+    "description": "Bartleby's Core: an object used to Acknowledge a Trigger",
+    "properties": {
+      "triggerIndex": {
+        "type": "integer",
+        "description": "The trigger index",
+        "default": -1,
+        "supervisable": false
+      },
+      "uids": {
+        "schema": {
+          "type": "array",
+          "items": {
+            "description": "The subjects UIDS",
+            "type": "string",
+            "default":"[String]()",
+            "supervisable": false
+          }
+        }
+      },
+      "versions": {
+        "schema": {
+          "type": "array",
+          "items": {
+            "description": "The subjects versions (used to analyze possible divergences)",
+            "type": "integer",
+            "default":"[Int]()",
+            "supervisable": false
+          }
+        }
+      }
+    },
+    "metadata": {
+      "urdMode": false,
+      "persistsLocallyOnlyInMemory": false,
+      "persistsDistantly": false,
+      "undoable": false
+    }
+  }
+}
