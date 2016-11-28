@@ -36,7 +36,8 @@
     deinit{
         self._supervisers.removeAll()
     }
-    // An optionnal Quick reference to the document
+
+    // A reference to the document
     open var document:BartlebyDocument?
 
     // On object insertion or Registry deserialization

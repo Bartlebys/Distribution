@@ -29,7 +29,7 @@ class Flocker {
 
     // METADATA Starts and Ends Tags
     const BUNDLER_METADATA_STARTS = "#BMS#->";
-    // BETWEEN = The bundler metadate are JSON ENCODED
+    // BETWEEN = The bundler metadata are JSON ENCODED
     const BUNDLER_METADATA_ENDS = "<-#BME#\n";
 
     // METADATA KEYS

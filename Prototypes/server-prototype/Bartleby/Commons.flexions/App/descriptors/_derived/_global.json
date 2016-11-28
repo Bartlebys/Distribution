@@ -632,7 +632,8 @@
                                 "description": "The user currently associated to the local instance of the registry",
                                 "$ref": "#/definitions/User",
                                 "supervisable": false,
-                                "cryptable": false
+                                "cryptable": false,
+                                "serializable": true
                             }
                         },
                         "identificationMethod": {
@@ -1058,7 +1059,7 @@
                 "description": "Bartleby's php model template (not really used currently)"
             },
             {
-                "path": "${BARTLEBYS_MODULE_DIR}/templates/entities/modelCollectionController.swift.template.php",
+                "path": "${BARTLEBYS_MODULE_DIR}/templates/entities/modelManagedCollection.swift.template.php",
                 "description": "Bartleby's swift model collection controller (central piece of the Distributed execution)"
             }
         ],
@@ -1074,7 +1075,7 @@
                         ],
                         "properties": {
                             "filename": "BartlebyDocument.swift",
-                            "includeCollectionControllerForEntityContainingString": [
+                            "includeManagedCollectionForEntityContainingString": [
                                 "User",
                                 "Group",
                                 "Permission",
@@ -1083,7 +1084,7 @@
                             ]
                         }
                     },
-                    "excludeCollectionControllerForEntityContainingString": []
+                    "excludeManagedCollectionForEntityContainingString": []
                 }
             },
             {
@@ -1111,7 +1112,7 @@
         "modelsShouldConformToMappable": true,
         "modelsShouldConformToExposed": true,
         "excludeEntitiesWith": [],
-        "xOSIncludeCollectionControllerForEntityNamed": [
+        "xOSIncludeManagedCollectionForEntityNamed": [
             "Operation"
         ],
         "excludeActionsWith": [

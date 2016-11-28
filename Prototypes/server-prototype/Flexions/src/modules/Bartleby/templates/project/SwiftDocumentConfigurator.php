@@ -9,12 +9,12 @@ class SwiftDocumentConfigurator{
     /**
      * @var array the array of the actions to be used.
      */
-    public $includeCollectionControllerForEntityContainingString=array();
+    public $includeManagedCollectionForEntityContainingString=array();
 
     /**
      * @var arrays the array of action name to explicitly exclude
      */
-    public $excludeCollectionControllerForEntityContainingString=Array();
+    public $excludeManagedCollectionForEntityContainingString=Array();
 
     function getClassName(){
         return str_replace('.swift','',$this->filename);
@@ -22,12 +22,12 @@ class SwiftDocumentConfigurator{
 
     function collectionControllerShouldBeSupportedForEntity(ProjectRepresentation $project, EntityRepresentation $entity){
         $inclusionName = strtolower(str_replace($project->classPrefix, '', $entity->name));
-        foreach ($this->excludeCollectionControllerForEntityContainingString as $exclusion){
+        foreach ($this->excludeManagedCollectionForEntityContainingString as $exclusion){
             if ($entity->name===$exclusion){
                 return false;
             }
         }
-        foreach ($this->includeCollectionControllerForEntityContainingString as $inclusion) {
+        foreach ($this->includeManagedCollectionForEntityContainingString as $inclusion) {
             if (!(strpos($inclusionName, strtolower($inclusion)) === false)){
                 return true;
             }

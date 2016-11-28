@@ -21,9 +21,9 @@ if (isset( $f,$d,$h)) {
     $hypotypose=$h;
 
     // We determine the file name.
-    $f->fileName = ucfirst(Pluralization::pluralize($d->name)) . 'CollectionController.swift';
+    $f->fileName = ucfirst(Pluralization::pluralize($d->name)) . 'ManagedCollection.swift';
     // And its package.
-    $f->package = 'xOS/collectionControllers/';
+    $f->package = 'xOS/managedCollections/';
 
 }else{
     return NULL;
@@ -38,15 +38,15 @@ if (isset( $f,$d,$h)) {
 $exclusion = array();
 $exclusionName = str_replace($h->classPrefix, '', $entityRepresentation->name);
 
-$includeCollectionController = false;
-if (isset($xOSIncludeCollectionControllerForEntityNamed)) {
-    foreach ($xOSIncludeCollectionControllerForEntityNamed as $inclusion) {
+$includeManagedCollection = false;
+if (isset($xOSIncludeManagedCollectionForEntityNamed)) {
+    foreach ($xOSIncludeManagedCollectionForEntityNamed as $inclusion) {
         if (strpos($exclusionName, $inclusion) !== false) {
-            $includeCollectionController = true;
+            $includeManagedCollection = true;
         }
 
     }
-    if (!$includeCollectionController) {
+    if (!$includeManagedCollection) {
         if (isset($excludeActionsWith)) {
             $exclusion = $excludeActionsWith;
         }
@@ -64,14 +64,14 @@ if (isset($xOSIncludeCollectionControllerForEntityNamed)) {
 
 
 $usesUrdMode=$d->usesUrdMode()==true;
-$collectionControllerClass=ucfirst(Pluralization::pluralize($entityRepresentation->name)).'CollectionController';
+$collectionControllerClass=ucfirst(Pluralization::pluralize($entityRepresentation->name)).'ManagedCollection';
 
 
 // We just want to inject an item property Items
 $virtualEntity=new EntityRepresentation();
 $virtualEntity->name=$collectionControllerClass;
 $itemsProperty=new PropertyRepresentation();
-$itemsProperty->name="items";
+$itemsProperty->name="_items";
 $itemsProperty->type=FlexionsTypes::COLLECTION;
 $itemsProperty->instanceOf=ucfirst($entityRepresentation->name);
 $itemsProperty->required=true;
@@ -170,7 +170,7 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
     /// - returns: the instance
     required public init(items:[<?php echo ucfirst($entityRepresentation->name)?>]) {
         super.init()
-        self.items=items
+        self._items=items
     }
 
     required public init() {
@@ -187,7 +187,7 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
             self.document?.setValue(self, forKey: "<?php echo lcfirst(Pluralization::pluralize($entityRepresentation->name)); ?>")
             arrayController?.objectClass=<?php echo ucfirst($entityRepresentation->name)?>.self
             arrayController?.entityName=<?php echo ucfirst($entityRepresentation->name)?>.className()
-            arrayController?.bind("content", to: self, withKeyPath: "items", options: nil)
+            arrayController?.bind("content", to: self, withKeyPath: "_items", options: nil)
         }
     }
 
@@ -195,30 +195,30 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
 
     weak open var tableView: BXTableView?
 
-    // The underling items storage
-    fileprivate dynamic var items:[<?php echo ucfirst($entityRepresentation->name)?>]=[<?php echo ucfirst($entityRepresentation->name)?>](){
+    // The underling _items storage
+    fileprivate dynamic var _items:[<?php echo ucfirst($entityRepresentation->name)?>]=[<?php echo ucfirst($entityRepresentation->name)?>](){
         didSet {
-            if items != oldValue {
-                self.provisionChanges(forKey: "items",oldValue: oldValue,newValue: items)
+            if _items != oldValue {
+                self.provisionChanges(forKey: "_items",oldValue: oldValue,newValue: _items)
             }
         }
     }
 
     open func generate() -> AnyIterator<<?php echo ucfirst($entityRepresentation->name)?>> {
         var nextIndex = -1
-        let limit=self.items.count-1
+        let limit=self._items.count-1
         return AnyIterator {
             nextIndex += 1
             if (nextIndex > limit) {
                 return nil
             }
-            return self.items[nextIndex]
+            return self._items[nextIndex]
         }
     }
 
 
     open subscript(index: Int) -> <?php echo ucfirst($entityRepresentation->name)?> {
-        return self.items[index]
+        return self._items[index]
     }
 
     open var startIndex:Int {
@@ -226,7 +226,7 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
     }
 
     open var endIndex:Int {
-        return self.items.count
+        return self._items.count
     }
 
     /// Returns the position immediately after the given index.
@@ -240,7 +240,7 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
 
 
     open var count:Int {
-        return self.items.count
+        return self._items.count
     }
 
     open func indexOf(element:@escaping(<?php echo ucfirst($entityRepresentation->name)?>) throws -> Bool) rethrows -> Int?{
@@ -256,7 +256,7 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
         if item.collectedIndex >= 0 {
             return item.collectedIndex
         }else{
-            if let idx=items.index(where:{return $0.UID == item.UID}){
+            if let idx=_items.index(where:{return $0.UID == item.UID}){
                 self[idx].collectedIndex=idx
                 return idx
             }
@@ -265,7 +265,7 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
     }
 
     fileprivate func _incrementIndexes(greaterThan lowerIndex:Int){
-        let count=items.count
+        let count=_items.count
         if count > lowerIndex{
             for i in lowerIndex...count-1{
                 self[i].collectedIndex += 1
@@ -274,7 +274,7 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
     }
 
     fileprivate func _decrementIndexes(greaterThan lowerIndex:Int){
-        let count=items.count
+        let count=_items.count
         if count > lowerIndex{
             for i in lowerIndex...count-1{
                 self[i].collectedIndex -= 1
@@ -287,7 +287,7 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
     - parameter on: the closure
     */
     open func superIterate(_ on:@escaping(_ element: Collectible)->()){
-        for item in self.items {
+        for item in self._items {
             on(item)
         }
     }
@@ -303,7 +303,7 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
     open func commitChanges() -> [String] {
         var UIDS=[String]()
         if self.toBeCommitted{ // When one member has to be committed its collection _shouldBeCommited flag is turned to true
-            let changedItems=self.items.filter { $0.toBeCommitted == true }
+            let changedItems=self._items.filter { $0.toBeCommitted == true }
             bprint("\(changedItems.count) \( changedItems.count>1 ? "'.lcfirst(Pluralization::pluralize($entityRepresentation->name)).'" : "'.lcfirst($entityRepresentation->name).'" )  has changed in '.$collectionControllerClass.'",file:#file,function:#function,line:#line,category: Default.BPRINT_CATEGORY)
             if  changedItems.count > 0 {
                 UIDS=changedItems.map({$0.UID})
@@ -323,7 +323,7 @@ if (isset($isIncludeInBartlebysCommons) && $isIncludeInBartlebysCommons==true){
     open func commitChanges() -> [String] {
         var UIDS=[String]()
         if self.toBeCommitted{ // When one member has to be committed its collection _shouldBeCommited flag is turned to true
-            let changedItems=self.items.filter { $0.toBeCommitted == true }
+            let changedItems=self._items.filter { $0.toBeCommitted == true }
             bprint("\(changedItems.count) \( changedItems.count>1 ? "'.lcfirst(Pluralization::pluralize($entityRepresentation->name)).'" : "'.lcfirst($entityRepresentation->name).'" )  has changed in '.$collectionControllerClass.'",file:#file,function:#function,line:#line,category: Default.BPRINT_CATEGORY)
             for changed in changedItems{
                 UIDS.append(changed.UID)
@@ -371,11 +371,11 @@ echo('
     // MARK: Upsert
 
 
-    open func upsert(_ item: Collectible, commit:Bool){
-        if let idx=items.index(where:{return $0.UID == item.UID}){
+    open func upsert(_ item: Collectible, commit:Bool=true){
+        if let idx=_items.index(where:{return $0.UID == item.UID}){
             // it is an update
             // we must patch it
-            let currentInstance=items[idx]
+            let currentInstance=_items[idx]
             if commit==false{
                 // When upserting from a trigger
                 // We do not want to produce Larsen effect on data.
@@ -396,8 +396,8 @@ echo('
     // MARK: Add
 
 
-    open func add(_ item:Collectible, commit:Bool){
-        self.insertObject(item, inItemsAtIndex: items.count, commit:commit)
+    open func add(_ item:Collectible, commit:Bool=true){
+        self.insertObject(item, inItemsAtIndex: _items.count, commit:commit)
     }
 
     // MARK: Insert
@@ -409,7 +409,7 @@ echo('
     - parameter index:  the index in the collection (not the ArrayController arranged object)
     - parameter commit: should we commit the insertion?
     */
-    open func insertObject(_ item: Collectible, inItemsAtIndex index: Int, commit:Bool) {
+    open func insertObject(_ item: Collectible, inItemsAtIndex index: Int, commit:Bool=true) {
         if let item=item as? <?php echo ucfirst($entityRepresentation->name)?>{
 
             item.collection = self // Reference the collection
@@ -439,7 +439,7 @@ echo('
 }
 ?>
             // Insert the item
-            self.items.insert(item, at: index)
+            self._items.insert(item, at: index)
             #if os(OSX) && !USE_EMBEDDED_MODULES
             if let arrayController = self.arrayController{
 
@@ -488,7 +488,7 @@ echo('
     - parameter index:  the index in the collection (not the ArrayController arranged object)
     - parameter commit: should we commit the removal?
     */
-    open func removeObjectFromItemsAtIndex(_ index: Int, commit:Bool) {
+    open func removeObjectFromItemsAtIndex(_ index: Int, commit:Bool=true) {
        let item : <?php echo ucfirst($entityRepresentation->name)?> =  self[index]
         self._decrementIndexes(greaterThan:index)
 <?php if ($entityRepresentation->isUndoable()) {
@@ -497,7 +497,7 @@ echo(
         // Add the inverse of this invocation to the undo stack
         if let undoManager: UndoManager = undoManager {
             // We don\'t want to introduce a retain cycle
-            // But with the objc magic casting undoManager.prepareWithInvocationTarget(self) as? UsersCollectionController fails
+            // But with the objc magic casting undoManager.prepareWithInvocationTarget(self) as? UsersManagedCollection fails
             // That\'s why we have added an registerUndo extension on UndoManager
             undoManager.registerUndo({ () -> Void in
                self.insertObject(item, inItemsAtIndex: index, commit:commit)
@@ -517,7 +517,7 @@ echo(
         item.committed=false
 
         // Remove the item from the collection
-        self.items.remove(at:index)
+        self._items.remove(at:index)
 
     <?php if ($entityRepresentation->isDistantPersistencyOfCollectionAllowed()) {
         echo('
@@ -534,13 +534,13 @@ echo(
     }
 
 
-    open func removeObjects(_ items: [Collectible],commit:Bool){
-        for item in self.items{
+    open func removeObjects(_ _items: [Collectible],commit:Bool=true){
+        for item in self._items{
             self.removeObject(item,commit:commit)
         }
     }
 
-    open func removeObject(_ item: Collectible, commit:Bool){
+    open func removeObject(_ item: Collectible, commit:Bool=true){
         if let instance=item as? <?php echo(ucfirst($entityRepresentation->name))?>{
             if let idx=self._getIndexOf(instance){
                 self.removeObjectFromItemsAtIndex(idx, commit:commit)
@@ -548,13 +548,13 @@ echo(
         }
     }
 
-    open func removeObjectWithIDS(_ ids: [String],commit:Bool){
+    open func removeObjectWithIDS(_ ids: [String],commit:Bool=true){
         for uid in ids{
             self.removeObjectWithID(uid,commit:commit)
         }
     }
 
-    open func removeObjectWithID(_ id:String, commit:Bool){
+    open func removeObjectWithID(_ id:String, commit:Bool=true){
         if let idx=self.index(where:{ return $0.UID==id } ){
             self.removeObjectFromItemsAtIndex(idx, commit:commit)
         }

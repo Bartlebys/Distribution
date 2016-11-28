@@ -44,7 +44,7 @@ import Foundation
      */
     fileprivate func _getOperation()->PushOperation{
         if let document = Bartleby.sharedInstance.getDocumentByUID(self._registryUID) {
-            if let ic:PushOperationsCollectionController = try? document.getCollection(){
+            if let ic:PushOperationsManagedCollection = try? document.getCollection(){
                 let operations=ic.filter({ (operation) -> Bool in
                     return operation.commandUID==self.UID
                 })
@@ -77,7 +77,7 @@ import Foundation
         if let document = Bartleby.sharedInstance.getDocumentByUID(self._registryUID) {
             // Provision the operation.
             do{
-                let ic:PushOperationsCollectionController = try document.getCollection()
+                let ic:PushOperationsManagedCollection = try document.getCollection()
                 let operation=self._getOperation()
                 operation.counter += 1
                 operation.status=PushOperation.Status.pending

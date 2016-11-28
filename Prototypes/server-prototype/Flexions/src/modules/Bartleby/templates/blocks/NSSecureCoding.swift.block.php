@@ -58,7 +58,8 @@ $inheritancePrefix = ($isBaseObject ? '' : 'override');
 
     // MARK: - NSSecureCoding
 
-    required public init?(coder decoder: NSCoder) {<?php if(!$isBaseObject){echo'super.init(coder: decoder)'.cr();}else{echo'super.init()'.cr();} ?>
+    required public init?(coder decoder: NSCoder) {
+        <?php if(!$isBaseObject){echo'super.init(coder: decoder)'.cr();}else{echo'super.init()'.cr();} ?>
         self.silentGroupedChanges {
 <?php GenerativeHelperForSwift::echoBodyOfInitWithCoder($blockRepresentation, 3);
     if (isset($decodingblockEndContent)){
@@ -68,7 +69,8 @@ $inheritancePrefix = ($isBaseObject ? '' : 'override');
         }
     }
 
-    <?php echo $inheritancePrefix?> open func encode(with coder: NSCoder) {<?php if(!$isBaseObject){echo'super.encode(with:coder)'.cr();}else{echo cr();} ?>
+    <?php echo $inheritancePrefix?> open func encode(with coder: NSCoder) {
+        <?php if(!$isBaseObject){echo'super.encode(with:coder)'.cr();}else{echo cr();} ?>
 <?php GenerativeHelperForSwift::echoBodyOfEncodeWithCoder($blockRepresentation, 2);
         if (isset($encodingblockEndContent)){
             echo $encodingblockEndContent;

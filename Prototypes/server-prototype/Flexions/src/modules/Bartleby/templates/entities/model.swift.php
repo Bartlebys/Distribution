@@ -119,7 +119,7 @@ if (!defined('_propertyValueString_DEFINED')){
             //////////////////////////
         if(isset($property->default)){
             if($property->type==FlexionsTypes::STRING){
-                return " = \"$property->default\"{\n 
+                return " = \"$property->default\"{
     didSet { 
        if $property->name != oldValue {
             self.provisionChanges(forKey: \"$property->name\",oldValue: oldValue,newValue: $property->name) 
@@ -127,7 +127,7 @@ if (!defined('_propertyValueString_DEFINED')){
     }
 }";
             }else{
-                return " = $property->default  {\n 
+                return " = $property->default  {
     didSet { 
        if $property->name != oldValue {
             self.provisionChanges(forKey: \"$property->name\",oldValue: oldValue".($property->type==FlexionsTypes::ENUM ? ".rawValue" : "" ).",newValue: $property->name".($property->type==FlexionsTypes::ENUM ? ".rawValue" : "" ).")  
@@ -137,7 +137,7 @@ if (!defined('_propertyValueString_DEFINED')){
 }
 
         }
-        return "? {\n 
+        return "? {
     didSet { 
        if $property->name != oldValue {
             self.provisionChanges(forKey: \"$property->name\",oldValue: oldValue".($property->type==FlexionsTypes::ENUM ? "?.rawValue" : "" ).",newValue: $property->name".( $property->type==FlexionsTypes::ENUM ? "?.rawValue" : "" ) .") 
