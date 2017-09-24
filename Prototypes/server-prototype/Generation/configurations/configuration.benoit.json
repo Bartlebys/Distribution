@@ -1,0 +1,27 @@
+{
+  "description": "A configuration file for flexions 3.0. It generate Bartleby's stack  + YouDub's.",
+  "informations": "https://bartlebys.org/documentation/targetfiles",
+  "targets": {
+    "Bartleby": {
+      "project": "${youDubApiFolder}/Bartleby/Commons.flexions/App",
+      "stage": "development",
+      "variables": {
+        "bartlebysCommons_xOS_exportPath": "${bartlebysFolder}/Bartleby.xOS/_generated",
+        "eraseFilesOnGenerationOfBartlebysCommons": true
+      }
+    },
+    "YouDub": {
+      "project": "${youDubApiFolder}/YouDubApi.flexions/App",
+      "stage": "development",
+      "variables": {
+        "youDubApp_xOS_exportPath": "${youDubLibRootFolder}/_generated",
+        "eraseFilesOnGenerationOfYouDubApp": true
+      }
+    }
+  },
+  "variables": {
+    "bartlebysFolder":"/Users/bpds/Documents/Entrepot/Git/Clients/LyLo.TV/YouDubOSX/Bartleby",
+    "youDubLibRootFolder": "/Users/bpds/Documents/Entrepot/Git/Clients/LyLo.TV/YouDubOSX/YouDubLib.xOS",
+    "youDubApiFolder": "/Users/bpds/Documents/Entrepot/Git/Clients/LyLo.TV/YouDubAPI"
+  }
+}

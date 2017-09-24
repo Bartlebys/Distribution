@@ -1,6 +1,735 @@
-#BMS#->{"filename":"AppDelegate.swift","checksum":1401623375,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME\/AppDelegate.swift","size":540}<-#BME#
+#BMS#->{"filename":"project.pbxproj","checksum":2938864577,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME.xcodeproj\/project.pbxproj","size":16009}<-#BME#
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E50C0AC31DB8B1BC00AA0067 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50C0AC21DB8B1BC00AA0067 /* AppDelegate.swift */; };
+		E50C0AC51DB8B1BC00AA0067 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50C0AC41DB8B1BC00AA0067 /* ViewController.swift */; };
+		E50C0AC71DB8B1BC00AA0067 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50C0AC61DB8B1BC00AA0067 /* Document.swift */; };
+		E50C0AC91DB8B1BC00AA0067 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E50C0AC81DB8B1BC00AA0067 /* Assets.xcassets */; };
+		E50C0ACC1DB8B1BC00AA0067 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E50C0ACA1DB8B1BC00AA0067 /* Main.storyboard */; };
+		E50C0AD71DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50C0AD61DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E50C0AD31DB8B1BC00AA0067 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E50C0AB71DB8B1BC00AA0067 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E50C0ABE1DB8B1BC00AA0067;
+			remoteInfo = XCODE_PRODUCT_NAME;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		E50C0ABF1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XCODE_PRODUCT_NAME.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E50C0AC21DB8B1BC00AA0067 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		E50C0AC41DB8B1BC00AA0067 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		E50C0AC61DB8B1BC00AA0067 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
+		E50C0AC81DB8B1BC00AA0067 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E50C0ACB1DB8B1BC00AA0067 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		E50C0ACD1DB8B1BC00AA0067 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E50C0AD21DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XCODE_PRODUCT_NAMETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E50C0AD61DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCODE_PRODUCT_NAMETests.swift; sourceTree = "<group>"; };
+		E50C0AD81DB8B1BC00AA0067 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E50C0ABC1DB8B1BC00AA0067 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E50C0ACF1DB8B1BC00AA0067 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E50C0AB61DB8B1BC00AA0067 = {
+			isa = PBXGroup;
+			children = (
+				E50C0AC11DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME */,
+				E50C0AD51DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests */,
+				E50C0AC01DB8B1BC00AA0067 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E50C0AC01DB8B1BC00AA0067 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E50C0ABF1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME.app */,
+				E50C0AD21DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E50C0AC11DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME */ = {
+			isa = PBXGroup;
+			children = (
+				E50C0AC21DB8B1BC00AA0067 /* AppDelegate.swift */,
+				E50C0AC41DB8B1BC00AA0067 /* ViewController.swift */,
+				E50C0AC61DB8B1BC00AA0067 /* Document.swift */,
+				E50C0AC81DB8B1BC00AA0067 /* Assets.xcassets */,
+				E50C0ACA1DB8B1BC00AA0067 /* Main.storyboard */,
+				E50C0ACD1DB8B1BC00AA0067 /* Info.plist */,
+			);
+			path = XCODE_PRODUCT_NAME;
+			sourceTree = "<group>";
+		};
+		E50C0AD51DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests */ = {
+			isa = PBXGroup;
+			children = (
+				E50C0AD61DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.swift */,
+				E50C0AD81DB8B1BC00AA0067 /* Info.plist */,
+			);
+			path = XCODE_PRODUCT_NAMETests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E50C0ABE1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E50C0ADB1DB8B1BC00AA0067 /* Build configuration list for PBXNativeTarget "XCODE_PRODUCT_NAME" */;
+			buildPhases = (
+				E50C0ABB1DB8B1BC00AA0067 /* Sources */,
+				E50C0ABC1DB8B1BC00AA0067 /* Frameworks */,
+				E50C0ABD1DB8B1BC00AA0067 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XCODE_PRODUCT_NAME;
+			productName = XCODE_PRODUCT_NAME;
+			productReference = E50C0ABF1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E50C0AD11DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E50C0ADE1DB8B1BC00AA0067 /* Build configuration list for PBXNativeTarget "XCODE_PRODUCT_NAMETests" */;
+			buildPhases = (
+				E50C0ACE1DB8B1BC00AA0067 /* Sources */,
+				E50C0ACF1DB8B1BC00AA0067 /* Frameworks */,
+				E50C0AD01DB8B1BC00AA0067 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E50C0AD41DB8B1BC00AA0067 /* PBXTargetDependency */,
+			);
+			name = XCODE_PRODUCT_NAMETests;
+			productName = XCODE_PRODUCT_NAMETests;
+			productReference = E50C0AD21DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E50C0AB71DB8B1BC00AA0067 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0800;
+				LastUpgradeCheck = 0800;
+				ORGANIZATIONNAME = XCODE_ORGANIZATION_NAME;
+				TargetAttributes = {
+					E50C0ABE1DB8B1BC00AA0067 = {
+						CreatedOnToolsVersion = 8.0;
+						ProvisioningStyle = Automatic;
+					};
+					E50C0AD11DB8B1BC00AA0067 = {
+						CreatedOnToolsVersion = 8.0;
+						ProvisioningStyle = Automatic;
+						TestTargetID = E50C0ABE1DB8B1BC00AA0067;
+					};
+				};
+			};
+			buildConfigurationList = E50C0ABA1DB8B1BC00AA0067 /* Build configuration list for PBXProject "XCODE_PRODUCT_NAME" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E50C0AB61DB8B1BC00AA0067;
+			productRefGroup = E50C0AC01DB8B1BC00AA0067 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E50C0ABE1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME */,
+				E50C0AD11DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E50C0ABD1DB8B1BC00AA0067 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E50C0AC91DB8B1BC00AA0067 /* Assets.xcassets in Resources */,
+				E50C0ACC1DB8B1BC00AA0067 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E50C0AD01DB8B1BC00AA0067 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E50C0ABB1DB8B1BC00AA0067 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E50C0AC51DB8B1BC00AA0067 /* ViewController.swift in Sources */,
+				E50C0AC31DB8B1BC00AA0067 /* AppDelegate.swift in Sources */,
+				E50C0AC71DB8B1BC00AA0067 /* Document.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E50C0ACE1DB8B1BC00AA0067 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E50C0AD71DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E50C0AD41DB8B1BC00AA0067 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E50C0ABE1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME */;
+			targetProxy = E50C0AD31DB8B1BC00AA0067 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		E50C0ACA1DB8B1BC00AA0067 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E50C0ACB1DB8B1BC00AA0067 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E50C0AD91DB8B1BC00AA0067 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E50C0ADA1DB8B1BC00AA0067 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+			};
+			name = Release;
+		};
+		E50C0ADC1DB8B1BC00AA0067 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = XCODE_PRODUCT_NAME/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "XCODE-ORGANIZATION-IDENTIFIER.XCODE-PRODUCT-NAME";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		E50C0ADD1DB8B1BC00AA0067 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = XCODE_PRODUCT_NAME/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "XCODE-ORGANIZATION-IDENTIFIER.XCODE-PRODUCT-NAME";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		E50C0ADF1DB8B1BC00AA0067 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = XCODE_PRODUCT_NAMETests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "XCODE-ORGANIZATION-IDENTIFIER.XCODE-PRODUCT-NAMETests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/XCODE_PRODUCT_NAME.app/Contents/MacOS/XCODE_PRODUCT_NAME";
+			};
+			name = Debug;
+		};
+		E50C0AE01DB8B1BC00AA0067 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = XCODE_PRODUCT_NAMETests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "XCODE-ORGANIZATION-IDENTIFIER.XCODE-PRODUCT-NAMETests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/XCODE_PRODUCT_NAME.app/Contents/MacOS/XCODE_PRODUCT_NAME";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E50C0ABA1DB8B1BC00AA0067 /* Build configuration list for PBXProject "XCODE_PRODUCT_NAME" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E50C0AD91DB8B1BC00AA0067 /* Debug */,
+				E50C0ADA1DB8B1BC00AA0067 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E50C0ADB1DB8B1BC00AA0067 /* Build configuration list for PBXNativeTarget "XCODE_PRODUCT_NAME" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E50C0ADC1DB8B1BC00AA0067 /* Debug */,
+				E50C0ADD1DB8B1BC00AA0067 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		E50C0ADE1DB8B1BC00AA0067 /* Build configuration list for PBXNativeTarget "XCODE_PRODUCT_NAMETests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E50C0ADF1DB8B1BC00AA0067 /* Debug */,
+				E50C0AE01DB8B1BC00AA0067 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E50C0AB71DB8B1BC00AA0067 /* Project object */;
+}
+#BMS#->{"filename":"XCODE_PRODUCT_NAME.xcscheme","checksum":2181871788,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME.xcodeproj\/xcuserdata\/bpds.xcuserdatad\/xcschemes\/XCODE_PRODUCT_NAME.xcscheme","size":3898}<-#BME#
+<?xml version="1.0" encoding="UTF-8"?>
+<Scheme
+   LastUpgradeVersion = "0800"
+   version = "1.3">
+   <BuildAction
+      parallelizeBuildables = "YES"
+      buildImplicitDependencies = "YES">
+      <BuildActionEntries>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E50C0ABE1DB8B1BC00AA0067"
+               BuildableName = "XCODE_PRODUCT_NAME.app"
+               BlueprintName = "XCODE_PRODUCT_NAME"
+               ReferencedContainer = "container:XCODE_PRODUCT_NAME.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
+   </BuildAction>
+   <TestAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      shouldUseLaunchSchemeArgsEnv = "YES">
+      <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E50C0AD11DB8B1BC00AA0067"
+               BuildableName = "XCODE_PRODUCT_NAMETests.xctest"
+               BlueprintName = "XCODE_PRODUCT_NAMETests"
+               ReferencedContainer = "container:XCODE_PRODUCT_NAME.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "E50C0ABE1DB8B1BC00AA0067"
+            BuildableName = "XCODE_PRODUCT_NAME.app"
+            BlueprintName = "XCODE_PRODUCT_NAME"
+            ReferencedContainer = "container:XCODE_PRODUCT_NAME.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
+      <AdditionalOptions>
+      </AdditionalOptions>
+   </TestAction>
+   <LaunchAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      launchStyle = "0"
+      useCustomWorkingDirectory = "NO"
+      ignoresPersistentStateOnLaunch = "NO"
+      debugDocumentVersioning = "YES"
+      debugServiceExtension = "internal"
+      allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "E50C0ABE1DB8B1BC00AA0067"
+            BuildableName = "XCODE_PRODUCT_NAME.app"
+            BlueprintName = "XCODE_PRODUCT_NAME"
+            ReferencedContainer = "container:XCODE_PRODUCT_NAME.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+      <AdditionalOptions>
+      </AdditionalOptions>
+   </LaunchAction>
+   <ProfileAction
+      buildConfiguration = "Release"
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      savedToolIdentifier = ""
+      useCustomWorkingDirectory = "NO"
+      debugDocumentVersioning = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "E50C0ABE1DB8B1BC00AA0067"
+            BuildableName = "XCODE_PRODUCT_NAME.app"
+            BlueprintName = "XCODE_PRODUCT_NAME"
+            ReferencedContainer = "container:XCODE_PRODUCT_NAME.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+   </ProfileAction>
+   <AnalyzeAction
+      buildConfiguration = "Debug">
+   </AnalyzeAction>
+   <ArchiveAction
+      buildConfiguration = "Release"
+      revealArchiveInOrganizer = "YES">
+   </ArchiveAction>
+</Scheme>
+#BMS#->{"filename":"xcschememanagement.plist","checksum":2631899828,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME.xcodeproj\/xcuserdata\/bpds.xcuserdatad\/xcschemes\/xcschememanagement.plist","size":580}<-#BME#
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SchemeUserState</key>
+	<dict>
+		<key>XCODE_PRODUCT_NAME.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>0</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>E50C0ABE1DB8B1BC00AA0067</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E50C0AD11DB8B1BC00AA0067</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+	</dict>
+</dict>
+</plist>
+#BMS#->{"filename":"contents.xcworkspacedata","checksum":90864078,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME.xcodeproj\/project.xcworkspace\/contents.xcworkspacedata","size":163}<-#BME#
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "self:XCODE_PRODUCT_NAME.xcodeproj">
+   </FileRef>
+</Workspace>
+#BMS#->{"filename":"UserInterfaceState.xcuserstate","checksum":3719779041,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME.xcodeproj\/project.xcworkspace\/xcuserdata\/bpds.xcuserdatad\/UserInterfaceState.xcuserstate","size":10970}<-#BME#
+bplist00‘      ‘’X$versionX$objectsY$archiverT$top Ü†Ø       % & ' ( ) * + 2 8 9 ? C D H I M N R V ` a b c i { | } ~  Ä Å Ç Ö â å ç ë ï õ ú ü ° ¢ ¶ Æ ≤ ≥ ø ¿ ¡ ¬ √ …   œ ◊ ÿ Ÿ ⁄ € › Â Ê Á Ë Ï Ù ı ˝ ˛ ˇ "#(01234<=>?CHIJRSTUVZbnopqrstuvÇÉÑÖãåç°¢£§•¶ß®©™´¨≠Æ¿¡¬√ƒ≈∆«»Ã‡·‚„‰ÂÊÁËÈˇ &'-348<@AEIMRVZ^deklvwxy}èêëíìîïñó£§•´±µπΩæ¬∆«”‘’÷◊„‰ÂÊÁÍı˝˛ˇ	'()1239>FGOPXYZ[klmnopqwx~áàâèïõ°ß´±∑ø¿¡… À”U$null” 	 
+    WNS.keysZNS.objectsV$class¢  ÄÄ¢  ÄÄäÄ@_IDEWorkspaceDocument_$28385CCF-EBDA-41E4-900E-EB5BFBA9D928” 	 
+    $¶      ÄÄÄÄÄ	Ä
+¶     ! " #ÄÄÄÄxÄyÄ|Ä)_RecentEditorDocumentURLs_DocumentWindows_DefaultEditorStatesForURLs_BreakpointsActivated\ActiveScheme_ActiveRunDestination“ 
+  , 1§ - . / 0ÄÄÄÄÄ” 3  4 5 6 7WNS.base[NS.relativeÄ ÄÄ_ffile:///Users/bpds/Desktop/macOS-app-prototype/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME/AppDelegate.swift“ : ; < =Z$classnameX$classesUNSURL¢ < >XNSObject” 3  4 5 6 BÄ ÄÄ_efile:///Users/bpds/Desktop/macOS-app-prototype/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME/Assets.xcassets/” 3  4 5 6 GÄ ÄÄ_ifile:///Users/bpds/Desktop/macOS-app-prototype/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME/ViewController.swift” 3  4 5 6 LÄ ÄÄ__file:///Users/bpds/Desktop/macOS-app-prototype/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME.xcodeproj/“ : ; O P^NSMutableArray£ O Q >WNSArray“ 
+  S 1° ÄÄ” 	 
+  W [ $£ X Y ZÄÄÄ£ \ ] ^ÄÄ0ÄkÄ)_(Xcode.IDEKit.EditorDocument.AssetCatalog_7Xcode.Xcode3ProjectSupport.EditorDocument.Xcode3Project_&Xcode.IDEKit.EditorDocument.SourceCode” 	 
+  d f $° .Ä° gÄÄ)” 	 
+  j r $ß k l m n o p qÄÄÄÄ Ä!Ä"Ä#ß s t u v w x yÄ$Ä&Ä'Ä(Ä*Ä.Ä/Ä)_selectedItemIdentifiers[sourceItems_detailController]sclicing-area_source-list-area_lastFocusedArea]overview-area“ 
+  É Ñ†Ä%“ : ; Ü á\NSMutableSet£ Ü à >UNSSet“ 
+  ä Ñ†Ä%_IBICCatalogOverviewController” 	 
+  é è $††Ä)“ : ; í ì_NSMutableDictionary£ í î >\NSDictionary” 	 
+  ñ ò $° óÄ+° ôÄ,Ä)_expandedItemIDs“ 
+  ù û†Ä-“ : ; à †¢ à >_DVTStateTokenNilValueMarker” 	 
+  £ § $††Ä)” 	 
+  ß ™ $¢ 0 ©ÄÄ1¢ ´ ¨Ä3ÄPÄ)” 3  4 5 6 ±Ä ÄÄ2_Kfile:///Users/bpds/Desktop/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME.xcodeproj/” 	 
+  ¥ π $§ µ ∂ ∑ ∏Ä4Ä5Ä6Ä7§ ∫ ª º ΩÄ8ÄDÄEÄOÄ)_(Xcode3ProjectEditor.sourceList.splitview_,Xcode3ProjectEditorPreviousTargetEditorClass_,Xcode3ProjectEditorSelectedDocumentLocations_&Xcode3ProjectEditor_Xcode3TargetEditor” 	 
+  ƒ ∆ $° ≈Ä9° «Ä:Ä)_DVTSplitViewItems“ 
+  À 1¢ Ã ÕÄ;ÄAÄ” 	 
+  – ” ¢ — “Ä<Ä=¢ ‘ ’Ä>Ä?Ä@]DVTIdentifier_DVTViewMagnitude_!sourceListSplitViewItemIdentifier#@e@     “ : ; î ‹¢ î >” 	 
+  ﬁ · ¢ — “Ä<Ä=¢ ‚ „ÄBÄCÄ@P#@Ü(     _Xcode3TargetEditor“ 
+  È Î° ÍÄFÄN‘ Ì Ó Ô   Ò L ÛYselectionYtimestamp[documentURLÄHÄGÄÄM#AΩ∏≤Ó?.ù” 	 
+  ˆ ˘ $¢ ˜ ¯ÄIÄJ¢ ˙ ˚ÄKÄLÄ)VEditorVTarget_Xcode3TargetEditor_XCODE_PRODUCT_NAME“ : ;_Xcode3ProjectDocumentLocation£ >_Xcode3ProjectDocumentLocation_DVTDocumentLocation“ : ; Q¢ Q >” 	 
+ 	
+ $††Ä)” 	 
+  $§ÄQÄRÄSÄT§ÄUÄ`ÄaÄjÄ)_(Xcode3ProjectEditor.sourceList.splitview_,Xcode3ProjectEditorPreviousTargetEditorClass_,Xcode3ProjectEditorSelectedDocumentLocations_&Xcode3ProjectEditor_Xcode3TargetEditor” 	 
+  $°ÄV° ÄWÄ)_DVTSplitViewItems“ 
+ $ 1¢%&ÄXÄ]Ä” 	 
+ ), ¢*+ÄYÄZ¢-.Ä[Ä\Ä@]DVTIdentifier_DVTViewMagnitude_!sourceListSplitViewItemIdentifier#@d`     ” 	 
+ 58 ¢*+ÄYÄZ¢9:Ä^Ä_Ä@P#@Ü`     _Xcode3TargetEditor“ 
+ @ Î°AÄbÄN‘ Ì Ó Ô DEF ÛÄeÄdÄcÄM_Kfile:///Users/bpds/Desktop/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME.xcodeproj/#AΩ∏±≈ƒè” 	 
+ KN $¢LMÄfÄg¢OPÄhÄiÄ)VEditorVTarget_Xcode3TargetEditor_XCODE_PRODUCT_NAME” 	 
+ WX $††Ä)” 	 
+ [^ $¢ / -ÄÄ¢_`ÄlÄuÄ)” 	 
+ ch $§defgÄmÄnÄoÄp§ijklÄqÄrÄsÄtÄ)_PrimaryDocumentTimestamp_$PrimaryDocumentVisibleCharacterRange]HideAllIssues_%PrimaryDocumentSelectedCharacterRange#AΩ∏≤ÓΩˇX{0, 492}V{0, 0}” 	 
+ w| $§defgÄmÄnÄoÄp§}~klÄvÄwÄsÄtÄ)#AΩ∏≤Ú1zX{0, 539}	” 	 
+ Üà °áÄz°âÄ{Ä@]IDENameString_XCODE_PRODUCT_NAME” 	 
+ éó ®èêëíìîïñÄ}Ä~ÄÄÄÄÅÄÇÄÉÄÑ®ò !kõúùû !ÄÖÄxÄsÄÜÄáÄàÄâÄxÄ@YtargetSDKZisEligible_targetDeviceIsWireless_targetDeviceLocation_targetArchitecture_targetDeviceFamily_targetDeviceModelCode_targetDeviceIsConcrete[macosx10.12_"dvtdevice-local-computer:localhostVx86_64P^MacBookPro11,5” 	 
+ Ø∑ $ß∞±≤≥¥µ∂ÄãÄåÄçÄéÄèÄêÄëß∏π∫ ≤ ! !ÄíÄìÄîÄÄçÄxÄxÄ)^IDEWindowFrame_!IDEOrderedWorkspaceTabControllers_>IDEWorkspaceTabController_86399A1E-9F82-4D7E-A697-691EC16212AB_,IDEWorkspaceWindowControllerUniqueIdentifier_IDEActiveWorkspaceTabController_IDEWindowToolbarIsVisible_IDEWindowTabBarIsVisible_{{353, 484}, {1400, 960}}“ 
+ … Î°≤ÄçÄN” 	 
+ Õ÷ $®Œœ–—“”‘’ÄïÄñÄóÄòÄôÄöÄõÄú®◊ !Ÿ⁄€‹ !ﬁÄùÄxÄûÄ¯Ä˛ÅÄxÄØÄ)[IDETabLabel_IDEShowNavigator]IDEEditorArea_-IDEWorkspaceTabControllerUtilityAreaSplitView_IDENavigatorArea_,IDEWorkspaceTabControllerDesignAreaSplitView_IDEShowUtilities_AssistantEditorsLayout_AppDelegate.swift” 	 
+ ÍÙ $©ÎÏÌÓÔÒÚÛÄüÄ†Ä°Ä¢Ä£Ä§Ä•Ä¶Äß©ıˆ !ﬁﬁ˙˚¸kÄ®ÄªÄxÄØÄØÄŸÄÔÄÄsÄ)ZlayoutTree_IDEEditorMode_Standard]IDEShowEditor_VersionEditorSubmodeZEditorMode_IDEDefaultDebugArea_ DefaultPersistentRepresentations_DebuggerSplitView_ShowDebuggerArea‘	
+  5_rootLayoutTreeNode_geniusEditorContextNode_primaryEditorContextNodeÄ∑Ä Ä©Ä∫÷  5XchildrenVparent[contentType_ documentArchivableRepresentation[orientationÄ Ä∑ÄπÄ™ ’  !"#$ﬁ_DocumentLocation^IdentifierPath_DomainIdentifier_IndexOfDocumentIdentifierÄ¥Ä¨Ä∂Ä´ÄØ_/Xcode.IDENavigableItemDomain.WorkspaceStructure“ 
+ ( Î£)*+Ä≠Ä±Ä≤ÄN”./ 0ﬁ2ZIdentifierUIndexÄÆÄØÄ∞_AppDelegate.swift“ : ;56_IDEArchivableStringIndexPair¢7 >_IDEArchivableStringIndexPair”./  ˚ﬁ2ÄLÄØÄ∞”./ =ﬁ2Ä≥ÄØÄ∞_XCODE_PRODUCT_NAME” Ô  Ó 7C 5ÄÄµÄ “ : ;FG_DVTDocumentLocation¢H >_DVTDocumentLocation“ : ;JK_(IDENavigableItemArchivableRepresentation¢L >_(IDENavigableItemArchivableRepresentation÷ N 5 5Ä∏Ä ÄπÄ “ 
+ S Î°Ä©ÄN“ : ;WX_'IDEWorkspaceTabControllerLayoutTreeNode¢Y >_'IDEWorkspaceTabControllerLayoutTreeNode“ : ;[\_#IDEWorkspaceTabControllerLayoutTree¢] >_#IDEWorkspaceTabControllerLayoutTree” 	 
+ _a $°`Äº°bÄΩÄ)_%EditorLayout_PersistentRepresentation” 	 
+ fh $°gÄæ°iÄøÄ)TMain” 	 
+ mq £nopÄ¿Ä¡Ä¬£rﬁtÄ√ÄØÄ◊Ä@_)EditorLayout_StateSavingStateDictionaries_EditorLayout_Selected_EditorLayout_Geometry“ 
+ z Î°{ÄƒÄN” 	 
+ ~Ü $ßÄÅÇÉÑÖÄ≈Ä∆Ä«Ä»Ä…Ä ÄÀßáàâ00 Z -ÄÃÄÕÄ–ÄÆÄÆÄÄÄ)\FileDataType[EditorState_ArchivableRepresentation_NavigableItemName_DocumentNavigableItemName_DocumentExtensionIdentifier[DocumentURL_public.swift-source” 	 
+ òù §defgÄmÄnÄoÄp§ûüklÄŒÄœÄsÄtÄ@#AΩ∏≤Ú1bûX{0, 539}’  ¶ß#$ﬁÄ÷Ä—Ä∂Ä´ÄØ“ 
+ ¨ Î£≠ÆØÄ“Ä”Ä‘ÄN”./ 0ﬁ2ÄÆÄØÄ∞”./  ˚ﬁ2ÄLÄØÄ∞”./ ∫ﬁ2Ä’ÄØÄ∞_XCODE_PRODUCT_NAME” Ô  Ó 7C 5ÄÄµÄ “ 
+ √ Î°ƒÄÿÄN_{{0, 0}, {880, 898}}” 	 
+ »Õ $§… ÀÃÄ⁄Ä€Ä‹Ä›§Œœ–—ÄﬁÄ‰ÄÏÄÌÄ)XLeftView_IDESplitViewDebugAreaZLayoutModeYRightView” 	 
+ ÿ› $§Ÿ⁄€‹ÄﬂÄ‡Ä·Ä‚§kﬁ‡ !ÄsÄØÄ„ÄxÄ)_VariablesViewShowsRawValues_VariablesViewSelectedScope_ VariablesViewViewSortDescriptors_VariablesViewShowsType“ 
+ Ë Î†ÄN” 	 
+ ÎÌ $°ÄV°ÓÄÂÄ)“ 
+ Ò 1¢ÚÛÄÊÄÈÄ” 	 
+ ˆ˘ ¢ — “Ä<Ä=¢˙˚ÄÁÄËÄ@XLeftView#@{Ä     ” 	 
+   ¢ — “Ä<Ä=¢ÄÍÄÎÄ@YRightView#@{p     ” 	 
+ 
+ $°ÄÓ°ﬁÄØÄ)_ConsoleFilterMode” 	 
+  $††Ä)” 	 
+  $° ≈Ä9°ÄÒÄ)“ 
+  1¢ÄÚÄıÄ” 	 
+  # ¢ — “Ä<Ä=¢$%ÄÛÄÙÄ@YIDEEditor#@i`     ” 	 
+ *- ¢ — “Ä<Ä=¢./ÄˆÄ˜Ä@_IDEDebuggerArea#@\¿     ” 	 
+ 46 $°ÄV°7Ä˘Ä)“ 
+ : 1¢;<Ä˙Ä¸Ä” 	 
+ ?B ¢ — “Ä<Ä=¢ ‚DÄBÄ˚Ä@#@Ñh     ” 	 
+ HK ¢ — “Ä<Ä=¢ ‚MÄBÄ˝Ä@#@n†     ” 	 
+ QT $¢RSÄˇÅ ¢UVÅÅÄ)_SelectedNavigator_ Xcode.IDEKit.Navigator.Structure_ Xcode.IDEKit.Navigator.Structure” 	 
+ \c $¶]^_`abÅÅÅÅÅÅ¶defkhkÅ	ÅÅÄsÅÄsÄ)_IDEExpandedItemsTree^IDEVisibleRect_IDESelectedTree_!IDERecentDocumentFilteringEnabled_,IDENavigatorExpandedItemsBeforeFilteringTree_IDESCMStatusFilteringEnabled” 	 
+ rt °sÅ
+°uÅÄ@_IDEValuesAsTree” 	 
+ y{ $°zÅ°|ÅÄ)_XCODE_PRODUCT_NAME” 	 
+ ÄÉ $¢Å ˚ÅÄL¢ÅÅÅÅÄ)P_{{0, 0}, {259, 841}}” 	 
+ äå °sÅ
+°çÅÄ@” 	 
+ êí $°zÅ°ìÅÄ)” 	 
+ ñò $° ˚ÄL°ôÅÄ)” 	 
+ úû $°0ÄÆ°ÅÅÄ)” 	 
+ ¢§ °sÅ
+°•ÅÄ@” 	 
+ ®© $††Ä)” 	 
+ ¨Æ $°ÄV°ØÅÄ)“ 
+ ≤ 1£≥¥µÅÅÅÄ” 	 
+ ∏ª ¢ — “Ä<Ä=¢ºΩÅÅÄ@_IDENavigatorArea#@p@     ” 	 
+ ¬≈ ¢ — “Ä<Ä=¢∆«ÅÅÄ@]IDEEditorArea#@ãÄ     ” 	 
+ Ãœ ¢ — “Ä<Ä=¢–ΩÅÅÄ@_IDEUtilitiesArea_NSKeyedArchiver—÷◊UStateÄ   " + 5 : ?Éâñû©∞µ∑πæ¿¬ƒ€ "$&(579;=?AC^pç§±»—⁄‹ﬁ‡‚‰Ò˘	t}àëóú•≤¥∂∏ -/13ü¨Æ∞≤,3;DGIKX_acelnprtüŸ(79;=?ACETVXZ\^`bd~äù´æ–ﬁÁËÍÛ 9FGHJSip}äçèíîñ®±≤¥Ω¬‡ÌÓÔÒ˛									!	#	%	s	Ä	â	ã	ç	è	ë	ö	ú	û	†	¢	§	œ	˛
+-
+V
+c
+f
+h
+k
+m
+o
+É
+å
+ë
+ì
+ï
+ó
+§
+©
+´
+≠
+≤
+¥
+∂
+∏
+∆
+Ÿ
+˝!&(*/1356?T]`bduâïóôõù¶≥∏∫º¡√≈«Œ’Íˇ(/OensÄÅÇÑëöúû†¢´≠Ø±≥µ‡>gtwy|~Äîù¢§¶®µ∫ºæ√≈«…◊Í$)+-24689BW`cegxz|~ÄŒ◊‰ÈÎÌÚÙˆ¯ˇ0=>?ANSUW\^`boxz|~ÄâãçèëìÆ’„%2;=?ACLNPRTV_hivy{~ÄÇê•≤√≈«…ÀÕœ—”‰ÊËÍÏÓÚÙˆ $;Pe}ñ¢«ŒœﬁÎ˙¸˛ !#%'6Zõ Ï#?HKMO\moqsuwy{}éêíîñòõùü°≠¿Œ˛@SlÄç†¢§¶®™¨Æ∞≤≈«…ÀÕœ—”’◊Ÿ‰˝"-Cfzçû≥ÕËÍÏÓ	%HTVXZ\^`uàó™∆» ÃŒ–'28:<>R[zû´≠Ø±æ¿¬ƒŸÊËÍÏı&/Z_ä£•ß©´¥∑πªƒÓÛ&LQwÑáâåéê∏≈» Õœ—÷„ÍÏÓ˜˘˚˝ˇ+C[dgikxáâãçèëìï§¶®™¨Æ∞≤¥¡ÕË¸6BXenprtvÅÉÖáâíõ∞≤¥∂∏∫√ ÃŒ–“ﬂ·„ÂÚÙˆ¯	 -/13<?ACZgprtvxÅÉÖáâãî¨∑¡Œ◊Ÿ€›ﬂËÍÏÓÚ-PirsuÇÖáäåéóúû†¢Ø¥∂∏Ωø¡√Ã’‚ÁÈÎÚÙˆ 	 "6CDEGTWY\^`inprtÅÜàäèëìïü®µ∫ºæ√≈«…€‰ÒÙˆ˘˚˝#%',.02;HMOQVXZ\erwy|ÅÑáâù¿„˝     	     " % ' * , . E T f ä π ÿ Â Ë Î Ó Ò Û!!!!!!! !5!B!G!J!L!Q!T!W!Y!Z!q!~!Å!Ñ!á!ä!å!ô!ú!ü!¢!•!ß!¥!∑!π!º!ø!¡!Œ!—!”!÷!Ÿ!€!Ë!Î!Ó!Ò!Ù!ˆ""""""""""!"*"1"4"7":"<"I"N"P"R"W"Z"]"_"r"{"à"ç"è"ë"ñ"ô"ú"û"¨"µ"¬"«"…"À"–"”"÷"ÿ"Î"˝##            ÿ              #
+#BMS#->{"filename":"XCODE_PRODUCT_NAMETests.swift","checksum":668116683,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAMETests\/XCODE_PRODUCT_NAMETests.swift","size":1040}<-#BME#
 //
-//  AppDelegate.swift
+//  XCODE_PRODUCT_NAMETests.swift
+//  XCODE_PRODUCT_NAMETests
+//
+//  Created by Benoit Pereira da silva on 20/10/2016.
+//  Copyright ¬© 2016 XCODE_ORGANIZATION_NAME. All rights reserved.
+//
+
+import XCTest
+@testable import XCODE_PRODUCT_NAME
+
+class XCODE_PRODUCT_NAMETests: XCTestCase {
+    
+    override func setUp() {
+        super.setUp()
+        // Put setup code here. This method is called before the invocation of each test method in the class.
+    }
+    
+    override func tearDown() {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        super.tearDown()
+    }
+    
+    func testExample() {
+        // This is an example of a functional test case.
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    }
+    
+    func testPerformanceExample() {
+        // This is an example of a performance test case.
+        self.measure {
+            // Put the code you want to measure the time of here.
+        }
+    }
+    
+}
+#BMS#->{"filename":"Info.plist","checksum":2476580494,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAMETests\/Info.plist","size":680}<-#BME#
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>BNDL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+</dict>
+</plist>
+#BMS#->{"filename":"ViewController.swift","checksum":2474107288,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME\/ViewController.swift","size":493}<-#BME#
+//
+//  ViewController.swift
 //  XCODE_PRODUCT_NAME
 //
 //  Created by Benoit Pereira da silva on 20/10/2016.
@@ -9,17 +738,18 @@
 
 import Cocoa
 
-@NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate {
+class ViewController: NSViewController {
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
-
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // Insert code here to initialize your application
+        // Do any additional setup after loading the view.
     }
 
-    func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
+    override var representedObject: Any? {
+        didSet {
+        // Update the view, if already loaded.
+        }
     }
 
 
@@ -836,6 +1566,33 @@ class Document: NSDocument {
 
 }
 
+#BMS#->{"filename":"AppDelegate.swift","checksum":1401623375,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME\/AppDelegate.swift","size":540}<-#BME#
+//
+//  AppDelegate.swift
+//  XCODE_PRODUCT_NAME
+//
+//  Created by Benoit Pereira da silva on 20/10/2016.
+//  Copyright ¬© 2016 XCODE_ORGANIZATION_NAME. All rights reserved.
+//
+
+import Cocoa
+
+@NSApplicationMain
+class AppDelegate: NSObject, NSApplicationDelegate {
+
+
+
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
+        // Insert code here to initialize your application
+    }
+
+    func applicationWillTerminate(_ aNotification: Notification) {
+        // Insert code here to tear down your application
+    }
+
+
+}
+
 #BMS#->{"filename":"Info.plist","checksum":2330291734,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME\/Info.plist","size":1566}<-#BME#
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -890,760 +1647,3 @@ class Document: NSDocument {
 	<string>NSApplication</string>
 </dict>
 </plist>
-#BMS#->{"filename":"ViewController.swift","checksum":2474107288,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME\/ViewController.swift","size":493}<-#BME#
-//
-//  ViewController.swift
-//  XCODE_PRODUCT_NAME
-//
-//  Created by Benoit Pereira da silva on 20/10/2016.
-//  Copyright ¬© 2016 XCODE_ORGANIZATION_NAME. All rights reserved.
-//
-
-import Cocoa
-
-class ViewController: NSViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-    }
-
-    override var representedObject: Any? {
-        didSet {
-        // Update the view, if already loaded.
-        }
-    }
-
-
-}
-
-#BMS#->{"filename":"project.pbxproj","checksum":2938864577,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME.xcodeproj\/project.pbxproj","size":16009}<-#BME#
-// !$*UTF8*$!
-{
-	archiveVersion = 1;
-	classes = {
-	};
-	objectVersion = 46;
-	objects = {
-
-/* Begin PBXBuildFile section */
-		E50C0AC31DB8B1BC00AA0067 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50C0AC21DB8B1BC00AA0067 /* AppDelegate.swift */; };
-		E50C0AC51DB8B1BC00AA0067 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50C0AC41DB8B1BC00AA0067 /* ViewController.swift */; };
-		E50C0AC71DB8B1BC00AA0067 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50C0AC61DB8B1BC00AA0067 /* Document.swift */; };
-		E50C0AC91DB8B1BC00AA0067 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E50C0AC81DB8B1BC00AA0067 /* Assets.xcassets */; };
-		E50C0ACC1DB8B1BC00AA0067 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E50C0ACA1DB8B1BC00AA0067 /* Main.storyboard */; };
-		E50C0AD71DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50C0AD61DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.swift */; };
-/* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		E50C0AD31DB8B1BC00AA0067 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E50C0AB71DB8B1BC00AA0067 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E50C0ABE1DB8B1BC00AA0067;
-			remoteInfo = XCODE_PRODUCT_NAME;
-		};
-/* End PBXContainerItemProxy section */
-
-/* Begin PBXFileReference section */
-		E50C0ABF1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XCODE_PRODUCT_NAME.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		E50C0AC21DB8B1BC00AA0067 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E50C0AC41DB8B1BC00AA0067 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		E50C0AC61DB8B1BC00AA0067 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
-		E50C0AC81DB8B1BC00AA0067 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		E50C0ACB1DB8B1BC00AA0067 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		E50C0ACD1DB8B1BC00AA0067 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E50C0AD21DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XCODE_PRODUCT_NAMETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E50C0AD61DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCODE_PRODUCT_NAMETests.swift; sourceTree = "<group>"; };
-		E50C0AD81DB8B1BC00AA0067 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-/* End PBXFileReference section */
-
-/* Begin PBXFrameworksBuildPhase section */
-		E50C0ABC1DB8B1BC00AA0067 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E50C0ACF1DB8B1BC00AA0067 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXFrameworksBuildPhase section */
-
-/* Begin PBXGroup section */
-		E50C0AB61DB8B1BC00AA0067 = {
-			isa = PBXGroup;
-			children = (
-				E50C0AC11DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME */,
-				E50C0AD51DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests */,
-				E50C0AC01DB8B1BC00AA0067 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		E50C0AC01DB8B1BC00AA0067 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				E50C0ABF1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME.app */,
-				E50C0AD21DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		E50C0AC11DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME */ = {
-			isa = PBXGroup;
-			children = (
-				E50C0AC21DB8B1BC00AA0067 /* AppDelegate.swift */,
-				E50C0AC41DB8B1BC00AA0067 /* ViewController.swift */,
-				E50C0AC61DB8B1BC00AA0067 /* Document.swift */,
-				E50C0AC81DB8B1BC00AA0067 /* Assets.xcassets */,
-				E50C0ACA1DB8B1BC00AA0067 /* Main.storyboard */,
-				E50C0ACD1DB8B1BC00AA0067 /* Info.plist */,
-			);
-			path = XCODE_PRODUCT_NAME;
-			sourceTree = "<group>";
-		};
-		E50C0AD51DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests */ = {
-			isa = PBXGroup;
-			children = (
-				E50C0AD61DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.swift */,
-				E50C0AD81DB8B1BC00AA0067 /* Info.plist */,
-			);
-			path = XCODE_PRODUCT_NAMETests;
-			sourceTree = "<group>";
-		};
-/* End PBXGroup section */
-
-/* Begin PBXNativeTarget section */
-		E50C0ABE1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E50C0ADB1DB8B1BC00AA0067 /* Build configuration list for PBXNativeTarget "XCODE_PRODUCT_NAME" */;
-			buildPhases = (
-				E50C0ABB1DB8B1BC00AA0067 /* Sources */,
-				E50C0ABC1DB8B1BC00AA0067 /* Frameworks */,
-				E50C0ABD1DB8B1BC00AA0067 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = XCODE_PRODUCT_NAME;
-			productName = XCODE_PRODUCT_NAME;
-			productReference = E50C0ABF1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME.app */;
-			productType = "com.apple.product-type.application";
-		};
-		E50C0AD11DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E50C0ADE1DB8B1BC00AA0067 /* Build configuration list for PBXNativeTarget "XCODE_PRODUCT_NAMETests" */;
-			buildPhases = (
-				E50C0ACE1DB8B1BC00AA0067 /* Sources */,
-				E50C0ACF1DB8B1BC00AA0067 /* Frameworks */,
-				E50C0AD01DB8B1BC00AA0067 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				E50C0AD41DB8B1BC00AA0067 /* PBXTargetDependency */,
-			);
-			name = XCODE_PRODUCT_NAMETests;
-			productName = XCODE_PRODUCT_NAMETests;
-			productReference = E50C0AD21DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-/* End PBXNativeTarget section */
-
-/* Begin PBXProject section */
-		E50C0AB71DB8B1BC00AA0067 /* Project object */ = {
-			isa = PBXProject;
-			attributes = {
-				LastSwiftUpdateCheck = 0800;
-				LastUpgradeCheck = 0800;
-				ORGANIZATIONNAME = XCODE_ORGANIZATION_NAME;
-				TargetAttributes = {
-					E50C0ABE1DB8B1BC00AA0067 = {
-						CreatedOnToolsVersion = 8.0;
-						ProvisioningStyle = Automatic;
-					};
-					E50C0AD11DB8B1BC00AA0067 = {
-						CreatedOnToolsVersion = 8.0;
-						ProvisioningStyle = Automatic;
-						TestTargetID = E50C0ABE1DB8B1BC00AA0067;
-					};
-				};
-			};
-			buildConfigurationList = E50C0ABA1DB8B1BC00AA0067 /* Build configuration list for PBXProject "XCODE_PRODUCT_NAME" */;
-			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
-			hasScannedForEncodings = 0;
-			knownRegions = (
-				en,
-				Base,
-			);
-			mainGroup = E50C0AB61DB8B1BC00AA0067;
-			productRefGroup = E50C0AC01DB8B1BC00AA0067 /* Products */;
-			projectDirPath = "";
-			projectRoot = "";
-			targets = (
-				E50C0ABE1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME */,
-				E50C0AD11DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests */,
-			);
-		};
-/* End PBXProject section */
-
-/* Begin PBXResourcesBuildPhase section */
-		E50C0ABD1DB8B1BC00AA0067 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E50C0AC91DB8B1BC00AA0067 /* Assets.xcassets in Resources */,
-				E50C0ACC1DB8B1BC00AA0067 /* Main.storyboard in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E50C0AD01DB8B1BC00AA0067 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin PBXSourcesBuildPhase section */
-		E50C0ABB1DB8B1BC00AA0067 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E50C0AC51DB8B1BC00AA0067 /* ViewController.swift in Sources */,
-				E50C0AC31DB8B1BC00AA0067 /* AppDelegate.swift in Sources */,
-				E50C0AC71DB8B1BC00AA0067 /* Document.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E50C0ACE1DB8B1BC00AA0067 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E50C0AD71DB8B1BC00AA0067 /* XCODE_PRODUCT_NAMETests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		E50C0AD41DB8B1BC00AA0067 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E50C0ABE1DB8B1BC00AA0067 /* XCODE_PRODUCT_NAME */;
-			targetProxy = E50C0AD31DB8B1BC00AA0067 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		E50C0ACA1DB8B1BC00AA0067 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				E50C0ACB1DB8B1BC00AA0067 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
-/* Begin XCBuildConfiguration section */
-		E50C0AD91DB8B1BC00AA0067 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = Debug;
-		};
-		E50C0ADA1DB8B1BC00AA0067 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = macosx;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-			};
-			name = Release;
-		};
-		E50C0ADC1DB8B1BC00AA0067 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = XCODE_PRODUCT_NAME/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "XCODE-ORGANIZATION-IDENTIFIER.XCODE-PRODUCT-NAME";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-			};
-			name = Debug;
-		};
-		E50C0ADD1DB8B1BC00AA0067 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = XCODE_PRODUCT_NAME/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "XCODE-ORGANIZATION-IDENTIFIER.XCODE-PRODUCT-NAME";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-			};
-			name = Release;
-		};
-		E50C0ADF1DB8B1BC00AA0067 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = XCODE_PRODUCT_NAMETests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "XCODE-ORGANIZATION-IDENTIFIER.XCODE-PRODUCT-NAMETests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/XCODE_PRODUCT_NAME.app/Contents/MacOS/XCODE_PRODUCT_NAME";
-			};
-			name = Debug;
-		};
-		E50C0AE01DB8B1BC00AA0067 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = XCODE_PRODUCT_NAMETests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "XCODE-ORGANIZATION-IDENTIFIER.XCODE-PRODUCT-NAMETests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/XCODE_PRODUCT_NAME.app/Contents/MacOS/XCODE_PRODUCT_NAME";
-			};
-			name = Release;
-		};
-/* End XCBuildConfiguration section */
-
-/* Begin XCConfigurationList section */
-		E50C0ABA1DB8B1BC00AA0067 /* Build configuration list for PBXProject "XCODE_PRODUCT_NAME" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E50C0AD91DB8B1BC00AA0067 /* Debug */,
-				E50C0ADA1DB8B1BC00AA0067 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E50C0ADB1DB8B1BC00AA0067 /* Build configuration list for PBXNativeTarget "XCODE_PRODUCT_NAME" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E50C0ADC1DB8B1BC00AA0067 /* Debug */,
-				E50C0ADD1DB8B1BC00AA0067 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-		};
-		E50C0ADE1DB8B1BC00AA0067 /* Build configuration list for PBXNativeTarget "XCODE_PRODUCT_NAMETests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E50C0ADF1DB8B1BC00AA0067 /* Debug */,
-				E50C0AE01DB8B1BC00AA0067 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-		};
-/* End XCConfigurationList section */
-	};
-	rootObject = E50C0AB71DB8B1BC00AA0067 /* Project object */;
-}
-#BMS#->{"filename":"contents.xcworkspacedata","checksum":90864078,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME.xcodeproj\/project.xcworkspace\/contents.xcworkspacedata","size":163}<-#BME#
-<?xml version="1.0" encoding="UTF-8"?>
-<Workspace
-   version = "1.0">
-   <FileRef
-      location = "self:XCODE_PRODUCT_NAME.xcodeproj">
-   </FileRef>
-</Workspace>
-#BMS#->{"filename":"UserInterfaceState.xcuserstate","checksum":3719779041,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME.xcodeproj\/project.xcworkspace\/xcuserdata\/bpds.xcuserdatad\/UserInterfaceState.xcuserstate","size":10970}<-#BME#
-bplist00‘      ‘’X$versionX$objectsY$archiverT$top Ü†Ø       % & ' ( ) * + 2 8 9 ? C D H I M N R V ` a b c i { | } ~  Ä Å Ç Ö â å ç ë ï õ ú ü ° ¢ ¶ Æ ≤ ≥ ø ¿ ¡ ¬ √ …   œ ◊ ÿ Ÿ ⁄ € › Â Ê Á Ë Ï Ù ı ˝ ˛ ˇ "#(01234<=>?CHIJRSTUVZbnopqrstuvÇÉÑÖãåç°¢£§•¶ß®©™´¨≠Æ¿¡¬√ƒ≈∆«»Ã‡·‚„‰ÂÊÁËÈˇ &'-348<@AEIMRVZ^deklvwxy}èêëíìîïñó£§•´±µπΩæ¬∆«”‘’÷◊„‰ÂÊÁÍı˝˛ˇ	'()1239>FGOPXYZ[klmnopqwx~áàâèïõ°ß´±∑ø¿¡… À”U$null” 	 
-    WNS.keysZNS.objectsV$class¢  ÄÄ¢  ÄÄäÄ@_IDEWorkspaceDocument_$28385CCF-EBDA-41E4-900E-EB5BFBA9D928” 	 
-    $¶      ÄÄÄÄÄ	Ä
-¶     ! " #ÄÄÄÄxÄyÄ|Ä)_RecentEditorDocumentURLs_DocumentWindows_DefaultEditorStatesForURLs_BreakpointsActivated\ActiveScheme_ActiveRunDestination“ 
-  , 1§ - . / 0ÄÄÄÄÄ” 3  4 5 6 7WNS.base[NS.relativeÄ ÄÄ_ffile:///Users/bpds/Desktop/macOS-app-prototype/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME/AppDelegate.swift“ : ; < =Z$classnameX$classesUNSURL¢ < >XNSObject” 3  4 5 6 BÄ ÄÄ_efile:///Users/bpds/Desktop/macOS-app-prototype/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME/Assets.xcassets/” 3  4 5 6 GÄ ÄÄ_ifile:///Users/bpds/Desktop/macOS-app-prototype/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME/ViewController.swift” 3  4 5 6 LÄ ÄÄ__file:///Users/bpds/Desktop/macOS-app-prototype/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME.xcodeproj/“ : ; O P^NSMutableArray£ O Q >WNSArray“ 
-  S 1° ÄÄ” 	 
-  W [ $£ X Y ZÄÄÄ£ \ ] ^ÄÄ0ÄkÄ)_(Xcode.IDEKit.EditorDocument.AssetCatalog_7Xcode.Xcode3ProjectSupport.EditorDocument.Xcode3Project_&Xcode.IDEKit.EditorDocument.SourceCode” 	 
-  d f $° .Ä° gÄÄ)” 	 
-  j r $ß k l m n o p qÄÄÄÄ Ä!Ä"Ä#ß s t u v w x yÄ$Ä&Ä'Ä(Ä*Ä.Ä/Ä)_selectedItemIdentifiers[sourceItems_detailController]sclicing-area_source-list-area_lastFocusedArea]overview-area“ 
-  É Ñ†Ä%“ : ; Ü á\NSMutableSet£ Ü à >UNSSet“ 
-  ä Ñ†Ä%_IBICCatalogOverviewController” 	 
-  é è $††Ä)“ : ; í ì_NSMutableDictionary£ í î >\NSDictionary” 	 
-  ñ ò $° óÄ+° ôÄ,Ä)_expandedItemIDs“ 
-  ù û†Ä-“ : ; à †¢ à >_DVTStateTokenNilValueMarker” 	 
-  £ § $††Ä)” 	 
-  ß ™ $¢ 0 ©ÄÄ1¢ ´ ¨Ä3ÄPÄ)” 3  4 5 6 ±Ä ÄÄ2_Kfile:///Users/bpds/Desktop/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME.xcodeproj/” 	 
-  ¥ π $§ µ ∂ ∑ ∏Ä4Ä5Ä6Ä7§ ∫ ª º ΩÄ8ÄDÄEÄOÄ)_(Xcode3ProjectEditor.sourceList.splitview_,Xcode3ProjectEditorPreviousTargetEditorClass_,Xcode3ProjectEditorSelectedDocumentLocations_&Xcode3ProjectEditor_Xcode3TargetEditor” 	 
-  ƒ ∆ $° ≈Ä9° «Ä:Ä)_DVTSplitViewItems“ 
-  À 1¢ Ã ÕÄ;ÄAÄ” 	 
-  – ” ¢ — “Ä<Ä=¢ ‘ ’Ä>Ä?Ä@]DVTIdentifier_DVTViewMagnitude_!sourceListSplitViewItemIdentifier#@e@     “ : ; î ‹¢ î >” 	 
-  ﬁ · ¢ — “Ä<Ä=¢ ‚ „ÄBÄCÄ@P#@Ü(     _Xcode3TargetEditor“ 
-  È Î° ÍÄFÄN‘ Ì Ó Ô   Ò L ÛYselectionYtimestamp[documentURLÄHÄGÄÄM#AΩ∏≤Ó?.ù” 	 
-  ˆ ˘ $¢ ˜ ¯ÄIÄJ¢ ˙ ˚ÄKÄLÄ)VEditorVTarget_Xcode3TargetEditor_XCODE_PRODUCT_NAME“ : ;_Xcode3ProjectDocumentLocation£ >_Xcode3ProjectDocumentLocation_DVTDocumentLocation“ : ; Q¢ Q >” 	 
- 	
- $††Ä)” 	 
-  $§ÄQÄRÄSÄT§ÄUÄ`ÄaÄjÄ)_(Xcode3ProjectEditor.sourceList.splitview_,Xcode3ProjectEditorPreviousTargetEditorClass_,Xcode3ProjectEditorSelectedDocumentLocations_&Xcode3ProjectEditor_Xcode3TargetEditor” 	 
-  $°ÄV° ÄWÄ)_DVTSplitViewItems“ 
- $ 1¢%&ÄXÄ]Ä” 	 
- ), ¢*+ÄYÄZ¢-.Ä[Ä\Ä@]DVTIdentifier_DVTViewMagnitude_!sourceListSplitViewItemIdentifier#@d`     ” 	 
- 58 ¢*+ÄYÄZ¢9:Ä^Ä_Ä@P#@Ü`     _Xcode3TargetEditor“ 
- @ Î°AÄbÄN‘ Ì Ó Ô DEF ÛÄeÄdÄcÄM_Kfile:///Users/bpds/Desktop/XCODE_PRODUCT_NAME/XCODE_PRODUCT_NAME.xcodeproj/#AΩ∏±≈ƒè” 	 
- KN $¢LMÄfÄg¢OPÄhÄiÄ)VEditorVTarget_Xcode3TargetEditor_XCODE_PRODUCT_NAME” 	 
- WX $††Ä)” 	 
- [^ $¢ / -ÄÄ¢_`ÄlÄuÄ)” 	 
- ch $§defgÄmÄnÄoÄp§ijklÄqÄrÄsÄtÄ)_PrimaryDocumentTimestamp_$PrimaryDocumentVisibleCharacterRange]HideAllIssues_%PrimaryDocumentSelectedCharacterRange#AΩ∏≤ÓΩˇX{0, 492}V{0, 0}” 	 
- w| $§defgÄmÄnÄoÄp§}~klÄvÄwÄsÄtÄ)#AΩ∏≤Ú1zX{0, 539}	” 	 
- Üà °áÄz°âÄ{Ä@]IDENameString_XCODE_PRODUCT_NAME” 	 
- éó ®èêëíìîïñÄ}Ä~ÄÄÄÄÅÄÇÄÉÄÑ®ò !kõúùû !ÄÖÄxÄsÄÜÄáÄàÄâÄxÄ@YtargetSDKZisEligible_targetDeviceIsWireless_targetDeviceLocation_targetArchitecture_targetDeviceFamily_targetDeviceModelCode_targetDeviceIsConcrete[macosx10.12_"dvtdevice-local-computer:localhostVx86_64P^MacBookPro11,5” 	 
- Ø∑ $ß∞±≤≥¥µ∂ÄãÄåÄçÄéÄèÄêÄëß∏π∫ ≤ ! !ÄíÄìÄîÄÄçÄxÄxÄ)^IDEWindowFrame_!IDEOrderedWorkspaceTabControllers_>IDEWorkspaceTabController_86399A1E-9F82-4D7E-A697-691EC16212AB_,IDEWorkspaceWindowControllerUniqueIdentifier_IDEActiveWorkspaceTabController_IDEWindowToolbarIsVisible_IDEWindowTabBarIsVisible_{{353, 484}, {1400, 960}}“ 
- … Î°≤ÄçÄN” 	 
- Õ÷ $®Œœ–—“”‘’ÄïÄñÄóÄòÄôÄöÄõÄú®◊ !Ÿ⁄€‹ !ﬁÄùÄxÄûÄ¯Ä˛ÅÄxÄØÄ)[IDETabLabel_IDEShowNavigator]IDEEditorArea_-IDEWorkspaceTabControllerUtilityAreaSplitView_IDENavigatorArea_,IDEWorkspaceTabControllerDesignAreaSplitView_IDEShowUtilities_AssistantEditorsLayout_AppDelegate.swift” 	 
- ÍÙ $©ÎÏÌÓÔÒÚÛÄüÄ†Ä°Ä¢Ä£Ä§Ä•Ä¶Äß©ıˆ !ﬁﬁ˙˚¸kÄ®ÄªÄxÄØÄØÄŸÄÔÄÄsÄ)ZlayoutTree_IDEEditorMode_Standard]IDEShowEditor_VersionEditorSubmodeZEditorMode_IDEDefaultDebugArea_ DefaultPersistentRepresentations_DebuggerSplitView_ShowDebuggerArea‘	
-  5_rootLayoutTreeNode_geniusEditorContextNode_primaryEditorContextNodeÄ∑Ä Ä©Ä∫÷  5XchildrenVparent[contentType_ documentArchivableRepresentation[orientationÄ Ä∑ÄπÄ™ ’  !"#$ﬁ_DocumentLocation^IdentifierPath_DomainIdentifier_IndexOfDocumentIdentifierÄ¥Ä¨Ä∂Ä´ÄØ_/Xcode.IDENavigableItemDomain.WorkspaceStructure“ 
- ( Î£)*+Ä≠Ä±Ä≤ÄN”./ 0ﬁ2ZIdentifierUIndexÄÆÄØÄ∞_AppDelegate.swift“ : ;56_IDEArchivableStringIndexPair¢7 >_IDEArchivableStringIndexPair”./  ˚ﬁ2ÄLÄØÄ∞”./ =ﬁ2Ä≥ÄØÄ∞_XCODE_PRODUCT_NAME” Ô  Ó 7C 5ÄÄµÄ “ : ;FG_DVTDocumentLocation¢H >_DVTDocumentLocation“ : ;JK_(IDENavigableItemArchivableRepresentation¢L >_(IDENavigableItemArchivableRepresentation÷ N 5 5Ä∏Ä ÄπÄ “ 
- S Î°Ä©ÄN“ : ;WX_'IDEWorkspaceTabControllerLayoutTreeNode¢Y >_'IDEWorkspaceTabControllerLayoutTreeNode“ : ;[\_#IDEWorkspaceTabControllerLayoutTree¢] >_#IDEWorkspaceTabControllerLayoutTree” 	 
- _a $°`Äº°bÄΩÄ)_%EditorLayout_PersistentRepresentation” 	 
- fh $°gÄæ°iÄøÄ)TMain” 	 
- mq £nopÄ¿Ä¡Ä¬£rﬁtÄ√ÄØÄ◊Ä@_)EditorLayout_StateSavingStateDictionaries_EditorLayout_Selected_EditorLayout_Geometry“ 
- z Î°{ÄƒÄN” 	 
- ~Ü $ßÄÅÇÉÑÖÄ≈Ä∆Ä«Ä»Ä…Ä ÄÀßáàâ00 Z -ÄÃÄÕÄ–ÄÆÄÆÄÄÄ)\FileDataType[EditorState_ArchivableRepresentation_NavigableItemName_DocumentNavigableItemName_DocumentExtensionIdentifier[DocumentURL_public.swift-source” 	 
- òù §defgÄmÄnÄoÄp§ûüklÄŒÄœÄsÄtÄ@#AΩ∏≤Ú1bûX{0, 539}’  ¶ß#$ﬁÄ÷Ä—Ä∂Ä´ÄØ“ 
- ¨ Î£≠ÆØÄ“Ä”Ä‘ÄN”./ 0ﬁ2ÄÆÄØÄ∞”./  ˚ﬁ2ÄLÄØÄ∞”./ ∫ﬁ2Ä’ÄØÄ∞_XCODE_PRODUCT_NAME” Ô  Ó 7C 5ÄÄµÄ “ 
- √ Î°ƒÄÿÄN_{{0, 0}, {880, 898}}” 	 
- »Õ $§… ÀÃÄ⁄Ä€Ä‹Ä›§Œœ–—ÄﬁÄ‰ÄÏÄÌÄ)XLeftView_IDESplitViewDebugAreaZLayoutModeYRightView” 	 
- ÿ› $§Ÿ⁄€‹ÄﬂÄ‡Ä·Ä‚§kﬁ‡ !ÄsÄØÄ„ÄxÄ)_VariablesViewShowsRawValues_VariablesViewSelectedScope_ VariablesViewViewSortDescriptors_VariablesViewShowsType“ 
- Ë Î†ÄN” 	 
- ÎÌ $°ÄV°ÓÄÂÄ)“ 
- Ò 1¢ÚÛÄÊÄÈÄ” 	 
- ˆ˘ ¢ — “Ä<Ä=¢˙˚ÄÁÄËÄ@XLeftView#@{Ä     ” 	 
-   ¢ — “Ä<Ä=¢ÄÍÄÎÄ@YRightView#@{p     ” 	 
- 
- $°ÄÓ°ﬁÄØÄ)_ConsoleFilterMode” 	 
-  $††Ä)” 	 
-  $° ≈Ä9°ÄÒÄ)“ 
-  1¢ÄÚÄıÄ” 	 
-  # ¢ — “Ä<Ä=¢$%ÄÛÄÙÄ@YIDEEditor#@i`     ” 	 
- *- ¢ — “Ä<Ä=¢./ÄˆÄ˜Ä@_IDEDebuggerArea#@\¿     ” 	 
- 46 $°ÄV°7Ä˘Ä)“ 
- : 1¢;<Ä˙Ä¸Ä” 	 
- ?B ¢ — “Ä<Ä=¢ ‚DÄBÄ˚Ä@#@Ñh     ” 	 
- HK ¢ — “Ä<Ä=¢ ‚MÄBÄ˝Ä@#@n†     ” 	 
- QT $¢RSÄˇÅ ¢UVÅÅÄ)_SelectedNavigator_ Xcode.IDEKit.Navigator.Structure_ Xcode.IDEKit.Navigator.Structure” 	 
- \c $¶]^_`abÅÅÅÅÅÅ¶defkhkÅ	ÅÅÄsÅÄsÄ)_IDEExpandedItemsTree^IDEVisibleRect_IDESelectedTree_!IDERecentDocumentFilteringEnabled_,IDENavigatorExpandedItemsBeforeFilteringTree_IDESCMStatusFilteringEnabled” 	 
- rt °sÅ
-°uÅÄ@_IDEValuesAsTree” 	 
- y{ $°zÅ°|ÅÄ)_XCODE_PRODUCT_NAME” 	 
- ÄÉ $¢Å ˚ÅÄL¢ÅÅÅÅÄ)P_{{0, 0}, {259, 841}}” 	 
- äå °sÅ
-°çÅÄ@” 	 
- êí $°zÅ°ìÅÄ)” 	 
- ñò $° ˚ÄL°ôÅÄ)” 	 
- úû $°0ÄÆ°ÅÅÄ)” 	 
- ¢§ °sÅ
-°•ÅÄ@” 	 
- ®© $††Ä)” 	 
- ¨Æ $°ÄV°ØÅÄ)“ 
- ≤ 1£≥¥µÅÅÅÄ” 	 
- ∏ª ¢ — “Ä<Ä=¢ºΩÅÅÄ@_IDENavigatorArea#@p@     ” 	 
- ¬≈ ¢ — “Ä<Ä=¢∆«ÅÅÄ@]IDEEditorArea#@ãÄ     ” 	 
- Ãœ ¢ — “Ä<Ä=¢–ΩÅÅÄ@_IDEUtilitiesArea_NSKeyedArchiver—÷◊UStateÄ   " + 5 : ?Éâñû©∞µ∑πæ¿¬ƒ€ "$&(579;=?AC^pç§±»—⁄‹ﬁ‡‚‰Ò˘	t}àëóú•≤¥∂∏ -/13ü¨Æ∞≤,3;DGIKX_acelnprtüŸ(79;=?ACETVXZ\^`bd~äù´æ–ﬁÁËÍÛ 9FGHJSip}äçèíîñ®±≤¥Ω¬‡ÌÓÔÒ˛									!	#	%	s	Ä	â	ã	ç	è	ë	ö	ú	û	†	¢	§	œ	˛
--
-V
-c
-f
-h
-k
-m
-o
-É
-å
-ë
-ì
-ï
-ó
-§
-©
-´
-≠
-≤
-¥
-∂
-∏
-∆
-Ÿ
-˝!&(*/1356?T]`bduâïóôõù¶≥∏∫º¡√≈«Œ’Íˇ(/OensÄÅÇÑëöúû†¢´≠Ø±≥µ‡>gtwy|~Äîù¢§¶®µ∫ºæ√≈«…◊Í$)+-24689BW`cegxz|~ÄŒ◊‰ÈÎÌÚÙˆ¯ˇ0=>?ANSUW\^`boxz|~ÄâãçèëìÆ’„%2;=?ACLNPRTV_hivy{~ÄÇê•≤√≈«…ÀÕœ—”‰ÊËÍÏÓÚÙˆ $;Pe}ñ¢«ŒœﬁÎ˙¸˛ !#%'6Zõ Ï#?HKMO\moqsuwy{}éêíîñòõùü°≠¿Œ˛@SlÄç†¢§¶®™¨Æ∞≤≈«…ÀÕœ—”’◊Ÿ‰˝"-Cfzçû≥ÕËÍÏÓ	%HTVXZ\^`uàó™∆» ÃŒ–'28:<>R[zû´≠Ø±æ¿¬ƒŸÊËÍÏı&/Z_ä£•ß©´¥∑πªƒÓÛ&LQwÑáâåéê∏≈» Õœ—÷„ÍÏÓ˜˘˚˝ˇ+C[dgikxáâãçèëìï§¶®™¨Æ∞≤¥¡ÕË¸6BXenprtvÅÉÖáâíõ∞≤¥∂∏∫√ ÃŒ–“ﬂ·„ÂÚÙˆ¯	 -/13<?ACZgprtvxÅÉÖáâãî¨∑¡Œ◊Ÿ€›ﬂËÍÏÓÚ-PirsuÇÖáäåéóúû†¢Ø¥∂∏Ωø¡√Ã’‚ÁÈÎÚÙˆ 	 "6CDEGTWY\^`inprtÅÜàäèëìïü®µ∫ºæ√≈«…€‰ÒÙˆ˘˚˝#%',.02;HMOQVXZ\erwy|ÅÑáâù¿„˝     	     " % ' * , . E T f ä π ÿ Â Ë Î Ó Ò Û!!!!!!! !5!B!G!J!L!Q!T!W!Y!Z!q!~!Å!Ñ!á!ä!å!ô!ú!ü!¢!•!ß!¥!∑!π!º!ø!¡!Œ!—!”!÷!Ÿ!€!Ë!Î!Ó!Ò!Ù!ˆ""""""""""!"*"1"4"7":"<"I"N"P"R"W"Z"]"_"r"{"à"ç"è"ë"ñ"ô"ú"û"¨"µ"¬"«"…"À"–"”"÷"ÿ"Î"˝##            ÿ              #
-#BMS#->{"filename":"XCODE_PRODUCT_NAME.xcscheme","checksum":2181871788,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME.xcodeproj\/xcuserdata\/bpds.xcuserdatad\/xcschemes\/XCODE_PRODUCT_NAME.xcscheme","size":3898}<-#BME#
-<?xml version="1.0" encoding="UTF-8"?>
-<Scheme
-   LastUpgradeVersion = "0800"
-   version = "1.3">
-   <BuildAction
-      parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES">
-      <BuildActionEntries>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E50C0ABE1DB8B1BC00AA0067"
-               BuildableName = "XCODE_PRODUCT_NAME.app"
-               BlueprintName = "XCODE_PRODUCT_NAME"
-               ReferencedContainer = "container:XCODE_PRODUCT_NAME.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-      </BuildActionEntries>
-   </BuildAction>
-   <TestAction
-      buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
-      <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E50C0AD11DB8B1BC00AA0067"
-               BuildableName = "XCODE_PRODUCT_NAMETests.xctest"
-               BlueprintName = "XCODE_PRODUCT_NAMETests"
-               ReferencedContainer = "container:XCODE_PRODUCT_NAME.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E50C0ABE1DB8B1BC00AA0067"
-            BuildableName = "XCODE_PRODUCT_NAME.app"
-            BlueprintName = "XCODE_PRODUCT_NAME"
-            ReferencedContainer = "container:XCODE_PRODUCT_NAME.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
-   </TestAction>
-   <LaunchAction
-      buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      launchStyle = "0"
-      useCustomWorkingDirectory = "NO"
-      ignoresPersistentStateOnLaunch = "NO"
-      debugDocumentVersioning = "YES"
-      debugServiceExtension = "internal"
-      allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E50C0ABE1DB8B1BC00AA0067"
-            BuildableName = "XCODE_PRODUCT_NAME.app"
-            BlueprintName = "XCODE_PRODUCT_NAME"
-            ReferencedContainer = "container:XCODE_PRODUCT_NAME.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
-      <AdditionalOptions>
-      </AdditionalOptions>
-   </LaunchAction>
-   <ProfileAction
-      buildConfiguration = "Release"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      savedToolIdentifier = ""
-      useCustomWorkingDirectory = "NO"
-      debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E50C0ABE1DB8B1BC00AA0067"
-            BuildableName = "XCODE_PRODUCT_NAME.app"
-            BlueprintName = "XCODE_PRODUCT_NAME"
-            ReferencedContainer = "container:XCODE_PRODUCT_NAME.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
-   </ProfileAction>
-   <AnalyzeAction
-      buildConfiguration = "Debug">
-   </AnalyzeAction>
-   <ArchiveAction
-      buildConfiguration = "Release"
-      revealArchiveInOrganizer = "YES">
-   </ArchiveAction>
-</Scheme>
-#BMS#->{"filename":"xcschememanagement.plist","checksum":2631899828,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAME.xcodeproj\/xcuserdata\/bpds.xcuserdatad\/xcschemes\/xcschememanagement.plist","size":580}<-#BME#
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>SchemeUserState</key>
-	<dict>
-		<key>XCODE_PRODUCT_NAME.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>0</integer>
-		</dict>
-	</dict>
-	<key>SuppressBuildableAutocreation</key>
-	<dict>
-		<key>E50C0ABE1DB8B1BC00AA0067</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>E50C0AD11DB8B1BC00AA0067</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-	</dict>
-</dict>
-</plist>
-#BMS#->{"filename":"Info.plist","checksum":2476580494,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAMETests\/Info.plist","size":680}<-#BME#
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>$(PRODUCT_NAME)</string>
-	<key>CFBundlePackageType</key>
-	<string>BNDL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
-	<key>CFBundleVersion</key>
-	<string>1</string>
-</dict>
-</plist>
-#BMS#->{"filename":"XCODE_PRODUCT_NAMETests.swift","checksum":668116683,"relativePath":"\/XCODE_PRODUCT_NAME\/XCODE_PRODUCT_NAMETests\/XCODE_PRODUCT_NAMETests.swift","size":1040}<-#BME#
-//
-//  XCODE_PRODUCT_NAMETests.swift
-//  XCODE_PRODUCT_NAMETests
-//
-//  Created by Benoit Pereira da silva on 20/10/2016.
-//  Copyright ¬© 2016 XCODE_ORGANIZATION_NAME. All rights reserved.
-//
-
-import XCTest
-@testable import XCODE_PRODUCT_NAME
-
-class XCODE_PRODUCT_NAMETests: XCTestCase {
-    
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-    
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-    
-}
